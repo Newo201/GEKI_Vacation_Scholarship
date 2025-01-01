@@ -20,7 +20,39 @@ likelihood_sample <- function(alpha, x, sigma2) {
   return(mvrnorm(1, mu = alpha*x, Sigma = sigma2*diag(dim)))
 }
 
-likelihood_sample(1, c(1,0,1), 5)
-alpha_prior_sample(5)
-sigma2_prior_sample(2)
+# Generate simulated data using the true parameters
+generate_data <- function(iterations, parameters) {
+  alpha.true <- parameters['alpha']
+  x.true <- parameters['x']
+  sigma2.true <- parameters['sigma2']
+  samples <- rep(NA, iterations)
+  for (i in 1:iterations) {
+    samples[i] <- likelihood_sample(alpha.true, x.true, sigma2.true)
+  }
+  return(samples)
+}
+
+eki_normal <- function(iterations, parameters) {
+  
+  x.true <- parameters['x']
+  
+  # Simulate data using true parameters
+  simulated_data <- generate_data(iterations, parameters)
+  
+  # Sample from the prior distribution
+  
+  # Until we reach a temperature of one do the following
+  
+    # Sample from the likelihood
+  
+    # Calculate the covariance matrices
+  
+    # Generate perturbations
+  
+    # Move the particles
+  
+    # Calculate the next temperature
+}
+
+
 
