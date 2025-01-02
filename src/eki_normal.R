@@ -1,16 +1,16 @@
 pacman::p_load(pacman, MASS)
 
 # Generate samples from the prior distributions
-alpha_prior_sample <- function(alpha.sd) {
-  return(rnorm(1, mean = 0, sd = alpha.sd))
+alpha_prior_sample <- function(alpha.sd, iterations) {
+  return(rnorm(iterations, mean = 0, sd = alpha.sd))
 }
 
 # We need to have a prior sample that is from (-infinity, infinity)
 # but we also need to restrict sigma2 to R+. Therefore we sample the log
 # prior from a normal distribution
-sigma2_prior_sample <- function(sigma2.sd) {
+sigma2_prior_sample <- function(sigma2.sd, iterations) {
   
-  log.sigma2 <- rnorm(1, mean = 0, sd = sigma2.sd)
+  log.sigma2 <- rnorm(iterations, mean = 0, sd = sigma2.sd)
   return(exp(log.sigma2))
 }
 
@@ -22,10 +22,11 @@ likelihood_sample <- function(alpha, x, sigma2) {
 
 # Generate simulated data using the true parameters
 generate_data <- function(iterations, parameters) {
-  alpha.true <- parameters['alpha']
-  x.true <- parameters['x']
-  sigma2.true <- parameters['sigma2']
+  alpha.true <- parameters$alpha
+  x.true <- parameters$x
+  sigma2.true <- parameters$sigma2
   samples <- rep(NA, iterations)
+  print(alpha.true, x.true, sigma2.true)
   for (i in 1:iterations) {
     samples[i] <- likelihood_sample(alpha.true, x.true, sigma2.true)
   }
@@ -34,16 +35,29 @@ generate_data <- function(iterations, parameters) {
 
 eki_normal <- function(iterations, parameters) {
   
-  x.true <- parameters['x']
+  x.true <- parameters$x
+  alpha.sd <- parameters$alpha.sd
+  sigma2.sd <- parameters$sigma2.sd
+  
+  d_y <- length(x.true)
   
   # Simulate data using true parameters
   simulated_data <- generate_data(iterations, parameters)
   
   # Sample from the prior distribution
+  prior_samples <- matrix(nrow = iterations, ncol = 2)
+  prior_samples[, 1] <- alpha_prior_sample(alpha.sd, iterations)
+  prior_samples[, 2] <- sigma2_prior_sample(sigma2.sd, iterations)
   
   # Until we reach a temperature of one do the following
   
     # Sample from the likelihood
+  
+  likelihood_samples <- matrix(nrow = iterations, ncol = d_y)
+  for (i in 1:iterations) {
+    likelihood_samples[i, ] <- likelihood_sample(prior_samples[i, 1], x.true, prior_samples[i, 2])
+  }
+  return(likelihood_samples)
   
     # Calculate the covariance matrices
   
@@ -54,5 +68,7 @@ eki_normal <- function(iterations, parameters) {
     # Calculate the next temperature
 }
 
+parameters <- list(alpha = 2, sigma2 = 5, x = 5, alpha.sd = 5, sigma2.sd = 2)
+eki_normal(100, parameters)
 
 
