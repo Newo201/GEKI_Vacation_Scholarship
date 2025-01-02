@@ -52,34 +52,51 @@ eki_normal <- function(iterations, parameters) {
   # currently in log(sigma2) space
   prior_samples[, 2] <- sigma2_prior_sample(sigma2.sd, iterations)
   
+  particles <- prior_samples
+  
   # Until we reach a temperature of one do the following
-  
+  for (temp in 1:10) {
+    
     # Sample from the likelihood
-  
-  likelihood_samples <- matrix(nrow = iterations, ncol = d_y)
-  for (i in 1:iterations) {
-    likelihood_samples[i, ] <- likelihood_sample(prior_samples[i, 1], x.true, exp(prior_samples[i, 2]))
+    
+    likelihood_samples <- matrix(nrow = iterations, ncol = d_y)
+    for (i in 1:iterations) {
+      likelihood_samples[i, ] <- likelihood_sample(particles[i, 1], x.true, exp(particles[i, 2]))
+    }
+    
+    # Calculate the covariance matrices
+    C_xx = cov(particles)
+    print(C_xx)
+    C_yy = cov(likelihood_samples)
+    C_xy = cov(particles, likelihood_samples)
+    C_yx = cov(likelihood_samples, particles)
+    
+    C_y_given_x = C_yy - C_yx %*% solve(C_xx) %*% C_xy
+    
+    # Generate perturbations
+    eta <- matrix(data = mvrnorm(n = iterations, mu = 0, Sigma = 10*C_y_given_x), nrow = iterations, ncol = d_y)
+    
+    # print(C_xy)
+    # print(solve((C_yy + 10*C_y_given_x)))
+    # 
+    # print(simulated_data - likelihood_samples - eta)
+    # print(C_xy %*% solve((C_yy + 10*C_y_given_x)) %*% t((simulated_data - likelihood_samples - eta)))
+    
+    # Move the particles
+    # Todo: fix up and check the matrix dimensions
+    particles <- particles + t(C_xy %*% solve((C_yy + 10*C_y_given_x)) %*% t((simulated_data - likelihood_samples - eta)))
+    
+    # Calculate the next temperature
   }
   
-    # Calculate the covariance matrices
-  C_xx = cov(prior_samples)
-  print(C_xx)
-  C_yy = cov(likelihood_samples)
-  C_xy = cov(prior_samples, likelihood_samples)
-  C_yx = cov(likelihood_samples, prior_samples)
-  
-  C_y_given_x = C_yy - C_yx %*% solve(C_xx) %*% C_xy
-  return(C_y_given_x)
-  
-    # Generate perturbations
-  
-    # Move the particles
-  
-    # Calculate the next temperature
+  return(particles)
 }
 
 parameters <- list(alpha = 2, sigma2 = 5, x = 5, alpha.sd = 5, sigma2.sd = 2)
-eki_normal(100, parameters)
+result = eki_normal(100, parameters)
+
+hist(result[, 1])
+hist(exp(result[, 2]))
 
 alpha_test <- alpha_prior_sample(5, 1000)
 hist(alpha_test)
