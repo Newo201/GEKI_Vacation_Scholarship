@@ -10,8 +10,9 @@ alpha_prior_sample <- function(alpha.sd, iterations) {
 # prior from a normal distribution
 sigma2_prior_sample <- function(sigma2.sd, iterations) {
   
-  log.sigma2 <- rnorm(iterations, mean = 0, sd = sigma2.sd)
-  return(exp(log.sigma2))
+  # log.sigma2 <- rnorm(iterations, mean = 0, sd = sigma2.sd)
+  # return(exp(log.sigma2))
+  return(rnorm(iterations, mean = 0, sd = sigma2.sd))
 }
 
 # Generate samples from the normal distribution
@@ -48,6 +49,7 @@ eki_normal <- function(iterations, parameters) {
   prior_samples <- matrix(nrow = iterations, ncol = 2)
   prior_samples[, 1] <- alpha_prior_sample(alpha.sd, iterations)
   # Question: do I have to move particles in log(sigma2) space or in sigma2 space
+  # currently in log(sigma2) space
   prior_samples[, 2] <- sigma2_prior_sample(sigma2.sd, iterations)
   
   # Until we reach a temperature of one do the following
@@ -56,7 +58,7 @@ eki_normal <- function(iterations, parameters) {
   
   likelihood_samples <- matrix(nrow = iterations, ncol = d_y)
   for (i in 1:iterations) {
-    likelihood_samples[i, ] <- likelihood_sample(prior_samples[i, 1], x.true, prior_samples[i, 2])
+    likelihood_samples[i, ] <- likelihood_sample(prior_samples[i, 1], x.true, exp(prior_samples[i, 2]))
   }
   
     # Calculate the covariance matrices
