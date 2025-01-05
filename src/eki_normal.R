@@ -3,7 +3,6 @@ pacman::p_load(pacman, mvtnorm)
 source('src/pdfs_normal.R')
 source('src/samples_normal.R')
 
-
 ########################## EKI Algorithm ###################################
 
 eki_normal <- function(iterations, parameters) {
