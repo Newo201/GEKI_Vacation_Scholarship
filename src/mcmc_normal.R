@@ -17,13 +17,20 @@ lupost_normal <- function(y, theta.init, x, params) {
 
 prior_params = list(alpha.sd = 2, sigma2.sd = 5)
 
-lupost_normal(1, c(0, 1), 1, prior_params)
-
-lupost_normal_mcmc <- partial(lupost_normal, x = 1, params = prior_params)
-lupost_normal_mcmc(1, c(0, 1))
-
-normal_mcmc <- function(true_params, prior_params) {
+normal_mcmc <- function(iterations, true_params, prior_params) {
   
-  y <- 
+  # 1. Generate data given true parameters
+  simulated_data <- generate_data(iterations, true_params)
+  
+  # 2. Create a partial function fixing data and parameters
+  lupost_normal_mcmc <- partial(lupost_normal, y = simulated_data, 
+                                x = 1, params = prior_params)
+  
+  # 3. Draw parameters from prior distribution
+  alpha.init <- alpha.prior_sample(prior_params$alpha.sd, 1)
+  logsigma2.init <- logsigma2_prior_sample(prior_params$sigma2.sd, 1)
+  theta.init <- c(alpha.init, logsigma2.init)
+  
+  # 4. Call on MCMC function
   
 }
