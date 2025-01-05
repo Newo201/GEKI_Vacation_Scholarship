@@ -35,5 +35,6 @@ generate_data <- function(iterations, parameters) {
 }
 
 
-true_params = list(alpha = 2, sigma2 = 2, x = c(1, 1))
-test <- generate_data(100, true_params)
+# true_params = list(alpha = 2, sigma2 = 2, x = c(1, 1))
+# test <- generate_data(100, true_params)
+# likelihood_sample()

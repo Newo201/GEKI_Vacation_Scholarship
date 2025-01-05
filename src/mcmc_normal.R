@@ -12,11 +12,8 @@ lupost_normal <- function(y, theta.init, x, params) {
   
   return(alpha_logprior_pdf(alpha.init, alpha.sd) + 
            logsigma2_logprior_pdf(logsigma2.init, sigma2.sd) + 
-           loglike_pdf(y, alpha.init, x, exp(logsigma2.init)))
+           sum(loglike_pdf(y, alpha.init, x, exp(logsigma2.init))))
 }
-
-prior_params = list(alpha.sd = 2, sigma2.sd = 5)
-true_params = list(alpha = 2, sigma2 = 2, x = c(1, 2))
 
 normal_mcmc <- function(iterations, true_params, prior_params) {
   
@@ -25,7 +22,7 @@ normal_mcmc <- function(iterations, true_params, prior_params) {
   
   # 2. Create a partial function fixing data and parameters
   lupost_normal_mcmc <- partial(lupost_normal, y = simulated_data, 
-                                x = 1, params = prior_params)
+                                x = true_params$x, params = prior_params)
   
   # 3. Draw parameters from prior distribution
   alpha.init <- alpha_prior_sample(prior_params$alpha.sd, 1)
@@ -38,5 +35,11 @@ normal_mcmc <- function(iterations, true_params, prior_params) {
   
 }
 
-normal_mcmc(100, true_params, prior_params)
-test <- generate_data(100, true_params)
+# result <- normal_mcmc(100, true_params, prior_params)
+# 
+# result$batch
+# 
+# hist(result$batch[50:100, 1])
+# hist(exp(result$batch[50:100, 2]))
+# # test <- generate_data(100, true_params)
+# # test_out <- loglike_pdf(test, 1, true_params$x, 2)

@@ -1,5 +1,6 @@
 # ToDo: make sure log likelihood can handle y containing more than one observation in the correct way
 loglike_pdf <- function(y, alpha, x, sigma2) {
+  # print(dim(y))
   d_y = length(x)
   return(dmvnorm(y, mean = alpha*x, sigma2*diag(d_y), log = T))
 }
