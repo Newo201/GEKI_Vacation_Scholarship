@@ -26,10 +26,14 @@ generate_data <- function(iterations, parameters) {
   alpha.true <- parameters$alpha
   x.true <- parameters$x
   sigma2.true <- parameters$sigma2
-  samples <- rep(NA, iterations)
+  samples <- matrix(nrow = iterations, ncol = length(x.true))
   print(alpha.true, x.true, sigma2.true)
   for (i in 1:iterations) {
-    samples[i] <- likelihood_sample(alpha.true, x.true, sigma2.true)
+    samples[i, ] <- likelihood_sample(alpha.true, x.true, sigma2.true)
   }
   return(samples)
 }
+
+
+true_params = list(alpha = 2, sigma2 = 2, x = c(1, 1))
+test <- generate_data(100, true_params)

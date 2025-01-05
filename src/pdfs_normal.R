@@ -11,3 +11,5 @@ alpha_logprior_pdf <- function(alpha, alpha.sd) {
 logsigma2_logprior_pdf <- function(logsigma2, sigma.sd) {
   return(dnorm(logsigma2, mean = 0, sd = sigma.sd))
 }
+
+test <- loglike_pdf(matrix(data = c(1, 1, 1, 1, 1, 1, 1, 1, 1), nrow = 3, ncol = 3), 1, c(1,0,1), 1)

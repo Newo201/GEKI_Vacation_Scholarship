@@ -1,4 +1,4 @@
-pacman::p_load(pacman, mvtnorm, purrr)
+pacman::p_load(pacman, mvtnorm, purrr, mcmc)
 source('src/pdfs_normal.R')
 source('src/samples_normal.R')
 
@@ -16,6 +16,7 @@ lupost_normal <- function(y, theta.init, x, params) {
 }
 
 prior_params = list(alpha.sd = 2, sigma2.sd = 5)
+true_params = list(alpha = 2, sigma2 = 2, x = c(1, 2))
 
 normal_mcmc <- function(iterations, true_params, prior_params) {
   
@@ -27,10 +28,15 @@ normal_mcmc <- function(iterations, true_params, prior_params) {
                                 x = 1, params = prior_params)
   
   # 3. Draw parameters from prior distribution
-  alpha.init <- alpha.prior_sample(prior_params$alpha.sd, 1)
+  alpha.init <- alpha_prior_sample(prior_params$alpha.sd, 1)
   logsigma2.init <- logsigma2_prior_sample(prior_params$sigma2.sd, 1)
   theta.init <- c(alpha.init, logsigma2.init)
   
   # 4. Call on MCMC function
+  chain <- metrop(lupost_normal_mcmc, theta.init, iterations)
+  return(chain)
   
 }
+
+normal_mcmc(100, true_params, prior_params)
+test <- generate_data(100, true_params)
