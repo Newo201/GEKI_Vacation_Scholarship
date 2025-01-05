@@ -1,4 +1,21 @@
-pacman::p_load(pacman, MASS)
+pacman::p_load(pacman, mvtnorm)
+
+##################### Evaluating PDFs ##########################
+
+loglike_pdf <- function(y, alpha, x, sigma2) {
+  d_y = length(x)
+  return(dmvnorm(y, mean = alpha*x, sigma2*diag(d_y), log = T))
+}
+
+alpha_logprior_pdf <- function(alpha, alpha.sd) {
+  return(dnorm(alpha, mean = 0, sd = alpha.sd, log = T))
+}
+
+logsigma2_logprior_pdf <- function(logsigma2, sigma.sd) {
+  return(dnorm(logsigma2, mean = 0, sd = sigma.sd))
+}
+
+###################### Sampling From Priors #################################
 
 # Generate samples from the prior distributions
 alpha_prior_sample <- function(alpha.sd, iterations) {
@@ -8,17 +25,17 @@ alpha_prior_sample <- function(alpha.sd, iterations) {
 # We need to have a prior sample that is from (-infinity, infinity)
 # but we also need to restrict sigma2 to R+. Therefore we sample the log
 # prior from a normal distribution
-sigma2_prior_sample <- function(sigma2.sd, iterations) {
+logsigma2_prior_sample <- function(sigma2.sd, iterations) {
   
-  # log.sigma2 <- rnorm(iterations, mean = 0, sd = sigma2.sd)
-  # return(exp(log.sigma2))
   return(rnorm(iterations, mean = 0, sd = sigma2.sd))
 }
+
+###################### Sampling From Likelihood ###############################
 
 # Generate samples from the normal distribution
 likelihood_sample <- function(alpha, x, sigma2) {
   dim = length(x)
-  return(mvrnorm(1, mu = alpha*x, Sigma = sigma2*diag(dim)))
+  return(rmvnorm(1, mean = alpha*x, sigma = sigma2*diag(dim)))
 }
 
 # Generate simulated data using the true parameters
@@ -33,6 +50,8 @@ generate_data <- function(iterations, parameters) {
   }
   return(samples)
 }
+
+########################## EKI Algorithm ###################################
 
 eki_normal <- function(iterations, parameters) {
   
@@ -50,12 +69,14 @@ eki_normal <- function(iterations, parameters) {
   prior_samples[, 1] <- alpha_prior_sample(alpha.sd, iterations)
   # Question: do I have to move particles in log(sigma2) space or in sigma2 space
   # currently in log(sigma2) space
-  prior_samples[, 2] <- sigma2_prior_sample(sigma2.sd, iterations)
+  prior_samples[, 2] <- logsigma2_prior_sample(sigma2.sd, iterations)
   
   particles <- prior_samples
   
   # Until we reach a temperature of one do the following
   for (temp in 1:10) {
+    
+    # Calculate the current temperature
     
     # Sample from the likelihood
     
@@ -66,7 +87,7 @@ eki_normal <- function(iterations, parameters) {
     
     # Calculate the covariance matrices
     C_xx = cov(particles)
-    print(C_xx)
+    # print(C_xx)
     C_yy = cov(likelihood_samples)
     C_xy = cov(particles, likelihood_samples)
     C_yx = cov(likelihood_samples, particles)
@@ -74,7 +95,7 @@ eki_normal <- function(iterations, parameters) {
     C_y_given_x = C_yy - C_yx %*% solve(C_xx) %*% C_xy
     
     # Generate perturbations
-    eta <- matrix(data = mvrnorm(n = iterations, mu = 0, Sigma = 10*C_y_given_x), nrow = iterations, ncol = d_y)
+    eta <- matrix(data = rmvnorm(n = iterations, mean = 0, sigma = 9*C_y_given_x), nrow = iterations, ncol = d_y)
     
     # print(C_xy)
     # print(solve((C_yy + 10*C_y_given_x)))
@@ -84,9 +105,9 @@ eki_normal <- function(iterations, parameters) {
     
     # Move the particles
     # Todo: fix up and check the matrix dimensions
-    particles <- particles + t(C_xy %*% solve((C_yy + 10*C_y_given_x)) %*% t((simulated_data - likelihood_samples - eta)))
+    particles <- particles + t(C_xy %*% solve((C_yy + 9*C_y_given_x)) %*% t((simulated_data - likelihood_samples - eta)))
     
-    # Calculate the next temperature
+
   }
   
   return(particles)
