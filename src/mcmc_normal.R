@@ -15,10 +15,10 @@ lupost_normal <- function(y, theta.init, x, params) {
            sum(loglike_pdf(y, alpha.init, x, exp(logsigma2.init))))
 }
 
-normal_mcmc <- function(iterations, true_params, prior_params) {
+normal_mcmc <- function(num_samples, true_params, prior_params) {
   
   # 1. Generate data given true parameters
-  simulated_data <- generate_data(iterations, true_params)
+  simulated_data <- likelihood_sample(true_params, num_samples)
   
   # 2. Create a partial function fixing data and parameters
   lupost_normal_mcmc <- partial(lupost_normal, y = simulated_data, 
@@ -30,7 +30,7 @@ normal_mcmc <- function(iterations, true_params, prior_params) {
   theta.init <- c(alpha.init, logsigma2.init)
   
   # 4. Call on MCMC function
-  chain <- metrop(lupost_normal_mcmc, theta.init, iterations)
+  chain <- metrop(lupost_normal_mcmc, theta.init, 1e3)
   return(chain)
   
 }

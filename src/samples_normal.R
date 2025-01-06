@@ -21,7 +21,7 @@ likelihood_sample <- function(parameters, num_samples) {
   x = parameters$x
   sigma2 = parameters$sigma2
   dim = length(x)
-  return(rmvnorm(1, mean = alpha*x, sigma = sigma2*diag(dim)))
+  return(rmvnorm(num_samples, mean = alpha*x, sigma = sigma2*diag(dim)))
 }
 
 # # Generate simulated data using the true parameters
