@@ -23,23 +23,3 @@ likelihood_sample <- function(parameters, num_samples) {
   dim = length(x)
   return(rmvnorm(num_samples, mean = alpha*x, sigma = (sigma^2)*diag(dim)))
 }
-
-# # Generate simulated data using the true parameters
-# generate_data <- function(iterations, parameters) {
-#   alpha.true <- parameters$alpha
-#   x.true <- parameters$x
-#   sigma2.true <- parameters$sigma2
-#   samples <- matrix(nrow = iterations, ncol = length(x.true))
-#   print(alpha.true, x.true, sigma2.true)
-#   for (i in 1:iterations) {
-#     samples[i, ] <- likelihood_sample(alpha.true, x.true, sigma2.true)
-#   }
-#   return(samples)
-# }
-
-
-# parameters = list(alpha = 2, sigma2 = 2, x = c(1, 1))
-# test <- generate_data(100, parameters)
-# likelihood_sample()
-
-test <- rmvnorm(10, mean = c(1, 0, 1), sigma = diag(3))

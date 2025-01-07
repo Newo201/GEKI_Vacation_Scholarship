@@ -46,4 +46,12 @@
 
 8.  Return the final ensemble $\{x_L^{(i)}\}$
 
+### Selecting Temperature Adaptively
+
+Instead of providing a sequence of inverse temperatures as the input, we can instead choose to select the temperature adaptively.
+
+The idea is to use pseudo weights $w_l^{(i)} \propto exp(-\frac{1}{2}(\lambda_l-\lambda_{l-1})(y-y_{l-1}^{(i)})^TC_{l-1}^{y|x}(y-y_{l-1}^{(i)}))$.
+
+Given $\lambda_{l-1}$ we want to choose $\lambda_l$ such that the $ESS = \rho N$ where $\rho$ is a hyper-parameter (set to $\frac{1}{2}$). We can find this using any standard root finding algorithm; I use the `uniroot` function in R. In cases where the $\lambda_l > 1$ we set $\lambda_l = 1$ and make this our final iteration.
+
 ## References
