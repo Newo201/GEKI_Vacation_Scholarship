@@ -20,6 +20,17 @@ density <- dnorm(logsigma2_sequence, mean = 0, sd = sigma2.sd)
 hist(logsigma2_samples, freq = F)
 lines(logsigma2_sequence, density, col = 'red')
 
+######################### Likelihood Samples ################################
+
+parameters <- list(alpha = 2, sigma = 5, x = 5, alpha.sd = 5, sigma2.sd = 2)
+num_observations <- 100
+simulated_data <- likelihood_sample(parameters, num_observations)
+
+hist(simulated_data, freq = F)
+data_sequence <- seq(min(simulated_data), max(simulated_data), length = 40)
+density <- dnorm(data_sequence, mean = parameters$alpha*parameters$x, sd = parameters$sigma)
+lines(data_sequence, density, col = 'red')
+
 
 
 

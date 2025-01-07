@@ -1,7 +1,7 @@
 # ToDo: make sure log likelihood can handle y containing more than one observation in the correct way
 loglike_pdf <- function(y, parameters) {
   alpha = parameters$alpha
-  sigma2 = parameters$sigma2
+  sigma2 = parameters$sigma**2
   x = parameters$x
   # print(dim(y))
   d_y = length(x)

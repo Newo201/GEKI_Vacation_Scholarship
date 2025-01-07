@@ -10,9 +10,11 @@ lupost_normal <- function(y, theta.init, x, params) {
   alpha.init <- theta.init[1]
   logsigma2.init <- theta.init[2]
   
+  like_params <- list(alpha = alpha.init, x = x, sigma = sqrt(exp(logsigma2.init)))
+  
   return(alpha_logprior_pdf(alpha.init, alpha.sd) + 
            logsigma2_logprior_pdf(logsigma2.init, sigma2.sd) + 
-           sum(loglike_pdf(y, alpha.init, x, exp(logsigma2.init))))
+           sum(loglike_pdf(y, like_params)))
 }
 
 normal_mcmc <- function(num_samples, true_params, prior_params) {
@@ -34,12 +36,3 @@ normal_mcmc <- function(num_samples, true_params, prior_params) {
   return(chain)
   
 }
-
-# result <- normal_mcmc(100, true_params, prior_params)
-# 
-# result$batch
-# 
-# hist(result$batch[50:100, 1])
-# hist(exp(result$batch[50:100, 2]))
-# # test <- generate_data(100, true_params)
-# # test_out <- loglike_pdf(test, 1, true_params$x, 2)

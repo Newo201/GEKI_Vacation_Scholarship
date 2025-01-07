@@ -19,9 +19,9 @@ logsigma2_prior_sample <- function(sigma2.sd, num_samples) {
 likelihood_sample <- function(parameters, num_samples) {
   alpha = parameters$alpha
   x = parameters$x
-  sigma2 = parameters$sigma2
+  sigma = parameters$sigma
   dim = length(x)
-  return(rmvnorm(num_samples, mean = alpha*x, sigma = sigma2*diag(dim)))
+  return(rmvnorm(num_samples, mean = alpha*x, sigma = (sigma^2)*diag(dim)))
 }
 
 # # Generate simulated data using the true parameters
