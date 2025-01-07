@@ -3,11 +3,7 @@ pacman::p_load(pacman, mvtnorm)
 source('src/pdfs_normal.R')
 source('src/samples_normal.R')
 
-
-
-########################## EKI Algorithm ###################################
-
-eki_normal <- function(num_particles, parameters) {
+initialise_particles(num_particles, parameters) {
   
   x.true <- parameters$x
   d_y <- length(x.true)
@@ -25,6 +21,23 @@ eki_normal <- function(num_particles, parameters) {
   
   # Initialise the particles and likelihood draws
   particles <- prior_samples
+  
+  return(particles)
+}
+
+########################## EKI Algorithm ####################################
+
+eki_normal <- function(num_particles, parameters) {
+  
+  x.true <- parameters$x
+  d_y <- length(x.true)
+  
+  # We make a single draw from the likelihood using the true (unknown parameters)
+  # I'm replicating this data for the number of particles to make the dimensions easier to work with
+  simulated_data <- matrix(likelihood_sample(parameters, 1), nrow = num_particles, ncol = d_y, byrow = T)
+  
+  # Initialise the particles and likelihood draws
+  particles <- initialise_particles(num_particles, parameters)
   likelihood_samples <- matrix(nrow = num_particles, ncol = d_y)
   
   # Until we reach a temperature of one do the following
