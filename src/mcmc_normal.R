@@ -14,13 +14,13 @@ lupost_normal <- function(y, theta.init, x, params) {
   
   return(alpha_logprior_pdf(alpha.init, alpha.sd) + 
            logsigma2_logprior_pdf(logsigma2.init, sigma2.sd) + 
-           sum(loglike_pdf(y, like_params)))
+           loglike_pdf(y, like_params))
 }
 
-normal_mcmc <- function(num_samples, true_params, prior_params) {
+normal_mcmc <- function(true_params, prior_params) {
   
   # 1. Generate data given true parameters
-  simulated_data <- likelihood_sample(true_params, num_samples)
+  simulated_data <- likelihood_sample(true_params, 1)
   
   # 2. Create a partial function fixing data and parameters
   lupost_normal_mcmc <- partial(lupost_normal, y = simulated_data, 
