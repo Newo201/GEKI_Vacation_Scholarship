@@ -1,4 +1,4 @@
-source('src/mcmc_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/mcmc_normal.R')
 prior_params = list(alpha.sd = 2, sigma2.sd = 5)
 
 ######################## 1 Dimensional Normal #################################
