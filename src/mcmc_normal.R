@@ -1,6 +1,6 @@
 pacman::p_load(pacman, mvtnorm, purrr, mcmc)
-source('src/pdfs_normal.R')
-source('src/samples_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/pdfs_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples_normal.R')
 
 lupost_normal <- function(y, theta.init, x, params) {
   

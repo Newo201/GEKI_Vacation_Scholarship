@@ -5,7 +5,7 @@ loglike_pdf <- function(y, parameters) {
   x = parameters$x
   # print(dim(y))
   d_y = length(x)
-  return(dmvnorm(y, mean = alpha*x, sigma2*diag(d_y), log = T))
+  return(dmvnorm(y, mean = alpha*x, sigma = sigma2*diag(d_y), log = T))
 }
 
 alpha_logprior_pdf <- function(alpha, alpha.sd) {

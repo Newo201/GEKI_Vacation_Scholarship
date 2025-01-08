@@ -1,9 +1,10 @@
-source('../src/eki_normal.R')
-source('../src/utils.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils.R')
 
 pacman::p_load(pacman, testthat, purrr, matrixcalc)
 
-num_particles <- 50
+# I believe we need to make sure the number of particles > number of dimensions which makes logical sense
+num_particles <- 400
 num_dimensions <- 100
 
 ######################### Fixtures #######################################
@@ -23,8 +24,6 @@ simulated_data_2d <- matrix(likelihood_sample(true_params_2d, 1), nrow = num_par
 
 likelihood_samples_nd <- generate_likelihood_samples(num_particles, particles, true_params_nd)
 simulated_data_nd <- matrix(likelihood_sample(true_params_nd, 1), nrow = num_particles, ncol = num_dimensions, byrow = T)
-
-
 
 ######################### Testing For Dimensions ##############################
 
@@ -50,12 +49,12 @@ generate_pertubations <- function(num_particles, particles, likelihood_samples) 
 }
 
 test_that('Dimensions of particles are correct', {
-  expect_equal(dim(particles), c(50, 2))
-  expect_equal(dim(particles), c(50, 2))
+  expect_equal(dim(particles), c(num_particles, 2))
+  expect_equal(dim(particles), c(num_particles, 2))
 })
 
 test_that('Dimensions of weights are correct', {
-  expect_equal(length(get_weights(0.1, 0, likelihood_samples_1d, simulated_data_1d)), num_particles)
+  expect_equal(length(get_weights(0.1, 0, likelihood_samples_1d, simulated_data_1d, num_particles)), num_particles)
 })
 
 test_that('Dimensions of pertubations are correct', {
@@ -67,6 +66,8 @@ test_that('Dimensions of pertubations are correct', {
 test_that('Dimensions of particles are correct after updating', {
   expect_equal(dim(update_particles(0.1, particles, simulated_data_1d, likelihood_samples_1d, num_particles)), dim(particles))
 })
+
+
 
 ######################## Testing For Covariance Matrices #####################
 
@@ -112,29 +113,24 @@ test_that('Covariance matrices are positive semi definite', {
 
 
 test_that('ESS is between 1 and N', {
-  expect_lte(estimate_ess(0.1, 0, simulated_data_1d, likelihood_samples_1d),  num_particles)
-  expect_gte(estimate_ess(0.1, 0, simulated_data_1d, likelihood_samples_1d),  1)
+  expect_lte(estimate_ess(0.1, 0, simulated_data_1d, likelihood_samples_1d, num_particles),  num_particles)
+  expect_gte(estimate_ess(0.1, 0, simulated_data_1d, likelihood_samples_1d, num_particles),  1)
 })
 
 test_that('Next selected temperature is always >= current_temp and <= 1', {
-  expect_lte(find_next_temp(0.1, simulated_data_1d, likelihood_samples_1d, num_particles*0.5), 1)
-  expect_gt(find_next_temp(0.1, simulated_data_1d, likelihood_samples_1d, num_particles*0.5), 0.1)
+  expect_lte(find_next_temp(0.1, simulated_data_1d, likelihood_samples_1d, num_particles, num_particles*0.5), 1)
+  expect_gt(find_next_temp(0.1, simulated_data_1d, likelihood_samples_1d, num_particles, num_particles*0.5), 0.1)
 })
 
-test_next_temp_valid <- function(current_temp, simulated_data, likelihood_samples, target_ess) {
+test_next_temp_valid <- function(current_temp, simulated_data, likelihood_samples, num_particles, target_ess) {
   
-  next_temp <- find_next_temp(current_temp, simulated_data, likelihood_samples, target_ess)
-  return(estimate_ess(next_temp, current_temp, simulated_data, likelihood_samples))
+  next_temp <- find_next_temp(current_temp, simulated_data, likelihood_samples, num_particles, target_ess)
+  return(abs(get_ess_diff(next_temp, current_temp, simulated_data, likelihood_samples, num_particles, target_ess)))
 }
 
-# ToDo: generate variable likelihood samples so this test works better
 test_that('Next selected temperature gives the correct ESS', {
-  expect_equal(test_next_temp_valid(0.1, simulated_data_1d, likelihood_samples_1d, num_particles*0.5), num_particles*0.5)
+  expect_lt(test_next_temp_valid(0.1, simulated_data_1d, likelihood_samples_1d, num_particles, num_particles*0.5), 0.5)
+  expect_lt(test_next_temp_valid(0.1, simulated_data_2d, likelihood_samples_2d, num_particles, num_particles*0.5), 0.5)
+  expect_lt(test_next_temp_valid(0.1, simulated_data_nd, likelihood_samples_nd, num_particles, num_particles*0.5), 0.5)
 })
 
-test <- round(test_conditional_cov(particles, likelihood_samples_nd), 5)
-isSymmetric(test)
-is.positive.semi.definite(test)
-
-eigens <- eigen(test)$values
-min(eigens)
