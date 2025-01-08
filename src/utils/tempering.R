@@ -2,12 +2,12 @@ pacman::p_load(pacman, purrr)
 
 get_weights <- function(next_temp, current_temp, simulated_data, likelihood_samples, covariances, num_particles) {
   
-  C_y_given_x <- covariances$C_y_given_x
+  C_y_given_x_inv <- covariances$C_y_given_x_inv
   
   change_in_temp <- next_temp - current_temp
   weights <- rep(0, num_particles)
   for (particle in 1:num_particles) {
-    weights[particle] <- exp(-1/2*change_in_temp*t((simulated_data[particle, ] - likelihood_samples[particle, ])) %*% solve(C_y_given_x) %*% (simulated_data[particle, ] - likelihood_samples[particle, ]))
+    weights[particle] <- exp(-1/2*change_in_temp*t((simulated_data[particle, ] - likelihood_samples[particle, ])) %*% C_y_given_x_inv %*% (simulated_data[particle, ] - likelihood_samples[particle, ]))
   }
   weights <- weights/sum(weights)
   return(weights)

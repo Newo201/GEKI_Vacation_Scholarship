@@ -2,7 +2,7 @@ pacman::p_load(pacman, mvtnorm)
 
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/pdfs_normal.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples_normal.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/tempering.R')
 
 calculate_covariances <- function(particles, likelihood_samples) {
   
@@ -14,8 +14,11 @@ calculate_covariances <- function(particles, likelihood_samples) {
   C_yx = cov(likelihood_samples, particles)
   
   C_y_given_x = C_yy - C_yx %*% solve(C_xx) %*% C_xy
+  # Presolving the inverse so we don't have to recalculate it every time
+  C_y_given_x_inv <- solve(C_y_given_x)
   
-  return(list(C_xx = C_xx, C_yy = C_yy, C_xy = C_xy, C_yx = C_yx, C_y_given_x = C_y_given_x))
+  return(list(C_xx = C_xx, C_yy = C_yy, C_xy = C_xy, C_yx = C_yx, 
+              C_y_given_x = C_y_given_x, C_y_given_x_inv = C_y_given_x_inv))
   
 }
 
@@ -97,10 +100,11 @@ eki_normal <- function(num_particles, parameters) {
   for (temp in 1:10) {
     
     likelihood_samples <- generate_likelihood_samples(num_particles, particles, parameters)
+    covariances <- calculate_covariances(particles, likelihood_samples)
     
     # ToDo:  Calculate the current temperature
     temp_difference = 1/10
-    particles <- update_particles(temp_difference, particles, simulated_data, likelihood_samples, num_particles)
+    particles <- update_particles(temp_difference, particles, simulated_data, likelihood_samples, covariances, num_particles)
     current_temp <- current_temp + 1/10
     temp_sequence <- c(temp_sequence, current_temp)
   }
@@ -135,7 +139,7 @@ eki_normal_adaptive <- function(num_particles, parameters) {
     next_temp <- find_next_temp(current_temp, simulated_data, likelihood_samples, covariances, num_particles, num_particles*0.5)
     # print(next_temp)
     temp_difference <- next_temp - current_temp
-    particles <- update_particles(temp_difference, particles, simulated_data, likelihood_samples, num_particles)
+    particles <- update_particles(temp_difference, particles, simulated_data, likelihood_samples, covariances, num_particles)
     current_temp <- next_temp
     temp_sequence <- c(temp_sequence, current_temp)
   

@@ -1,10 +1,10 @@
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki_normal.R')
 
-num_particles <- 100
-num_dimensions <- 50
+num_particles <- 400
+num_dimensions <- 100
 true_params_nd = list(alpha = 3, sigma = 2, x = rep(1, num_dimensions), alpha.sd = 5, sigma2.sd = 2)
-# eki_result <- eki_normal_adaptive(num_particles, true_params_nd)
-eki_result <- eki_normal(num_particles, true_params_nd)
+eki_result <- eki_normal_adaptive(num_particles, true_params_nd)
+# eki_result <- eki_normal(num_particles, true_params_nd)
 
 par(mfrow = c(1, 1))
 initial_particles <- initialise_particles(num_particles, true_params_nd)
