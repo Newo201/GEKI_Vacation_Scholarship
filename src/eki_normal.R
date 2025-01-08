@@ -13,6 +13,10 @@ calculate_covariances <- function(particles, likelihood_samples) {
   C_xy = cov(particles, likelihood_samples)
   C_yx = cov(likelihood_samples, particles)
   
+  C_y_given_x = C_yy - C_yx %*% solve(C_xx) %*% C_xy
+  
+  return(list(C_xx = C_xx, C_yy = C_yy, C_xy = C_xy, C_yx = C_yx, C_y_given_x = C_y_given_x))
+  
 }
 
 generate_likelihood_samples <- function(num_particles, particles, parameters) {
@@ -55,11 +59,13 @@ initialise_particles <- function(num_particles, parameters) {
   return(particles)
 }
 
-update_particles <- function(temp_difference, particles, simulated_data, likelihood_samples, num_particles) {
+update_particles <- function(temp_difference, particles, simulated_data, likelihood_samples, covariances, num_particles) {
+  
+  C_yx <- covariances$C_yx
+  C_yy <- covariances$C_yy
+  C_y_given_x <- covariances$C_y_given_x
   
   d_y <- dim(likelihood_samples)[2]
-  
-  C_y_given_x = C_yy - C_yx %*% solve(C_xx) %*% C_xy
   
   # Generate perturbations
   eta <- rmvnorm(n = num_particles, mean = rep(0, d_y), sigma = (1/temp_difference - 1)*C_y_given_x)
@@ -123,9 +129,10 @@ eki_normal_adaptive <- function(num_particles, parameters) {
   while (current_temp < 1) {
     
     likelihood_samples <- generate_likelihood_samples(num_particles, particles, parameters)
+    covariances <- calculate_covariances(particles, likelihood_samples)
     
     # Find the next temperature
-    next_temp <- find_next_temp(current_temp, simulated_data, likelihood_samples, num_particles, num_particles*0.5)
+    next_temp <- find_next_temp(current_temp, simulated_data, likelihood_samples, covariances, num_particles, num_particles*0.5)
     # print(next_temp)
     temp_difference <- next_temp - current_temp
     particles <- update_particles(temp_difference, particles, simulated_data, likelihood_samples, num_particles)
