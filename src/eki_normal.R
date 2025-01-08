@@ -4,6 +4,17 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples_normal.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils.R')
 
+calculate_covariances <- function(particles, likelihood_samples) {
+  
+  # Calculate the covariance matrices
+  C_xx = cov(particles)
+  # print(C_xx)
+  C_yy = cov(likelihood_samples)
+  C_xy = cov(particles, likelihood_samples)
+  C_yx = cov(likelihood_samples, particles)
+  
+}
+
 generate_likelihood_samples <- function(num_particles, particles, parameters) {
   
   x.true <- parameters$x
@@ -45,13 +56,6 @@ initialise_particles <- function(num_particles, parameters) {
 }
 
 update_particles <- function(temp_difference, particles, simulated_data, likelihood_samples, num_particles) {
-  
-  # Calculate the covariance matrices
-  C_xx = cov(particles)
-  # print(C_xx)
-  C_yy = cov(likelihood_samples)
-  C_xy = cov(particles, likelihood_samples)
-  C_yx = cov(likelihood_samples, particles)
   
   d_y <- dim(likelihood_samples)[2]
   
