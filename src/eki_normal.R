@@ -121,7 +121,7 @@ eki_normal_adaptive <- function(num_particles, parameters) {
     likelihood_samples <- generate_likelihood_samples(num_particles, particles, parameters)
     
     # Find the next temperature
-    next_temp <- find_next_temp(current_temp, simulated_data, likelihood_samples, num_particles*0.5)
+    next_temp <- find_next_temp(current_temp, simulated_data, likelihood_samples, num_particles, num_particles*0.5)
     # print(next_temp)
     temp_difference <- next_temp - current_temp
     particles <- update_particles(temp_difference, particles, simulated_data, likelihood_samples, num_particles)
