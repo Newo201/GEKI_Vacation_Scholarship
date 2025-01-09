@@ -6,15 +6,26 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 plot_eki_normal <- function(eki_result, parameters) {
   
   alpha_particles <- eki_result$particles[, 1]
+  alpha_sequence <- seq(min(alpha_particles), max(alpha_particles), 
+                        length.out = 20)
+  alpha_prior_density <- dnorm(alpha_sequence, mean = 0, sd = parameters$alpha.sd)
   true_alpha <- parameters$alpha
-  sigma2_particles <- exp(eki_result$particles[, 2])
-  true_sigma2 <- parameters$sigma**2
+  sigma2_particles <- eki_result$particles[, 2]
+  sigma2_sequence <- seq(min(sigma2_particles), max(sigma2_particles),
+                         length.out = 20)
+  sigma2_prior_density <- dnorm(sigma2_sequence, mean = 0, 
+                                sd = parameters$sigma2.sd)
+  true_sigma2 <- log(parameters$sigma**2)
+  
+
   
   par(mfrow = c(1, 2))
   
   hist(alpha_particles, freq = F, main = 'Alpha', xlab = '')
+  lines(alpha_sequence, alpha_prior_density, col = 'blue')
   abline(v = true_alpha, col = 'red')
   hist(sigma2_particles, freq = F, main = 'Sigma2', xlab = '', ylab = '')
+  lines(sigma2_sequence, sigma2_prior_density, col = 'blue')
   abline(v = true_sigma2, col = 'red')
 }
 ```
@@ -167,4 +178,23 @@ true_parameters <- list(alpha = 2, sigma = 2,
                         sigma2.sd = 2)
 eki_result <- eki_normal_adaptive(num_particles, true_parameters)
 plot_eki_normal(eki_result, true_parameters)
+```
+
+## Changing Number of Particles
+
+```{r}
+num_dimensions <- 50
+particle_seq <- c(100, 500, 1000) 
+true_parameters <- list(alpha = 2, sigma = 5, 
+                        x = rep(1, num_dimensions), alpha.sd = 5, 
+                        sigma2.sd = 2)
+
+for (num_particles in particle_seq) {
+  eki_result <- eki_normal(num_particles, true_parameters)
+  plot_eki_normal(eki_result, true_parameters)
+}
+```
+
+```{r}
+2^2
 ```

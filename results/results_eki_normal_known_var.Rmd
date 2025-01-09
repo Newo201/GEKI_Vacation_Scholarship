@@ -114,3 +114,18 @@ true_parameters <- list(alpha = 2, sigma = 2,
 eki_result <- eki_normal(num_particles, true_parameters)
 plot_eki_normal_known_var(eki_result, true_parameters)
 ```
+
+## Changing Number of Particles
+
+```{r}
+num_dimensions <- 50
+particle_seq <- c(100, 500, 1000) 
+true_parameters <- list(alpha = 2, sigma = 2, 
+                        x = rep(1, num_dimensions), alpha.sd = 5, 
+                        sigma2.sd = 2)
+
+for (num_particles in particle_seq) {
+  eki_result <- eki_normal(num_particles, true_parameters)
+  plot_eki_normal_known_var(eki_result, true_parameters)
+}
+```
