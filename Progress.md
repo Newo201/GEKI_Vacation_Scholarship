@@ -38,6 +38,20 @@
 
 ### **Unit Tests**
 
+## MCMC For Normal Distribution
+
+### Implementation
+
+-   Use the `mcmc` package
+
+### Diagnostics
+
+-   Trace plots
+
+-   Histograms
+
+### Unit Tests
+
 ## **GEKI Algorithm For Normal Distribution**
 
 ### **Implementation**
@@ -46,13 +60,13 @@
 
 -   Draw a single sample from the likelihood using the true parameters
 
--   Initialise particles by sampling from prior distributions
+-   Initialize particles by sampling from prior distributions
 
 -   For each particle draw from the likelihood
 
 -   Calculate covariance matrices
 
--   Generate pertubations
+-   Generate perturbations
 
 -   Update particles
 
@@ -64,9 +78,23 @@
 
 ### Diagnostics
 
+**Standard Algorithm**
+
+-   Plot histograms for marginal posterior distributions of parameters
+
+    -   Across different number of dimensions
+
+    -   Using different parameter values
+
+    -   Using adaptive and non-adaptive temperature sequence
+
+**Adaptive Temperature**
+
+-   Plot the temperature sequence to determine if it is increasing
+
 ### Unit Tests
 
-`tests/test_eki_normal.R`
+**Dimensions:** `tests/test_eki_normal.R`
 
 -   Dimensions of generated particles are correct
 
@@ -76,10 +104,26 @@
 
 -   Dimension of particle pseudo-weights are correct
 
+**Covariance Matrices:** `tests/test_eki_normal.R`
+
 -   Dimensions of covariance matrices are correct
 
--   Covariance matrices are positive definite
+-   Covariance matrices are symmetric and positive definite
+
+**Adaptive Temperature:** `tests/test_eki_normal.R`
 
 -   Effective sample size is between 1 and N
 
 -   Next selected temperature is between current temp and 1
+
+-   Next selected temperature is chosen to match the target ESS
+
+### Results
+
+-   Change $\alpha$
+
+-   Change number of dimensions
+
+-   Change $\sigma^2$
+
+-   Change $x$

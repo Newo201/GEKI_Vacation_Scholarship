@@ -1,0 +1,119 @@
+```{r}
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/mcmc_normal.R')
+```
+
+```{r}
+plot_trace_plots <- function(chain.1, chain.2, burnin = 0) {
+  
+  par(mfrow = c(1,2))
+  
+  plot(chain.1[(burnin + 1):1000, 1], type = 'l', main = 'alpha')
+  lines(chain.2[(burnin + 1):1000, 1], col = 'red')
+  
+  plot(exp(chain.1[(burnin + 1):1000, 2]), type = 'l', main = 'sigma2')
+  lines(exp(chain.2[(burnin + 1):1000, 2]), col = 'red')
+}
+```
+
+```{r}
+plot_histogram <- function(chain.1, chain.2, true_params, burnin = 0) {
+  chain.1.burnin <- chain.1[(burnin + 1): 1000, ]
+  chain.2.burnin <- chain.2[(burnin + 1): 1000, ]
+  combined_chains <- rbind(chain.1.burnin, chain.2.burnin)
+  
+  par(mfrow = c(1,2))
+  hist(combined_chains[, 1], freq = F, main = 'alpha')
+  abline(v = true_params$alpha, col = 'red')
+  hist(exp(combined_chains[, 2]), freq = F, main = 'sigma2')
+  abline(v = true_params$sigma**2, col = 'red')
+  
+}
+```
+
+# Results For Multivariate Normal Model
+
+## The Model
+
+We assume that we have access to a single observation from a multivariate normal distribution $y \sim N(\alpha x, \sigma^2I)$ where $\alpha$ is a scalar and $x$ is a known vector. The unknown parameters in this model are $\theta = (\alpha, \sigma^2)$.
+
+I look at a range of combinations of $\alpha, x$ and $\sigma^2$, comparing against MCMC sampling. Of particular interest is how well GEKI is able to estimate the noise parameter, since previous EKI algorithms require the noise parameter to be known.
+
+In all combinations we draw from the same priors:
+
+-   $\alpha \sim ~ N(0, 5^2)$
+
+-   $\log(\sigma^2) \sim N(0, 2^2)$
+
+```{r}
+prior_params = list(alpha.sd = 5, sigma2.sd = 2)
+```
+
+### Running MCMC
+
+To run MCMC I used the [mcmc package](https://rdrr.io/cran/mcmc/) with a random walk metropolis algorithm (the `metrop` function). I generated two chains of length 1000 and use an arbitrary burn-in of 500. The results shown include the trace-plots with and without burn-in and the histogram of the two combined chains after burn-in.
+
+## Changing Number of Dimensions
+
+In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively and let $x$ be a vector of 1s corresponding to 10, 50 and 100 dimensions. The purpose of this is to see how the EKI algorithm performs when the number of dimensions increases.
+
+```{r}
+
+num_dimensions <- c(10, 50, 100)
+for (dimension in num_dimensions) {
+  true_params = list(alpha = 2, sigma = 2, x = rep(1, dimension))
+  run.1 <- normal_mcmc(true_params, prior_params)
+  chain.1 <- run.1$batch
+  run.2 <- normal_mcmc(true_params, prior_params)
+  chain.2 <- run.2$batch
+  plot_trace_plots(chain.1, chain.2)
+  plot_trace_plots(chain.1, chain.2, 500)
+  plot_histogram(chain.1, chain.2, 500)
+}
+```
+
+## Changing $\alpha$
+
+In this experiment, I keep $\sigma^2$ fixed at 4, make $x$ a 50-dimensional vector of 1s and change $\alpha$ from 0 to 10 in increments of 2. The purpose of this is to make sure that the EKI algorithm is accurate across of range of $\alpha$ and if it changes how the noise parameter is estimated.
+
+```{r}
+alpha_seq <- seq(0, 10, length.out = 6)
+```
+
+```{r}
+num_dimensions <- 50
+for (alpha in alpha_seq) {
+
+  true_params <- list(alpha = alpha, sigma = 2, 
+                          x = rep(1, num_dimensions))
+  run.1 <- normal_mcmc(true_params, prior_params)
+  chain.1 <- run.1$batch
+  run.2 <- normal_mcmc(true_params, prior_params)
+  chain.2 <- run.2$batch
+  plot_trace_plots(chain.1, chain.2)
+  plot_trace_plots(chain.1, chain.2, 500)
+  plot_histogram(chain.1, chain.2, true_params, 500)
+  
+}
+```
+
+## Changing $\sigma^2$
+
+```{r}
+sigma_seq <- seq(2, 10, length.out = 5)
+```
+
+```{r}
+num_dimensions <- 50
+for (sigma in sigma_seq) {
+
+  true_params <- list(alpha = 2, sigma = sigma, 
+                          x = rep(1, num_dimensions))
+  run.1 <- normal_mcmc(true_params, prior_params)
+  chain.1 <- run.1$batch
+  run.2 <- normal_mcmc(true_params, prior_params)
+  chain.2 <- run.2$batch
+  plot_trace_plots(chain.1, chain.2)
+  plot_trace_plots(chain.1, chain.2, 500)
+  plot_histogram(chain.1, chain.2, true_params, 500)
+}
+```

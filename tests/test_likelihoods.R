@@ -1,8 +1,8 @@
-source('src/samples_normal.R')
-source('src/pdfs_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/pdfs_normal.R')
 
-true_params_1d = list(alpha = 2, sigma2 = 2, x = 1)
-true_params_2d = list(alpha = 2, sigma2 = 2, x = c(1, 2))
+true_params_1d = list(alpha = 2, sigma = 2, x = 1)
+true_params_2d = list(alpha = 2, sigma = 2, x = c(1, 2))
 
 # Test the dimensions of the likelihood samples
 

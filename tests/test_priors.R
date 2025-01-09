@@ -1,6 +1,6 @@
 pacman::p_load(pacman, testthat)
 
-source('samples_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/samples_normal.R')
 
 # Testing dimensions for prior samples
 test_that('Testing dimensions of prior sampling functions', 

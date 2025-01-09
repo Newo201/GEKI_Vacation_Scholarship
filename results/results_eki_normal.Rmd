@@ -1,0 +1,170 @@
+```{r}
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki_normal.R')
+```
+
+```{r}
+plot_eki_normal <- function(eki_result, parameters) {
+  
+  alpha_particles <- eki_result$particles[, 1]
+  true_alpha <- parameters$alpha
+  sigma2_particles <- exp(eki_result$particles[, 2])
+  true_sigma2 <- parameters$sigma**2
+  
+  par(mfrow = c(1, 2))
+  
+  hist(alpha_particles, freq = F, main = 'Alpha', xlab = '')
+  abline(v = true_alpha, col = 'red')
+  hist(sigma2_particles, freq = F, main = 'Sigma2', xlab = '', ylab = '')
+  abline(v = true_sigma2, col = 'red')
+}
+```
+
+# Results For Multivariate Normal Model
+
+## The Model
+
+We assume that we have access to a single observation from a multivariate normal distribution $y \sim N(\alpha x, \sigma^2I)$ where $\alpha$ is a scalar and $x$ is a known vector. The unknown parameters in this model are $\theta = (\alpha, \sigma^2)$.
+
+I look at a range of combinations of $\alpha, x$ and $\sigma^2$, comparing against MCMC sampling. Of particular interest is how well GEKI is able to estimate the noise parameter, since previous EKI algorithms require the noise parameter to be known.
+
+In all combinations we draw from the same priors:
+
+-   $\alpha \sim ~ N(0, 5^2)$
+
+-   $\log(\sigma^2) \sim N(0, 2^2)$
+
+## Changing Number of Dimensions
+
+In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively and let $x$ be a vector of 1s corresponding to 10, 50 and 100 dimensions. The purpose of this is to see how the EKI algorithm performs when the number of dimensions increases.
+
+### Standard EKI
+
+```{r}
+num_dimensions <- c(10, 50, 100)
+for (dimension in num_dimensions) {
+  num_particles <- 4*dimension
+  true_parameters <- list(alpha = 2, sigma = 2, 
+                          x = rep(1, dimension), alpha.sd = 5, sigma2.sd = 2)
+  eki_result <- eki_normal(num_particles, true_parameters)
+  plot_eki_normal(eki_result, true_parameters)
+}
+```
+
+Generally speaking, the model does reasonably well at estimating $\alpha$ but appears to under-estimate the noise parameter. As the number of dimensions increases, the distribution of $\alpha$ becomes more concentrated, but the distribution of $\sigma^2$ does not demonstrate any noticeable pattern.
+
+### Adaptive Temperature
+
+```{r}
+num_dimensions <- c(10, 50, 100)
+for (dimension in num_dimensions) {
+  num_particles <- 4*dimension
+  true_parameters <- list(alpha = 2, sigma = 2, 
+                          x = rep(1, dimension), alpha.sd = 5, sigma2.sd = 2)
+  eki_result <- eki_normal_adaptive(num_particles, true_parameters)
+  plot_eki_normal(eki_result, true_parameters)
+}
+```
+
+A similar pattern is observed when using the adaptive temperature, where the noise parameter is under-estimated.
+
+## Changing $\alpha$
+
+In this experiment, I keep $\sigma^2$ fixed at 4, make $x$ a 50-dimensional vector of 1s and change $\alpha$ from 0 to 10 in increments of 2. The purpose of this is to make sure that the EKI algorithm is accurate across of range of $\alpha$ and if it changes how the noise parameter is estimated.
+
+```{r}
+alpha_seq <- seq(0, 10, length.out = 6)
+```
+
+### Standard EKI
+
+```{r}
+num_dimensions <- 50
+num_particles <- 4*num_dimensions
+for (alpha in alpha_seq) {
+
+  true_parameters <- list(alpha = alpha, sigma = 2, 
+                          x = rep(1, num_dimensions), alpha.sd = 5, 
+                          sigma2.sd = 2)
+  eki_result <- eki_normal(num_particles, true_parameters)
+  plot_eki_normal(eki_result, true_parameters)
+}
+```
+
+### Adaptive Temperature
+
+```{r}
+num_dimensions <- 50
+num_particles <- 4*num_dimensions
+for (alpha in alpha_seq) {
+
+  true_parameters <- list(alpha = alpha, sigma = 2, 
+                          x = rep(1, num_dimensions), alpha.sd = 5, 
+                          sigma2.sd = 2)
+  eki_result <- eki_normal_adaptive(num_particles, true_parameters)
+  plot_eki_normal(eki_result, true_parameters)
+}
+```
+
+## Changing $\sigma^2$
+
+```{r}
+sigma_seq <- seq(2, 10, length.out = 5)
+```
+
+### Standard EKI
+
+```{r}
+num_dimensions <- 50
+num_particles <- 4*num_dimensions
+for (sigma in sigma_seq) {
+
+  true_parameters <- list(alpha = 2, sigma = sigma, 
+                          x = rep(1, num_dimensions), alpha.sd = 5, 
+                          sigma2.sd = 2)
+  eki_result <- eki_normal(num_particles, true_parameters)
+  plot_eki_normal(eki_result, true_parameters)
+}
+```
+
+### Adaptive Temperature
+
+```{r}
+num_dimensions <- 50
+num_particles <- 4*num_dimensions
+for (sigma in sigma_seq) {
+
+  true_parameters <- list(alpha = 2, sigma = sigma, 
+                          x = rep(1, num_dimensions), alpha.sd = 5, 
+                          sigma2.sd = 2)
+  eki_result <- eki_normal_adaptive(num_particles, true_parameters)
+  plot_eki_normal(eki_result, true_parameters)
+}
+```
+
+## Changing $x$
+
+In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively and let $x$ be a 50 dimensional random vector.
+
+### Standard EKI
+
+```{r}
+num_dimensions <- 50
+x <- rnorm(50, mean = 1, sd = 1)
+true_parameters <- list(alpha = 2, sigma = 2, 
+                        x = x, alpha.sd = 5, 
+                        sigma2.sd = 2)
+eki_result <- eki_normal(num_particles, true_parameters)
+plot_eki_normal(eki_result, true_parameters)
+```
+
+### Adaptive Temperature
+
+```{r}
+num_dimensions <- 50
+x <- rnorm(50, mean = 1, sd = 1)
+true_parameters <- list(alpha = 2, sigma = 2, 
+                        x = x, alpha.sd = 5, 
+                        sigma2.sd = 2)
+eki_result <- eki_normal_adaptive(num_particles, true_parameters)
+plot_eki_normal(eki_result, true_parameters)
+```
