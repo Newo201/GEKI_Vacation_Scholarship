@@ -10,7 +10,7 @@ alpha_prior_sample <- function(parameters, num_samples) {
 # We need to have a prior sample that is from (-infinity, infinity)
 # but we also need to restrict sigma2 to R+. Therefore we sample the log
 # prior from a normal distribution
-logsigma2_prior_sample <- function(sigma2.sd, num_samples) {
+logsigma2_prior_sample <- function(parameters, num_samples) {
   
   mean = parameters$sigma2.mean
   sd = parameters$sigma2.sd
