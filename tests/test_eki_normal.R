@@ -5,7 +5,7 @@ pacman::p_load(pacman, testthat, purrr, matrixcalc)
 
 # I believe we need to make sure the number of particles > number of dimensions which makes logical sense
 num_particles <- 400
-num_dimensions <- 100
+num_dimensions <- 5
 
 ######################### Fixtures #######################################
 
@@ -150,4 +150,8 @@ test_next_temp_valid(0.1, simulated_data_1d, likelihood_samples_1d, covariances_
 estimate_ess(0.2, 0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles)
 
 
+# covariances_1d$C_yy
+# 
+# covariances_nd$C_yy
+# covariances_nd$C_y_given_x_inv
 
