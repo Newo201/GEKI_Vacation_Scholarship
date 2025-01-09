@@ -41,9 +41,9 @@ initialise_normal_particles <- function(num_particles, parameters) {
   return(particles)
 }
 
-eki_normal <- function(num_particles, true_params, adaptive = F) {
+eki_normal <- function(num_particles, true_params, prior_params, adaptive = F) {
   
-  initial_particles <- initialise_normal_particles(num_particles, true_params)
+  initial_particles <- initialise_normal_particles(num_particles, prior_params)
   
   if (adaptive) {
     return(eki_adaptive(num_particles, initial_particles, true_params, likelihood_normal, synthetic_normal))

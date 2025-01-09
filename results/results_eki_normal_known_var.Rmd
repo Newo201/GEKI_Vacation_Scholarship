@@ -1,16 +1,22 @@
 ```{r}
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki_normal_known_var.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal_known_var.R')
 ```
 
 ```{r}
-plot_eki_normal_known_var <- function(eki_result, parameters) {
+plot_eki_normal_known_var <- function(eki_result, true_params, prior_params) {
   
   alpha_particles <- eki_result$particles[, 1]
-  true_alpha <- parameters$alpha
+  alpha_sequence <- seq(min(alpha_particles), max(alpha_particles), 
+                        length.out = 20)
+  alpha_prior_density <- dnorm(alpha_sequence, mean = prior_params$alpha.mean, 
+                               sd = prior_params$alpha.sd)
+  
+  true_alpha <- true_params$alpha
   
   par(mfrow = c(1, 1))
   
   hist(alpha_particles, freq = F, main = 'Alpha', xlab = '')
+  lines(alpha_sequence, alpha_prior_density, col = 'blue')
   abline(v = true_alpha, col = 'red')
 }
 ```
@@ -37,9 +43,9 @@ In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively 
 num_dimensions <- c(10, 50, 100)
 for (dimension in num_dimensions) {
   num_particles <- 4*dimension
-  true_parameters <- list(alpha = 2, sigma = 2, 
-                          x = rep(1, dimension), alpha.sd = 5, sigma2.sd = 2)
-  eki_result <- eki_normal(num_particles, true_parameters)
+  true_parameters <- list(alpha = 2, sigma = 2, alpha.mean = 0
+                          x = rep(1, dimension), alpha.sd = 5)
+  eki_result <- eki_normal_known_var(num_particles, true_parameters)
   plot_eki_normal_known_var(eki_result, true_parameters)
 }
 ```
@@ -120,12 +126,11 @@ plot_eki_normal_known_var(eki_result, true_parameters)
 ```{r}
 num_dimensions <- 50
 particle_seq <- c(100, 500, 1000) 
-true_parameters <- list(alpha = 2, sigma = 2, 
-                        x = rep(1, num_dimensions), alpha.sd = 5, 
-                        sigma2.sd = 2)
+true_parameters <- list(alpha = 2, sigma = 2, alpha.mean = 0,
+                        x = rep(1, num_dimensions), alpha.sd = 5)
 
 for (num_particles in particle_seq) {
-  eki_result <- eki_normal(num_particles, true_parameters)
+  eki_result <- eki_normal_known_var(num_particles, true_parameters)
   plot_eki_normal_known_var(eki_result, true_parameters)
 }
 ```
