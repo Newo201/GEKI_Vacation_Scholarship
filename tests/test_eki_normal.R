@@ -10,9 +10,9 @@ num_dimensions <- 5
 ######################### Fixtures #######################################
 
 # ToDo: see if there is a proper way of implementing fixtures like in Python
-true_params_1d = list(alpha = 2, sigma = 2, x = 1, alpha.sd = 5, sigma2.sd = 2)
-true_params_2d = list(alpha = 2, sigma = 2, x = c(1, 2), alpha.sd = 5, sigma2.sd = 2)
-true_params_nd = list(alpha = 2, sigma = 2, x = rep(1, num_dimensions), alpha.sd = 5, sigma2.sd = 2)
+true_params_1d = list(alpha = 2, sigma = 2, x = 1, alpha.mean = 0, alpha.sd = 5, sigma2.mean = 0, sigma2.sd = 2)
+true_params_2d = list(alpha = 2, sigma = 2, x = c(1, 2), alpha.mean = 0, alpha.sd = 5, sigma2.mean = 0, sigma2.sd = 2)
+true_params_nd = list(alpha = 2, sigma = 2, x = rep(1, num_dimensions),  alpha.mean = 0, alpha.sd = 5, sigma2.mean = 0, sigma2.sd = 2)
 
 particles <- initialise_normal_particles(num_particles, true_params_1d)
 
