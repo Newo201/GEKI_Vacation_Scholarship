@@ -1,8 +1,10 @@
 ###################### Sampling From Priors #################################
 
 # Generate samples from the prior distributions
-alpha_prior_sample <- function(alpha.sd, num_samples) {
-  return(rnorm(num_samples, mean = 0, sd = alpha.sd))
+alpha_prior_sample <- function(parameters, num_samples) {
+  mean = parameters$alpha.mean
+  sd = parameters$alpha.sd
+  return(rnorm(num_samples, mean = mean, sd = sd))
 }
 
 # We need to have a prior sample that is from (-infinity, infinity)
@@ -10,7 +12,10 @@ alpha_prior_sample <- function(alpha.sd, num_samples) {
 # prior from a normal distribution
 logsigma2_prior_sample <- function(sigma2.sd, num_samples) {
   
-  return(rnorm(num_samples, mean = 0, sd = sigma2.sd))
+  mean = parameters$sigma2.mean
+  sd = parameters$sigma2.sd
+  
+  return(rnorm(num_samples, mean = mean, sd = sd))
 }
 
 ###################### Sampling From Likelihood ###############################
