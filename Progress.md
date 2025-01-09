@@ -38,6 +38,20 @@
 
 ### **Unit Tests**
 
+## MCMC For Normal Distribution
+
+### Implementation
+
+-   Use the `mcmc` package
+
+### Diagnostics
+
+-   Trace plots
+
+-   Histograms
+
+### Unit Tests
+
 ## **GEKI Algorithm For Normal Distribution**
 
 ### **Implementation**
@@ -46,13 +60,13 @@
 
 -   Draw a single sample from the likelihood using the true parameters
 
--   Initialise particles by sampling from prior distributions
+-   Initialize particles by sampling from prior distributions
 
 -   For each particle draw from the likelihood
 
 -   Calculate covariance matrices
 
--   Generate pertubations
+-   Generate perturbations
 
 -   Update particles
 
@@ -103,3 +117,13 @@
 -   Next selected temperature is between current temp and 1
 
 -   Next selected temperature is chosen to match the target ESS
+
+### Results
+
+-   Change $\alpha$
+
+-   Change number of dimensions
+
+-   Change $\sigma^2$
+
+-   Change $x$

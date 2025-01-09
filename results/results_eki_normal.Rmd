@@ -92,6 +92,19 @@ for (alpha in alpha_seq) {
 
 ### Adaptive Temperature
 
+```{r}
+num_dimensions <- 50
+num_particles <- 4*num_dimensions
+for (alpha in alpha_seq) {
+
+  true_parameters <- list(alpha = alpha, sigma = 2, 
+                          x = rep(1, num_dimensions), alpha.sd = 5, 
+                          sigma2.sd = 2)
+  eki_result <- eki_normal_adaptive(num_particles, true_parameters)
+  plot_eki_normal(eki_result, true_parameters)
+}
+```
+
 ## Changing $\sigma^2$
 
 ```{r}
@@ -123,7 +136,7 @@ for (sigma in sigma_seq) {
   true_parameters <- list(alpha = 2, sigma = sigma, 
                           x = rep(1, num_dimensions), alpha.sd = 5, 
                           sigma2.sd = 2)
-  eki_result <- eki_normal(num_particles, true_parameters)
+  eki_result <- eki_normal_adaptive(num_particles, true_parameters)
   plot_eki_normal(eki_result, true_parameters)
 }
 ```
