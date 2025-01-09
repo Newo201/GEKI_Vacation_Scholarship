@@ -1,6 +1,7 @@
 pacman::p_load(pacman, mvtnorm, purrr)
 
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples_normal.R')
 
 synthetic_normal <- function(num_particles, particles, parameters) {
   
@@ -13,7 +14,7 @@ synthetic_normal <- function(num_particles, particles, parameters) {
   # ToDo: vectorise this operation
   for (particle in 1:num_particles) {
     current_params = list(alpha = particles[particle, 1], x = x.true, sigma = sqrt(exp(particles[particle, 2])))
-    likelihood_samples[particle, ] <- likelihood_normal(current_params, 1)
+    likelihood_samples[particle, ] <- likelihood_normal(current_params)
   }
   
   return(likelihood_samples)
@@ -29,7 +30,7 @@ initialise_normal_particles <- function(num_particles, parameters) {
   
   # We make a single draw from the likelihood using the true (unknown parameters)
   # I'm replicating this data for the number of particles to make the dimensions easier to work with
-  simulated_data <- matrix(likelihood_normal(parameters, 1), nrow = num_particles, ncol = d_y, byrow = T)
+  simulated_data <- matrix(likelihood_normal(parameters), nrow = num_particles, ncol = d_y, byrow = T)
   
   # Sample from the prior distribution
   prior_samples <- matrix(nrow = num_particles, ncol = 2)
