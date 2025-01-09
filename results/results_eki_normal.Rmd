@@ -8,12 +8,13 @@ plot_eki_normal <- function(eki_result, parameters) {
   alpha_particles <- eki_result$particles[, 1]
   alpha_sequence <- seq(min(alpha_particles), max(alpha_particles), 
                         length.out = 20)
-  alpha_prior_density <- dnorm(alpha_sequence, mean = 0, sd = parameters$alpha.sd)
+  alpha_prior_density <- dnorm(alpha_sequence, mean = parameters$alpha.mean, 
+                               sd = parameters$alpha.sd)
   true_alpha <- parameters$alpha
   sigma2_particles <- eki_result$particles[, 2]
   sigma2_sequence <- seq(min(sigma2_particles), max(sigma2_particles),
                          length.out = 20)
-  sigma2_prior_density <- dnorm(sigma2_sequence, mean = 0, 
+  sigma2_prior_density <- dnorm(sigma2_sequence, mean = parameters$sigma2.mean, 
                                 sd = parameters$sigma2.sd)
   true_sigma2 <- log(parameters$sigma**2)
   
@@ -54,8 +55,10 @@ In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively 
 num_dimensions <- c(10, 50, 100)
 for (dimension in num_dimensions) {
   num_particles <- 4*dimension
-  true_parameters <- list(alpha = 2, sigma = 2, 
-                          x = rep(1, dimension), alpha.sd = 5, sigma2.sd = 2)
+  true_parameters <- list(alpha = 2, sigma = 2,
+                          x = rep(1, dimension), 
+                          alpha.mean = 0, alpha.sd = 5, 
+                          sigma2.mean = 5, sigma2.sd = 2)
   eki_result <- eki_normal(num_particles, true_parameters)
   plot_eki_normal(eki_result, true_parameters)
 }
@@ -94,8 +97,9 @@ num_particles <- 4*num_dimensions
 for (alpha in alpha_seq) {
 
   true_parameters <- list(alpha = alpha, sigma = 2, 
-                          x = rep(1, num_dimensions), alpha.sd = 5, 
-                          sigma2.sd = 2)
+                          x = rep(1, num_dimensions), 
+                          alpha.mean = 0, alpha.sd = 5,
+                          sigma2.mean = 5, sigma2.sd = 2)
   eki_result <- eki_normal(num_particles, true_parameters)
   plot_eki_normal(eki_result, true_parameters)
 }
@@ -130,8 +134,9 @@ num_particles <- 4*num_dimensions
 for (sigma in sigma_seq) {
 
   true_parameters <- list(alpha = 2, sigma = sigma, 
-                          x = rep(1, num_dimensions), alpha.sd = 5, 
-                          sigma2.sd = 2)
+                          x = rep(1, num_dimensions), 
+                          alpha.mean = 0, alpha.sd = 5, 
+                          sigma2.mean = 5, sigma2.sd = 2)
   eki_result <- eki_normal(num_particles, true_parameters)
   plot_eki_normal(eki_result, true_parameters)
 }
@@ -186,8 +191,9 @@ plot_eki_normal(eki_result, true_parameters)
 num_dimensions <- 50
 particle_seq <- c(100, 500, 1000) 
 true_parameters <- list(alpha = 2, sigma = 5, 
-                        x = rep(1, num_dimensions), alpha.sd = 5, 
-                        sigma2.sd = 2)
+                        x = rep(1, num_dimensions), 
+                        alpha.mean = 0, alpha.sd = 5, 
+                        sigma2.mean = 5, sigma2.sd = 2)
 
 for (num_particles in particle_seq) {
   eki_result <- eki_normal(num_particles, true_parameters)
