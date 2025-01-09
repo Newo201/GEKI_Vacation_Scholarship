@@ -7,8 +7,8 @@ get_weights <- function(next_temp, current_temp, simulated_data, likelihood_samp
   change_in_temp <- next_temp - current_temp
   weights <- rep(0, num_particles)
   for (particle in 1:num_particles) {
-    # weights[particle] <- exp(-1/2*change_in_temp*t((simulated_data[particle, ] - likelihood_samples[particle, ])) %*% C_y_given_x_inv %*% (simulated_data[particle, ] - likelihood_samples[particle, ]))
-    weights[particle] <- exp(-1/2*change_in_temp*t((simulated_data[particle, ] - likelihood_samples[particle, ])) %*% (simulated_data[particle, ] - likelihood_samples[particle, ]))
+    weights[particle] <- exp(-1/2*change_in_temp*t((simulated_data[particle, ] - likelihood_samples[particle, ])) %*% C_y_given_x_inv %*% (simulated_data[particle, ] - likelihood_samples[particle, ]))
+    # weights[particle] <- exp(-1/2*change_in_temp*t((simulated_data[particle, ] - likelihood_samples[particle, ])) %*% (simulated_data[particle, ] - likelihood_samples[particle, ]))
   }
   # print(length(weights))
   # print(sum(weights))
