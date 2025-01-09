@@ -16,7 +16,7 @@ logsigma2_prior_sample <- function(sigma2.sd, num_samples) {
 ###################### Sampling From Likelihood ###############################
 
 # Generate samples from the normal distribution
-likelihood_sample <- function(parameters, num_samples) {
+likelihood_normal <- function(parameters, num_samples) {
   alpha = parameters$alpha
   x = parameters$x
   sigma2 = parameters$sigma**2
