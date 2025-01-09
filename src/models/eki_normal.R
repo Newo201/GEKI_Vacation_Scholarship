@@ -26,10 +26,6 @@ initialise_normal_particles <- function(num_particles, parameters) {
   x.true <- parameters$x
   d_y <- length(x.true)
   
-  # We make a single draw from the likelihood using the true (unknown parameters)
-  # I'm replicating this data for the number of particles to make the dimensions easier to work with
-  simulated_data <- matrix(likelihood_normal(parameters), nrow = num_particles, ncol = d_y, byrow = T)
-  
   # Sample from the prior distribution
   prior_samples <- matrix(nrow = num_particles, ncol = 2)
   prior_samples[, 1] <- alpha_prior_sample(parameters, num_particles)
