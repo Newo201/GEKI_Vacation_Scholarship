@@ -22,7 +22,7 @@ plot_eki_normal_known_var <- function(eki_result, true_params, prior_params) {
 ```
 
 ```{r}
-adaptive = FALSE
+adaptive = TRUE
 ```
 
 # Results For Multivariate Normal Model
@@ -94,7 +94,7 @@ for (sigma in sigma_seq) {
   true_parameters <- list(alpha = 2, sigma = sigma, x = rep(1, num_dimensions))
   eki_result <- eki_normal_known_var(num_particles, true_parameters, prior_params,
                                      adaptive = adaptive)
-  plot_eki_normal_known_var(eki_result, true_parameters)
+  plot_eki_normal_known_var(eki_result, true_parameters, prior_params)
 }
 ```
 
@@ -108,6 +108,6 @@ true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, num_dimensions))
 for (num_particles in particle_seq) {
   eki_result <- eki_normal_known_var(num_particles, true_parameters, prior_params,
                                      adaptive = adaptive)
-  plot_eki_normal_known_var(eki_result, true_parameters)
+  plot_eki_normal_known_var(eki_result, true_parameters, prior_params)
 }
 ```
