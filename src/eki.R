@@ -1,3 +1,5 @@
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/tempering.R')
+
 ########################## EKI Algorithm ####################################
 
 eki <- function(num_particles, initial_particles, true_params, likelihood_func, synthetic_data_func) {

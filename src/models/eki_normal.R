@@ -25,17 +25,11 @@ initialise_normal_particles <- function(num_particles, parameters) {
   
   x.true <- parameters$x
   d_y <- length(x.true)
-  alpha.sd <- parameters$alpha.sd
-  sigma2.sd <- parameters$sigma2.sd
-  
-  # We make a single draw from the likelihood using the true (unknown parameters)
-  # I'm replicating this data for the number of particles to make the dimensions easier to work with
-  simulated_data <- matrix(likelihood_normal(parameters), nrow = num_particles, ncol = d_y, byrow = T)
   
   # Sample from the prior distribution
   prior_samples <- matrix(nrow = num_particles, ncol = 2)
-  prior_samples[, 1] <- alpha_prior_sample(alpha.sd, num_particles)
-  prior_samples[, 2] <- logsigma2_prior_sample(sigma2.sd, num_particles)
+  prior_samples[, 1] <- alpha_prior_sample(parameters, num_particles)
+  prior_samples[, 2] <- logsigma2_prior_sample(parameters, num_particles)
   
   # Initialise the particles and likelihood draws
   particles <- prior_samples
@@ -43,9 +37,9 @@ initialise_normal_particles <- function(num_particles, parameters) {
   return(particles)
 }
 
-eki_normal <- function(num_particles, true_params, adaptive = F) {
+eki_normal <- function(num_particles, true_params, prior_params, adaptive = F) {
   
-  initial_particles <- initialise_normal_particles(num_particles, true_params)
+  initial_particles <- initialise_normal_particles(num_particles, prior_params)
   
   if (adaptive) {
     return(eki_adaptive(num_particles, initial_particles, true_params, likelihood_normal, synthetic_normal))

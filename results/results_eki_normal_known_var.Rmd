@@ -1,18 +1,28 @@
 ```{r}
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki_normal_known_var.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal_known_var.R')
 ```
 
 ```{r}
-plot_eki_normal_known_var <- function(eki_result, parameters) {
+plot_eki_normal_known_var <- function(eki_result, true_params, prior_params) {
   
   alpha_particles <- eki_result$particles[, 1]
-  true_alpha <- parameters$alpha
+  alpha_sequence <- seq(min(alpha_particles), max(alpha_particles), 
+                        length.out = 20)
+  alpha_prior_density <- dnorm(alpha_sequence, mean = prior_params$alpha.mean, 
+                               sd = prior_params$alpha.sd)
+  
+  true_alpha <- true_params$alpha
   
   par(mfrow = c(1, 1))
   
   hist(alpha_particles, freq = F, main = 'Alpha', xlab = '')
+  lines(alpha_sequence, alpha_prior_density, col = 'blue')
   abline(v = true_alpha, col = 'red')
 }
+```
+
+```{r}
+adaptive = FALSE
 ```
 
 # Results For Multivariate Normal Model
@@ -27,6 +37,10 @@ In all combinations we draw from the same prior:
 
 -   $\alpha \sim ~ N(0, 5^2)$
 
+```{r}
+prior_params <- list(alpha.mean = 0, alpha.sd = 5)
+```
+
 ## Changing Number of Dimensions
 
 In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively and let $x$ be a vector of 1s corresponding to 10, 50 and 100 dimensions. The purpose of this is to see how the EKI algorithm performs when the number of dimensions increases.
@@ -37,23 +51,10 @@ In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively 
 num_dimensions <- c(10, 50, 100)
 for (dimension in num_dimensions) {
   num_particles <- 4*dimension
-  true_parameters <- list(alpha = 2, sigma = 2, 
-                          x = rep(1, dimension), alpha.sd = 5, sigma2.sd = 2)
-  eki_result <- eki_normal(num_particles, true_parameters)
-  plot_eki_normal_known_var(eki_result, true_parameters)
-}
-```
-
-### Adaptive Temperature
-
-```{r}
-num_dimensions <- c(10, 50, 100)
-for (dimension in num_dimensions) {
-  num_particles <- 4*dimension
-  true_parameters <- list(alpha = 2, sigma = 2, 
-                          x = rep(1, dimension), alpha.sd = 5, sigma2.sd = 2)
-  eki_result <- eki_normal_adaptive(num_particles, true_parameters)
-  plot_eki_normal_known_var(eki_result, true_parameters)
+  true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, dimension))
+  eki_result <- eki_normal_known_var(num_particles, true_parameters, prior_params,
+                                     adaptive = adaptive)
+  plot_eki_normal_known_var(eki_result, true_parameters, prior_params)
 }
 ```
 
@@ -72,11 +73,10 @@ num_dimensions <- 50
 num_particles <- 4*num_dimensions
 for (alpha in alpha_seq) {
 
-  true_parameters <- list(alpha = alpha, sigma = 2, 
-                          x = rep(1, num_dimensions), alpha.sd = 5, 
-                          sigma2.sd = 2)
-  eki_result <- eki_normal(num_particles, true_parameters)
-  plot_eki_normal_known_var(eki_result, true_parameters)
+  true_parameters <- list(alpha = alpha, sigma = 2, x = rep(1, num_dimensions))
+  eki_result <- eki_normal_known_var(num_particles, true_parameters, prior_params,
+                                     adaptive = adaptive)
+  plot_eki_normal_known_var(eki_result, true_parameters, prior_params)
 }
 ```
 
@@ -91,28 +91,11 @@ num_dimensions <- 50
 num_particles <- 4*num_dimensions
 for (sigma in sigma_seq) {
 
-  true_parameters <- list(alpha = 2, sigma = sigma, 
-                          x = rep(1, num_dimensions), alpha.sd = 5, 
-                          sigma2.sd = 2)
-  eki_result <- eki_normal(num_particles, true_parameters)
+  true_parameters <- list(alpha = 2, sigma = sigma, x = rep(1, num_dimensions))
+  eki_result <- eki_normal_known_var(num_particles, true_parameters, prior_params,
+                                     adaptive = adaptive)
   plot_eki_normal_known_var(eki_result, true_parameters)
 }
-```
-
-## Changing $x$
-
-In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively and let $x$ be a 50 dimensional random vector.
-
-### Standard EKI
-
-```{r}
-num_dimensions <- 50
-x <- rnorm(50, mean = 1, sd = 1)
-true_parameters <- list(alpha = 2, sigma = 2, 
-                        x = x, alpha.sd = 5, 
-                        sigma2.sd = 2)
-eki_result <- eki_normal(num_particles, true_parameters)
-plot_eki_normal_known_var(eki_result, true_parameters)
 ```
 
 ## Changing Number of Particles
@@ -120,12 +103,11 @@ plot_eki_normal_known_var(eki_result, true_parameters)
 ```{r}
 num_dimensions <- 50
 particle_seq <- c(100, 500, 1000) 
-true_parameters <- list(alpha = 2, sigma = 2, 
-                        x = rep(1, num_dimensions), alpha.sd = 5, 
-                        sigma2.sd = 2)
+true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, num_dimensions))
 
 for (num_particles in particle_seq) {
-  eki_result <- eki_normal(num_particles, true_parameters)
+  eki_result <- eki_normal_known_var(num_particles, true_parameters, prior_params,
+                                     adaptive = adaptive)
   plot_eki_normal_known_var(eki_result, true_parameters)
 }
 ```

@@ -1,6 +1,7 @@
 pacman::p_load(pacman, mvtnorm, purrr)
 
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples_normal.R')
 
 synthetic_normal_known_var <- function(num_particles, particles, parameters) {
   
@@ -14,7 +15,7 @@ synthetic_normal_known_var <- function(num_particles, particles, parameters) {
   # ToDo: vectorise this operation
   for (particle in 1:num_particles) {
     current_params = list(alpha = particles[particle, 1], x = x.true, sigma = sigma.true)
-    likelihood_samples[particle, ] <- likelihood_sample(current_params, 1)
+    likelihood_samples[particle, ] <- likelihood_normal(current_params)
   }
   
   return(likelihood_samples)
@@ -25,16 +26,10 @@ initialise_normal_particles_known_var <- function(num_particles, parameters) {
   
   x.true <- parameters$x
   d_y <- length(x.true)
-  alpha.sd <- parameters$alpha.sd
-  sigma2.sd <- parameters$sigma2.sd
-  
-  # We make a single draw from the likelihood using the true (unknown parameters)
-  # I'm replicating this data for the number of particles to make the dimensions easier to work with
-  simulated_data <- matrix(likelihood_sample(parameters, 1), nrow = num_particles, ncol = d_y, byrow = T)
   
   # Sample from the prior distribution
   prior_samples <- matrix(nrow = num_particles, ncol = 1)
-  prior_samples[, 1] <- alpha_prior_sample(alpha.sd, num_particles)
+  prior_samples[, 1] <- alpha_prior_sample(parameters, num_particles)
   
   # Initialise the particles and likelihood draws
   particles <- prior_samples
@@ -42,9 +37,9 @@ initialise_normal_particles_known_var <- function(num_particles, parameters) {
   return(particles)
 }
 
-eki_normal_known_var <- function(num_particles, true_params, adaptive = F) {
+eki_normal_known_var <- function(num_particles, true_params, prior_params, adaptive = F) {
   
-  initial_particles <- initialise_normal_particles(num_particles, true_params)
+  initial_particles <- initialise_normal_particles_known_var(num_particles, prior_params)
   
   if (adaptive) {
     return(eki_adaptive(num_particles, initial_particles, true_params, likelihood_normal, synthetic_normal_known_var))

@@ -10,11 +10,12 @@ num_dimensions <- 5
 ######################### Fixtures #######################################
 
 # ToDo: see if there is a proper way of implementing fixtures like in Python
-true_params_1d = list(alpha = 2, sigma = 2, x = 1, alpha.sd = 5, sigma2.sd = 2)
-true_params_2d = list(alpha = 2, sigma = 2, x = c(1, 2), alpha.sd = 5, sigma2.sd = 2)
-true_params_nd = list(alpha = 2, sigma = 2, x = rep(1, num_dimensions), alpha.sd = 5, sigma2.sd = 2)
+prior_params = list(alpha.mean = 0, alpha.sd = 5, sigma2.mean = 0, sigma2.sd = 2)
+true_params_1d = list(alpha = 2, sigma = 2, x = 1)
+true_params_2d = list(alpha = 2, sigma = 2, x = c(1, 2))
+true_params_nd = list(alpha = 2, sigma = 2, x = rep(1, num_dimensions))
 
-particles <- initialise_normal_particles(num_particles, true_params_1d)
+particles <- initialise_normal_particles(num_particles, prior_params)
 
 likelihood_samples_1d <- synthetic_normal(num_particles, particles, true_params_1d)
 simulated_data_1d <- matrix(likelihood_normal(true_params_1d), nrow = num_particles, ncol = 1, byrow = T)
