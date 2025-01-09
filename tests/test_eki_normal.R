@@ -154,4 +154,8 @@ estimate_ess(0.2, 0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d,
 # 
 # covariances_nd$C_yy
 # covariances_nd$C_y_given_x_inv
+sum(is.infinite(particles))
 
+
+test <- c(-Inf, 1, 2)
+is.infinite(test)

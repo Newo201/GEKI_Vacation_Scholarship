@@ -31,5 +31,9 @@ update_particles <- function(temp_difference, particles, simulated_data, likelih
   # particles <- particles + t(C_xy %*% solve((C_yy + (1/temp_difference - 1)*C_y_given_x)) %*% t((simulated_data - likelihood_samples - eta)))
   # ToDo: make sure that adjusting the dimensions produces the same update
   particles <- particles + (simulated_data - likelihood_samples - eta) %*% solve((C_yy + (1/temp_difference - 1)*C_y_given_x)) %*% C_yx
+  if (sum(is.infinite(particles)) > 0) {
+    print(det(C_yy + (1/temp_difference - 1)*C_y_given_x))
+    stop("Some of the particle values are infinite")
+  }
   return(particles)
 }
