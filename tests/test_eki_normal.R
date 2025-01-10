@@ -1,29 +1,30 @@
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/tempering.R')
 
 pacman::p_load(pacman, testthat, purrr, matrixcalc)
 
 # I believe we need to make sure the number of particles > number of dimensions which makes logical sense
 num_particles <- 400
-num_dimensions <- 100
+num_dimensions <- 5
 
 ######################### Fixtures #######################################
 
 # ToDo: see if there is a proper way of implementing fixtures like in Python
-true_params_1d = list(alpha = 2, sigma = 2, x = 1, alpha.sd = 5, sigma2.sd = 2)
-true_params_2d = list(alpha = 2, sigma = 2, x = c(1, 2), alpha.sd = 5, sigma2.sd = 2)
-true_params_nd = list(alpha = 2, sigma = 2, x = rep(1, num_dimensions), alpha.sd = 5, sigma2.sd = 2)
+prior_params = list(alpha.mean = 0, alpha.sd = 5, sigma2.mean = 0, sigma2.sd = 2)
+true_params_1d = list(alpha = 2, sigma = 2, x = 1)
+true_params_2d = list(alpha = 2, sigma = 2, x = c(1, 2))
+true_params_nd = list(alpha = 2, sigma = 2, x = rep(1, num_dimensions))
 
-particles <- initialise_particles(num_particles, true_params_1d)
+particles <- initialise_normal_particles(num_particles, prior_params)
 
-likelihood_samples_1d <- generate_likelihood_samples(num_particles, particles, true_params_1d)
-simulated_data_1d <- matrix(likelihood_sample(true_params_1d, 1), nrow = num_particles, ncol = 1, byrow = T)
+likelihood_samples_1d <- synthetic_normal(num_particles, particles, true_params_1d)
+simulated_data_1d <- matrix(likelihood_normal(true_params_1d), nrow = num_particles, ncol = 1, byrow = T)
 
-likelihood_samples_2d <- generate_likelihood_samples(num_particles, particles, true_params_2d)
-simulated_data_2d <- matrix(likelihood_sample(true_params_2d, 1), nrow = num_particles, ncol = 2, byrow = T)
+likelihood_samples_2d <- synthetic_normal(num_particles, particles, true_params_2d)
+simulated_data_2d <- matrix(likelihood_normal(true_params_2d), nrow = num_particles, ncol = 2, byrow = T)
 
-likelihood_samples_nd <- generate_likelihood_samples(num_particles, particles, true_params_nd)
-simulated_data_nd <- matrix(likelihood_sample(true_params_nd, 1), nrow = num_particles, ncol = num_dimensions, byrow = T)
+likelihood_samples_nd <- synthetic_normal(num_particles, particles, true_params_nd)
+simulated_data_nd <- matrix(likelihood_normal(true_params_nd), nrow = num_particles, ncol = num_dimensions, byrow = T)
 
 covariances_1d <- calculate_covariances(particles, likelihood_samples_1d)
 covariances_2d <- calculate_covariances(particles, likelihood_samples_2d)
@@ -150,4 +151,12 @@ test_next_temp_valid(0.1, simulated_data_1d, likelihood_samples_1d, covariances_
 estimate_ess(0.2, 0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles)
 
 
+# covariances_1d$C_yy
+# 
+# covariances_nd$C_yy
+# covariances_nd$C_y_given_x_inv
+sum(is.infinite(particles))
 
+
+test <- c(-Inf, 1, 2)
+is.infinite(test)

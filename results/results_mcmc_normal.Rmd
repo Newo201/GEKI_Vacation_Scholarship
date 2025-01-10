@@ -3,22 +3,23 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 ```
 
 ```{r}
-plot_trace_plots <- function(chain.1, chain.2, burnin = 0) {
+plot_trace_plots <- function(chain.1, chain.2, burnin = 0, iterations = 1e4) {
   
   par(mfrow = c(1,2))
   
-  plot(chain.1[(burnin + 1):1000, 1], type = 'l', main = 'alpha')
-  lines(chain.2[(burnin + 1):1000, 1], col = 'red')
+  plot(chain.1[(burnin + 1):iterations, 1], type = 'l', main = 'alpha')
+  lines(chain.2[(burnin + 1):iterations, 1], col = 'red')
   
-  plot(exp(chain.1[(burnin + 1):1000, 2]), type = 'l', main = 'sigma2')
-  lines(exp(chain.2[(burnin + 1):1000, 2]), col = 'red')
+  plot(exp(chain.1[(burnin + 1):iterations, 2]), type = 'l', main = 'sigma2')
+  lines(exp(chain.2[(burnin + 1):iterations, 2]), col = 'red')
 }
 ```
 
 ```{r}
-plot_histogram <- function(chain.1, chain.2, true_params, burnin = 0) {
-  chain.1.burnin <- chain.1[(burnin + 1): 1000, ]
-  chain.2.burnin <- chain.2[(burnin + 1): 1000, ]
+plot_histogram <- function(chain.1, chain.2, true_params, burnin = 0, 
+                           iterations = 1e4) {
+  chain.1.burnin <- chain.1[(burnin + 1): iterations, ]
+  chain.2.burnin <- chain.2[(burnin + 1): iterations, ]
   combined_chains <- rbind(chain.1.burnin, chain.2.burnin)
   
   par(mfrow = c(1,2))
@@ -67,7 +68,7 @@ for (dimension in num_dimensions) {
   chain.2 <- run.2$batch
   plot_trace_plots(chain.1, chain.2)
   plot_trace_plots(chain.1, chain.2, 500)
-  plot_histogram(chain.1, chain.2, 500)
+  plot_histogram(chain.1, chain.2, true_params, 500)
 }
 ```
 

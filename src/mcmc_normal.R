@@ -17,7 +17,7 @@ lupost_normal <- function(y, theta.init, x, params) {
            loglike_pdf(y, like_params))
 }
 
-normal_mcmc <- function(true_params, prior_params) {
+normal_mcmc <- function(true_params, prior_params, iterations = 1e4) {
   
   # 1. Generate data given true parameters
   simulated_data <- likelihood_sample(true_params, 1)
@@ -32,7 +32,7 @@ normal_mcmc <- function(true_params, prior_params) {
   theta.init <- c(alpha.init, logsigma2.init)
   
   # 4. Call on MCMC function
-  chain <- metrop(lupost_normal_mcmc, theta.init, 1e3)
+  chain <- metrop(lupost_normal_mcmc, theta.init, iterations)
   return(chain)
   
 }
