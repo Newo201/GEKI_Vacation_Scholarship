@@ -18,9 +18,11 @@ true_params_nd = list(alpha = 2, sigma = 2, x = rep(1, num_dimensions))
 particles <- initialise_normal_particles(num_particles, prior_params)
 
 likelihood_samples_1d <- synthetic_normal(num_particles, particles, true_params_1d)
-simulated_data_1d <- matrix(likelihood_normal(true_params_1d), nrow = num_particles, ncol = 1, byrow = T)
+single_sample <- likelihood_normal(true_params_1d)
+simulated_data_1d <- matrix(single_sample, nrow = num_particles, ncol = 1, byrow = T)
 
 likelihood_samples_2d <- synthetic_normal(num_particles, particles, true_params_2d)
+single_sample <- likelihood_normal(true_params_2d)
 simulated_data_2d <- matrix(likelihood_normal(true_params_2d), nrow = num_particles, ncol = 2, byrow = T)
 
 likelihood_samples_nd <- synthetic_normal(num_particles, particles, true_params_nd)
@@ -160,3 +162,22 @@ sum(is.infinite(particles))
 
 test <- c(-Inf, 1, 2)
 is.infinite(test)
+
+C_y_given_x_inv <- matrix(c(0.1, 0.13, 0.5, 2.3), nrow = 2, ncol = 2)
+
+weights <- rep(0, num_particles)
+for (particle in 1:num_particles) {
+  weights[particle] <- exp(-1/2*t((simulated_data_2d[particle, ] - likelihood_samples_2d[particle, ])) %*% (C_y_given_x_inv) %*% (simulated_data_2d[particle, ] - likelihood_samples_2d[particle, ]))
+  # weights[particle] <- exp(-1/2*change_in_temp*t((simulated_data[particle, ] - likelihood_samples[particle, ])) %*% (simulated_data[particle, ] - likelihood_samples[particle, ]))
+}
+weights <- weights/sum(weights)
+
+# weights <- exp(-1/2*t(single_sample - likelihood_samples_1d) %*% (single_sample - likelihood_samples_1d))
+# weights <- weights/sum(weights)
+
+test <- diag((simulated_data_2d - likelihood_samples_2d) %*% C_y_given_x_inv %*% t(simulated_data_2d - likelihood_samples_2d))
+
+weights <- exp(-1/2*test)
+weights <- weights/sum(weights)
+
+
