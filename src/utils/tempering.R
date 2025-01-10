@@ -1,16 +1,16 @@
 pacman::p_load(pacman, purrr)
 
-get_sum_of_seq <- function(simulated_data, likelihood_samples, covariances, num_particles) {
+get_sum_of_sq <- function(simulated_data, likelihood_samples, covariances, num_particles) {
   
   C_y_given_x_inv <- covariances$C_y_given_x_inv
-  change_in_temp <- next_temp - current_temp
   difference <- simulated_data - likelihood_samples
-  sum_of_sq <- difference %*% C_y_given_x_inv %*% t(difference)
+  sum_of_sq <- diag(difference %*% C_y_given_x_inv %*% t(difference))
   return(sum_of_sq)
 }
 
 get_weights <- function(next_temp, current_temp, sum_of_sq) {
   
+  change_in_temp <- next_temp - current_temp
   weights <- exp(-1/2*change_in_temp*sum_of_sq)
   
   # print(length(weights))
@@ -37,7 +37,7 @@ get_ess_diff <- function(next_temp, current_temp, sum_of_sq, target_ess) {
 
 find_next_temp <- function(current_temp, simulated_data, likelihood_samples, covariances, num_particles, target_ess) {
   
-  sum_of_sq <- get_sum_of_seq(simulated_data, likelihood_samples, covariances, num_particles)
+  sum_of_sq <- get_sum_of_sq(simulated_data, likelihood_samples, covariances, num_particles)
   
   # print(current_temp)
   # print(dim(simulated_data))
