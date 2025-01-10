@@ -30,7 +30,7 @@ plot_eki_normal <- function(eki_result, true_params, prior_params) {
 ```
 
 ```{r}
-adaptive = TRUE
+adaptive = FALSE
 ```
 
 # Results For Multivariate Normal Model
