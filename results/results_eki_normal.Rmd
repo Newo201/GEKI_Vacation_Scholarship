@@ -57,7 +57,7 @@ prior_params <- list(alpha.mean = 0, alpha.sd = 5,
 In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively and let $x$ be a vector of 1s corresponding to 10, 50 and 100 dimensions. The purpose of this is to see how the EKI algorithm performs when the number of dimensions increases.
 
 ```{r}
-start.time <- Sys.time()
+start.time = Sys.time()
 num_dimensions <- c(10, 50, 100)
 for (dimension in num_dimensions) {
   num_particles <- 4*dimension
@@ -65,7 +65,7 @@ for (dimension in num_dimensions) {
   eki_result <- eki_normal(num_particles, true_parameters, prior_params, adaptive = adaptive)
   plot_eki_normal(eki_result, true_parameters, prior_params)
 }
-end.time <- Sys.time()
+end.time = Sys.time()
 end.time - start.time
 ```
 
