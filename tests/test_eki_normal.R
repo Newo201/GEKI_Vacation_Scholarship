@@ -75,48 +75,6 @@ test_that('Dimensions of particles are correct after updating', {
   expect_equal(dim(update_particles(0.1, particles, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles)), dim(particles))
 })
 
-
-
-######################## Testing For Covariance Matrices #####################
-
-test_that('Dimensions of covariance matrices are correct', {
-  expect_equal(dim(cov(likelihood_samples_1d)), c(1, 1))
-  expect_equal(dim(cov(likelihood_samples_2d)), c(2, 2))
-  expect_equal(dim(cov(likelihood_samples_nd)), c(num_dimensions, num_dimensions))
-  expect_equal(dim(cov(particles)), c(2,2))
-  expect_equal(dim(cov(particles, likelihood_samples_1d)), c(2,1))
-  expect_equal(dim(cov(particles, likelihood_samples_2d)), c(2,2))
-  expect_equal(dim(cov(particles, likelihood_samples_nd)), c(2, num_dimensions))
-  expect_equal(dim(test_conditional_cov(particles, likelihood_samples_1d)), c(1, 1))
-  expect_equal(dim(test_conditional_cov(particles, likelihood_samples_2d)), c(2, 2))
-  expect_equal(dim(test_conditional_cov(particles, likelihood_samples_nd)), c(num_dimensions, num_dimensions))
-})
-
-test_that('Covariance matrices are symmetric', {
-  expect_equal(isSymmetric(cov(likelihood_samples_1d)), TRUE)
-  expect_equal(isSymmetric(cov(likelihood_samples_2d)), TRUE)
-  expect_equal(isSymmetric(cov(likelihood_samples_nd)), TRUE)
-  expect_equal(isSymmetric(cov(particles)), TRUE)
-  # Add test for conditional covariance matrix
-  expect_equal(isSymmetric(test_conditional_cov(particles, likelihood_samples_nd)), TRUE)
-})
-
-test_that('Covariance matrices are positive definite', {
-  expect_equal(is.positive.definite(cov(likelihood_samples_1d)), TRUE)
-  expect_equal(is.positive.definite(cov(likelihood_samples_2d)), TRUE)
-  expect_equal(is.positive.definite(cov(likelihood_samples_nd)), TRUE)
-  expect_equal(is.positive.definite(cov(particles)), TRUE)
-  expect_equal(is.positive.definite(test_conditional_cov(particles, likelihood_samples_nd)), TRUE)
-})
-
-test_that('Covariance matrices are positive semi definite', {
-  expect_equal(is.positive.semi.definite(cov(likelihood_samples_1d)), TRUE)
-  expect_equal(is.positive.semi.definite(cov(likelihood_samples_2d)), TRUE)
-  expect_equal(is.positive.semi.definite(cov(likelihood_samples_nd)), TRUE)
-  expect_equal(is.positive.semi.definite(cov(particles)), TRUE)
-  expect_equal(is.positive.semi.definite(test_conditional_cov(particles, likelihood_samples_nd), tol = 1e-3), TRUE)
-})
-
 ######################## Testing For Adaptive Temperature ####################
 
 

@@ -19,6 +19,7 @@ normal_mcmc <- function(true_params, prior_params, iterations = 1e4) {
   # 1. Generate data given true parameters
   set.seed(2025)
   simulated_data <- likelihood_normal(true_params)
+  print(sum(simulated_data))
   
   # 2. Create a partial function fixing data and parameters
   lupost_normal_mcmc <- partial(lupost_normal, y = simulated_data, 
