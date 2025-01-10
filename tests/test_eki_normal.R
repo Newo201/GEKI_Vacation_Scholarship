@@ -119,44 +119,25 @@ test_that('Covariance matrices are positive semi definite', {
 
 ######################## Testing For Adaptive Temperature ####################
 
-
-
-
 test_that('ESS is between 1 and N', {
-  expect_lte(estimate_ess(0.1, 0, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles),  num_particles)
-  expect_gte(estimate_ess(0.1, 0, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles),  1)
+  expect_lte(estimate_ess(0.1, 0, true_data_1d, particles, num_particles),  num_particles)
+  expect_gte(estimate_ess(0.1, 0, true_data_1d, particles, num_particles),  1)
 })
 
 test_that('Next selected temperature is always >= current_temp and <= 1', {
-  expect_lte(find_next_temp(0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles, num_particles*0.5), 1)
-  expect_gt(find_next_temp(0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles, num_particles*0.5), 0.1)
+  expect_lte(find_next_temp(0.1, simulated_data_1d, true_data_1d, particles, num_particles, num_particles*0.5), 1)
+  expect_gt(find_next_temp(0.1, simulated_data_1d, true_data_1d, particles, num_particles, num_particles*0.5), 0.1)
 })
 
-test_next_temp_valid <- function(current_temp, simulated_data, likelihood_samples, covariances, num_particles, target_ess) {
+test_next_temp_valid <- function(current_temp, true_data, particles, num_particles, target_ess) {
   
-  next_temp <- find_next_temp(current_temp, simulated_data, likelihood_samples, covariances, num_particles, target_ess)
-  return(abs(get_ess_diff(next_temp, current_temp, simulated_data, likelihood_samples, covariances, num_particles, target_ess)))
+  next_temp <- find_next_temp(current_temp, true_data, particles, num_particles, target_ess)
+  return(abs(get_ess_diff(next_temp, current_temp, true_data, particles, num_particles, target_ess)))
 }
 
 # ToDo: account for when next temperature is 1
 test_that('Next selected temperature gives the correct ESS', {
   # expect_lt(test_next_temp_valid(0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles, num_particles*0.5), 0.5)
   # expect_lt(test_next_temp_valid(0.1, simulated_data_2d, likelihood_samples_2d, covariances_2d, num_particles, num_particles*0.5), 0.5)
-  expect_lt(test_next_temp_valid(0.1, simulated_data_nd, likelihood_samples_nd, covariances_nd, num_particles, num_particles*0.5), 0.5)
+  expect_lt(test_next_temp_valid(0.1, true_data_nd, particles, num_particles, num_particles*0.5), 0.5)
 })
-
-test_next_temp_valid(0.1, simulated_data_nd, likelihood_samples_nd, covariances_nd, num_particles, num_particles*0.5)
-test_next_temp_valid(0.1, simulated_data_2d, likelihood_samples_2d, covariances_2d, num_particles, num_particles*0.5)
-test_next_temp_valid(0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles, num_particles*0.5)
-estimate_ess(0.2, 0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles)
-
-
-# covariances_1d$C_yy
-# 
-# covariances_nd$C_yy
-# covariances_nd$C_y_given_x_inv
-sum(is.infinite(particles))
-
-
-test <- c(-Inf, 1, 2)
-is.infinite(test)

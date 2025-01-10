@@ -3,22 +3,24 @@ pacman::p_load(pacman, mvtnorm, purrr)
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples_normal.R')
 
-synthetic_normal_known_var <- function(num_particles, particles, parameters) {
+synthetic_normal_known_var <- function(true_data, num_particles, particles, parameters) {
   
   x.true <- parameters$x
   sigma.true <- parameters$sigma
   d_y <- length(x.true)
   
   likelihood_samples <- matrix(nrow = num_particles, ncol = d_y)
+  likelihood_densities <- rep(0, num_particles)
   
   # For each particle, draw one observation from the likelihood
   # ToDo: vectorise this operation
   for (particle in 1:num_particles) {
     current_params = list(alpha = particles[particle, 1], x = x.true, sigma = sigma.true)
     likelihood_samples[particle, ] <- likelihood_normal(current_params)
+    likelihood_densities[particle] <- loglike_pdf(true_data, current_params)
   }
   
-  return(likelihood_samples)
+  return(list(samples = likelihood_samples, ll_densities = likelihood_densities))
   
 }
 

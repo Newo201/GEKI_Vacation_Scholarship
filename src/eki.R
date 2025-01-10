@@ -24,7 +24,9 @@ eki <- function(num_particles, initial_particles, true_params, likelihood_func, 
   # Until we reach a temperature of one do the following
   for (temp in 1:10) {
     
-    likelihood_samples <- synthetic_data_func(num_particles, particles, true_params)
+    synthetic_data <- synthetic_data_func(true_data, num_particles, particles, true_params)
+    likelihood_samples <- synthetic_data$samples
+  
     covariances <- calculate_covariances(particles, likelihood_samples)
     
     # ToDo:  Calculate the current temperature
@@ -61,11 +63,14 @@ eki_adaptive <- function(num_particles, initial_particles, true_params, likeliho
   
   while (current_temp < 1) {
     
-    likelihood_samples <- synthetic_data_func(num_particles, particles, true_params)
+    synthetic_data <- synthetic_data_func(true_data, num_particles, particles, true_params)
+    likelihood_samples <- synthetic_data$samples
+    ll_densities <- synthetic_data$ll_densities
+    
     covariances <- calculate_covariances(particles, likelihood_samples)
     
     # Find the next temperature
-    next_temp <- find_next_temp(current_temp, simulated_data, likelihood_samples, covariances, num_particles, num_particles*0.5)
+    next_temp <- find_next_temp(current_temp, ll_densities)
     # print(next_temp)
     temp_difference <- next_temp - current_temp
     particles <- update_particles(temp_difference, particles, simulated_data, likelihood_samples, covariances, num_particles)
