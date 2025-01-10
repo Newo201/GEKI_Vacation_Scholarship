@@ -2,18 +2,15 @@ pacman::p_load(pacman, mvtnorm, purrr, mcmc)
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/pdfs_normal.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples_normal.R')
 
-lupost_normal <- function(y, theta.init, x, params) {
-  
-  alpha.sd <- params$alpha.sd
-  sigma2.sd <- params$sigma2.sd
+lupost_normal <- function(y, theta.init, x, prior_params) {
   
   alpha.init <- theta.init[1]
   logsigma2.init <- theta.init[2]
   
   like_params <- list(alpha = alpha.init, x = x, sigma = sqrt(exp(logsigma2.init)))
   
-  return(alpha_logprior_pdf(alpha.init, alpha.sd) + 
-           logsigma2_logprior_pdf(logsigma2.init, sigma2.sd) + 
+  return(alpha_logprior_pdf(alpha.init, prior_params) + 
+           logsigma2_logprior_pdf(logsigma2.init, prior_params) + 
            loglike_pdf(y, like_params))
 }
 
