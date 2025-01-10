@@ -11,10 +11,11 @@ eki <- function(num_particles, initial_particles, true_params, likelihood_func, 
   # We make a single draw from the likelihood using the true (unknown parameters)
   set.seed(2025)
   true_data <- likelihood_func(true_params)
+  print(sum(true_data))
   d_y <- length(true_data)
   # I'm replicating this data for the number of particles to make the dimensions easier to work with
   simulated_data <- matrix(true_data, nrow = num_particles, ncol = d_y, byrow = T)
-  print(sum(simulated_data))
+
   
   # Initialise the particles and likelihood draws
   particles <- initial_particles
@@ -51,10 +52,10 @@ eki_adaptive <- function(num_particles, initial_particles, true_params, likeliho
   # We make a single draw from the likelihood using the true (unknown parameters)
   set.seed(2025)
   true_data <- likelihood_func(true_params)
+  print(sum(true_data))
   d_y = length(true_data)
   # I'm replicating this data for the number of particles to make the dimensions easier to work with
   simulated_data <- matrix(true_data, nrow = num_particles, ncol = d_y, byrow = T)
-  print(sum(simulated_data))
   
   # Initialise the particles and likelihood draws
   particles <- initial_particles
