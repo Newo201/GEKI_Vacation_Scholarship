@@ -17,6 +17,7 @@ lupost_normal <- function(y, theta.init, x, prior_params) {
 normal_mcmc <- function(true_params, prior_params, iterations = 1e4) {
   
   # 1. Generate data given true parameters
+  set.seed(2025)
   simulated_data <- likelihood_normal(true_params)
   
   # 2. Create a partial function fixing data and parameters
