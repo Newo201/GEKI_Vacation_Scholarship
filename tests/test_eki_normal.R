@@ -172,4 +172,4 @@ test_that('Next selected temperature gives the correct ESS', {
 # 
 # rmvnorm(mean = rep(c(1,2,3), 3), sigma = rep(diag(3), 3))
 
-
+covariances_nd$C_y_given_x
