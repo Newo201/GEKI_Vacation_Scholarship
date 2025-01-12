@@ -18,6 +18,16 @@ plot_eki_normal_known_var <- function(eki_result, true_params, prior_params) {
   hist(alpha_particles, freq = F, main = 'Alpha', xlab = '')
   lines(alpha_sequence, alpha_prior_density, col = 'blue')
   abline(v = true_alpha, col = 'red')
+  
+  set.seed(2025)
+  y <- likelihood_normal(true_params)
+  ones_matrix <- x %*% t(x)
+  
+  post_mean = 25 * x %*% solve(25*ones_matrix + 4*diag(num_dimensions)) %*% t(y) 
+  post_sd = sqrt(25 - 625 %*% t(x) %*% solve(25*ones_matrix + 4*diag(num_dimensions)) %*% x)
+  
+  alpha_post_density <- dnorm(alpha_sequence, mean = post_mean, sd = post_sd)
+  lines(alpha_sequence, alpha_post_density, col = 'green')
 }
 ```
 
@@ -103,7 +113,9 @@ for (sigma in sigma_seq) {
 ```{r}
 num_dimensions <- 50
 particle_seq <- c(100, 500, 1000) 
-true_parameters <- list(alpha = 10, sigma = 2, x = rep(1, num_dimensions))
+true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, num_dimensions))
+
+
 
 for (num_particles in particle_seq) {
   eki_result <- eki_normal_known_var(num_particles, true_parameters, prior_params,
@@ -114,12 +126,15 @@ for (num_particles in particle_seq) {
 
 ```{r}
 num_dimensions <- 50
-x <- matrix(2, nrow = num_dimensions)
-y <- rnorm(num_dimensions, mean = 4, sd = 2)
-ones_matrix <- matrix(4, nrow = num_dimensions, ncol = num_dimensions)
+true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, num_dimensions))
+x <- rep(1, num_dimensions)
+set.seed(2025)
+
 # solve(25*ones_matrix + 4*diag(num_dimensions))
 
-25 * t(x) %*% solve(25*ones_matrix + 4*diag(num_dimensions)) %*% y 
 
-sqrt(25 - 625 %*% t(x) %*% solve(25*ones_matrix + 4*diag(num_dimensions)) %*% x)
+```
+
+```{r}
+x %*% t(x)
 ```
