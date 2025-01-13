@@ -35,7 +35,5 @@ likelihood_g_and_k <- function(parameters) {
   g <- pnorm(parameters$g)*10
   k <- pnorm(parameters$k)*10
   
-  rgk(1, a, b, g, k)
+  rgk(50, a, b, g, k)
 }
-
-pnorm(0)
