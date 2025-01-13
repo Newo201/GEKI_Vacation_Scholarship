@@ -1,4 +1,4 @@
-pacman::p_load(pacman, gk)
+pacman::p_load(pacman, gk, spatstat.utils)
 
 ####################### Priors ################################
 
@@ -35,5 +35,24 @@ likelihood_g_and_k <- function(parameters) {
   g <- pnorm(parameters$g)*10
   k <- pnorm(parameters$k)*10
   
-  rgk(50, a, b, g, k)
+  return(rgk(100, a, b, g, k))
 }
+
+likelihood_g_and_k_summary <- function(parameters) {
+  # Need to convert parameters back to the scale [0, 10]
+  a <- pnorm(parameters$a)*10
+  b <- pnorm(parameters$b)*10
+  g <- pnorm(parameters$g)*10
+  k <- pnorm(parameters$k)*10
+  
+  observations <- rgk(1000, a, b, g, k)
+
+  order_stats_sequence <- seq(1, 1000, length.out = 100)
+  return(orderstats(observations, order_stats_sequence))
+}
+
+params <- list(a = 0, b = 0, g = 0, k = 0)
+likelihood_g_and_k_summary(params)
+
+x <- runif(10)
+orderstats(x, 2)
