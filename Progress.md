@@ -88,6 +88,12 @@
 
     -   Using adaptive and non-adaptive temperature sequence
 
+-   Check particles against posterior distribution for known variance case
+
+-   Check covariance matrices against large sample limits for known variance case
+
+-   Explore covariance matrices for unknown variance case
+
 **Adaptive Temperature**
 
 -   Plot the temperature sequence to determine if it is increasing
@@ -127,3 +133,11 @@
 -   Change $\sigma^2$
 
 -   Change $x$
+
+-   Change number of particles
+
+**Unknown Mean, Unknown Variance:** `results/eki_normal.Rmd`
+
+**Unknown Mean, Known Variance:** `results/eki_normal_known_var.Rmd`
+
+**Known Mean, Unknown Variance:** `results/eki_normal_known_mean.Rmd`
