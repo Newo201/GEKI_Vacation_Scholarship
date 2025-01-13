@@ -18,13 +18,18 @@ true_params_nd = list(alpha = 2, sigma = 2, x = rep(1, num_dimensions))
 particles <- initialise_normal_particles(num_particles, prior_params)
 
 likelihood_samples_1d <- synthetic_normal(num_particles, particles, true_params_1d)
-simulated_data_1d <- matrix(likelihood_normal(true_params_1d), nrow = num_particles, ncol = 1, byrow = T)
+
+true_data_1d <- likelihood_normal(true_params_1d)
+simulated_data_1d <- matrix(true_data_1d, nrow = num_particles, ncol = 1, byrow = T)
 
 likelihood_samples_2d <- synthetic_normal(num_particles, particles, true_params_2d)
-simulated_data_2d <- matrix(likelihood_normal(true_params_2d), nrow = num_particles, ncol = 2, byrow = T)
+true_data_2d <- likelihood_normal(true_params_2d)
+simulated_data_2d <- matrix(true_data_2d, nrow = num_particles, ncol = 2, byrow = T)
+
 
 likelihood_samples_nd <- synthetic_normal(num_particles, particles, true_params_nd)
-simulated_data_nd <- matrix(likelihood_normal(true_params_nd), nrow = num_particles, ncol = num_dimensions, byrow = T)
+true_data_nd <-likelihood_normal(true_params_nd)
+simulated_data_nd <- matrix(true_data_nd, nrow = num_particles, ncol = num_dimensions, byrow = T)
 
 covariances_1d <- calculate_covariances(particles, likelihood_samples_1d)
 covariances_2d <- calculate_covariances(particles, likelihood_samples_2d)
@@ -59,10 +64,6 @@ generate_pertubations <- function(num_particles, particles, likelihood_samples) 
 test_that('Dimensions of particles are correct', {
   expect_equal(dim(particles), c(num_particles, 2))
   expect_equal(dim(particles), c(num_particles, 2))
-})
-
-test_that('Dimensions of weights are correct', {
-  expect_equal(length(get_weights(0.1, 0, likelihood_samples_1d, simulated_data_1d, covariances_1d, num_particles)), num_particles)
 })
 
 test_that('Dimensions of pertubations are correct', {
@@ -119,44 +120,37 @@ test_that('Covariance matrices are positive semi definite', {
 
 ######################## Testing For Adaptive Temperature ####################
 
-
-
-
 test_that('ESS is between 1 and N', {
-  expect_lte(estimate_ess(0.1, 0, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles),  num_particles)
-  expect_gte(estimate_ess(0.1, 0, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles),  1)
+
+  ll_densities = densities_normal(true_data_1d, num_particles, particles, true_params_1d)
+  expect_lte(estimate_ess(0.1, 0, ll_densities),  num_particles)
+  expect_gte(estimate_ess(0.1, 0, ll_densities),  1)
+
 })
 
 test_that('Next selected temperature is always >= current_temp and <= 1', {
-  expect_lte(find_next_temp(0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles, num_particles*0.5), 1)
-  expect_gt(find_next_temp(0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles, num_particles*0.5), 0.1)
+  ll_densities = densities_normal(true_data_1d, num_particles, particles, true_params_1d)
+  expect_lte(find_next_temp(0.1, ll_densities, num_particles*0.5), 1)
+  expect_gt(find_next_temp(0.1, ll_densities, num_particles*0.5), 0.1)
 })
 
-test_next_temp_valid <- function(current_temp, simulated_data, likelihood_samples, covariances, num_particles, target_ess) {
+test_next_temp_valid <- function(current_temp, ll_densities, target_ess) {
   
-  next_temp <- find_next_temp(current_temp, simulated_data, likelihood_samples, covariances, num_particles, target_ess)
-  return(abs(get_ess_diff(next_temp, current_temp, simulated_data, likelihood_samples, covariances, num_particles, target_ess)))
+  next_temp <- find_next_temp(current_temp, ll_densities, target_ess)
+  return(abs(get_ess_diff(next_temp, current_temp, ll_densities, target_ess)))
+
 }
 
 # ToDo: account for when next temperature is 1
 test_that('Next selected temperature gives the correct ESS', {
   # expect_lt(test_next_temp_valid(0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles, num_particles*0.5), 0.5)
   # expect_lt(test_next_temp_valid(0.1, simulated_data_2d, likelihood_samples_2d, covariances_2d, num_particles, num_particles*0.5), 0.5)
-  expect_lt(test_next_temp_valid(0.1, simulated_data_nd, likelihood_samples_nd, covariances_nd, num_particles, num_particles*0.5), 0.5)
+  ll_densities = densities_normal(true_data_nd, num_particles, particles, true_params_nd)
+  expect_lt(test_next_temp_valid(0.1, ll_densities, num_particles*0.5), 0.5)
 })
 
-test_next_temp_valid(0.1, simulated_data_nd, likelihood_samples_nd, covariances_nd, num_particles, num_particles*0.5)
-test_next_temp_valid(0.1, simulated_data_2d, likelihood_samples_2d, covariances_2d, num_particles, num_particles*0.5)
-test_next_temp_valid(0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles, num_particles*0.5)
-estimate_ess(0.2, 0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles)
+test_that('Dimensions of weights are correct', {
+  ll_densities = densities_normal(true_data_1d, num_particles, particles, true_params_1d)
+  expect_equal(length(get_weights(0.1, 0, ll_densities)), num_particles)
+})
 
-
-# covariances_1d$C_yy
-# 
-# covariances_nd$C_yy
-# covariances_nd$C_y_given_x_inv
-sum(is.infinite(particles))
-
-
-test <- c(-Inf, 1, 2)
-is.infinite(test)
