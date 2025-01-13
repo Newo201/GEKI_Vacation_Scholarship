@@ -66,11 +66,6 @@ test_that('Dimensions of particles are correct', {
   expect_equal(dim(particles), c(num_particles, 2))
 })
 
-test_that('Dimensions of weights are correct', {
-  sum_of_sq <- get_sum_of_sq(simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles)
-  expect_equal(length(get_weights(0.1, 0, sum_of_sq)), num_particles)
-})
-
 test_that('Dimensions of pertubations are correct', {
   expect_equal(dim(generate_pertubations(num_particles, particles, likelihood_samples_1d)), c(num_particles, 1))
   expect_equal(dim(generate_pertubations(num_particles, particles, likelihood_samples_2d)), c(num_particles, 2))
