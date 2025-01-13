@@ -18,12 +18,14 @@ true_params_nd = list(alpha = 2, sigma = 2, x = rep(1, num_dimensions))
 particles <- initialise_normal_particles(num_particles, prior_params)
 
 likelihood_samples_1d <- synthetic_normal(num_particles, particles, true_params_1d)
+
 true_data_1d <- likelihood_normal(true_params_1d)
 simulated_data_1d <- matrix(true_data_1d, nrow = num_particles, ncol = 1, byrow = T)
 
 likelihood_samples_2d <- synthetic_normal(num_particles, particles, true_params_2d)
 true_data_2d <- likelihood_normal(true_params_2d)
 simulated_data_2d <- matrix(true_data_2d, nrow = num_particles, ncol = 2, byrow = T)
+
 
 likelihood_samples_nd <- synthetic_normal(num_particles, particles, true_params_nd)
 true_data_nd <-likelihood_normal(true_params_nd)
@@ -62,6 +64,11 @@ generate_pertubations <- function(num_particles, particles, likelihood_samples) 
 test_that('Dimensions of particles are correct', {
   expect_equal(dim(particles), c(num_particles, 2))
   expect_equal(dim(particles), c(num_particles, 2))
+})
+
+test_that('Dimensions of weights are correct', {
+  sum_of_sq <- get_sum_of_sq(simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles)
+  expect_equal(length(get_weights(0.1, 0, sum_of_sq)), num_particles)
 })
 
 test_that('Dimensions of pertubations are correct', {
@@ -119,9 +126,11 @@ test_that('Covariance matrices are positive semi definite', {
 ######################## Testing For Adaptive Temperature ####################
 
 test_that('ESS is between 1 and N', {
+
   ll_densities = densities_normal(true_data_1d, num_particles, particles, true_params_1d)
   expect_lte(estimate_ess(0.1, 0, ll_densities),  num_particles)
   expect_gte(estimate_ess(0.1, 0, ll_densities),  1)
+
 })
 
 test_that('Next selected temperature is always >= current_temp and <= 1', {
@@ -134,6 +143,7 @@ test_next_temp_valid <- function(current_temp, ll_densities, target_ess) {
   
   next_temp <- find_next_temp(current_temp, ll_densities, target_ess)
   return(abs(get_ess_diff(next_temp, current_temp, ll_densities, target_ess)))
+
 }
 
 # ToDo: account for when next temperature is 1
@@ -148,3 +158,4 @@ test_that('Dimensions of weights are correct', {
   ll_densities = densities_normal(true_data_1d, num_particles, particles, true_params_1d)
   expect_equal(length(get_weights(0.1, 0, ll_densities)), num_particles)
 })
+

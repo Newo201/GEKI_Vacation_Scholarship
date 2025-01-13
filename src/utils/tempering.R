@@ -4,12 +4,11 @@ get_weights <- function(next_temp, current_temp, ll_densities) {
   
   change_in_temp <- next_temp - current_temp
   weights <- exp(change_in_temp*ll_densities)
-  
+
   if (sum(weights) == 0) {
     print(change_in_temp)
   }
-  weights <- weights/sum(weights)
-  return(weights)
+  return(weights/sum(weights))
 }
 
 estimate_ess <- function(next_temp, current_temp, ll_densities) {
@@ -29,6 +28,7 @@ find_next_temp <- function(current_temp, ll_densities, target_ess) {
   # Fix the arguments of the estimate ess function
   estimate_ess_partial <- partial(get_ess_diff, current_temp = current_temp, 
                                   ll_densities = ll_densities, target_ess = target_ess)
+
   
   # We want the next temperature to be chosen such that the ESS equals the target ESS
   if (estimate_ess_partial(1) >= 0) {
