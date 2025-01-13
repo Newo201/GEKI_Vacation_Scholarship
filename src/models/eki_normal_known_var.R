@@ -3,6 +3,23 @@ pacman::p_load(pacman, mvtnorm, purrr)
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples_normal.R')
 
+densities_normal_known_var <- function(true_data, num_particles, particles, parameters) {
+  
+  x.true <- parameters$x
+  sigma.true <- parameters$sigma
+  d_y <- length(x.true)
+  
+  likelihood_densities <- rep(0, num_particles)
+  
+  # ToDo: vectorise this operation
+  for (particle in 1:num_particles) {
+    current_params = list(alpha = particles[particle, 1], x = x.true, sigma = sigma.true)
+    likelihood_densities[particle] <- loglike_pdf(true_data, current_params)
+  }
+  
+  return(likelihood_densities)
+}
+
 synthetic_normal_known_var <- function(num_particles, particles, parameters) {
   
   x.true <- parameters$x
@@ -42,10 +59,14 @@ eki_normal_known_var <- function(num_particles, true_params, prior_params, adapt
   initial_particles <- initialise_normal_particles_known_var(num_particles, prior_params)
   
   if (adaptive) {
-    return(eki_adaptive(num_particles, initial_particles, true_params, likelihood_normal, synthetic_normal_known_var))
+    return(eki_adaptive(num_particles, initial_particles, true_params, 
+                        likelihood_normal, synthetic_normal_known_var,
+                        densities_normal_known_var))
   }
   else {
-    return(eki(num_particles, initial_particles, true_params, likelihood_normal, synthetic_normal_known_var))
+    return(eki(num_particles, initial_particles, true_params, 
+               likelihood_normal, synthetic_normal_known_var,
+               densities_normal_known_var))
   }
 }
 
