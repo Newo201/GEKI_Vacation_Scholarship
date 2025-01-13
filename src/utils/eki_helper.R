@@ -1,3 +1,5 @@
+pacman::p_load(pacman, MASS)
+
 calculate_covariances <- function(particles, likelihood_samples) {
   
   # Calculate the covariance matrices
@@ -7,9 +9,9 @@ calculate_covariances <- function(particles, likelihood_samples) {
   C_xy = cov(particles, likelihood_samples)
   C_yx = cov(likelihood_samples, particles)
   
-  C_y_given_x = C_yy - C_yx %*% solve(C_xx) %*% C_xy
+  C_y_given_x = C_yy - C_yx %*% ginv(C_xx) %*% C_xy
   # Presolving the inverse so we don't have to recalculate it every time
-  C_y_given_x_inv <- solve(C_y_given_x)
+  C_y_given_x_inv <- ginv(C_y_given_x)
   
   return(list(C_xx = C_xx, C_yy = C_yy, C_xy = C_xy, C_yx = C_yx, 
               C_y_given_x = C_y_given_x, C_y_given_x_inv = C_y_given_x_inv))
@@ -28,9 +30,9 @@ update_particles <- function(temp_difference, particles, simulated_data, likelih
   eta <- rmvnorm(n = num_particles, mean = rep(0, d_y), sigma = (1/temp_difference - 1)*C_y_given_x)
   
   # Move the particles
-  # particles <- particles + t(C_xy %*% solve((C_yy + (1/temp_difference - 1)*C_y_given_x)) %*% t((simulated_data - likelihood_samples - eta)))
+  # particles <- particles + t(C_xy %*% ginv((C_yy + (1/temp_difference - 1)*C_y_given_x)) %*% t((simulated_data - likelihood_samples - eta)))
   # ToDo: make sure that adjusting the dimensions produces the same update
-  particles <- particles + (simulated_data - likelihood_samples - eta) %*% solve((C_yy + (1/temp_difference - 1)*C_y_given_x)) %*% C_yx
+  particles <- particles + (simulated_data - likelihood_samples - eta) %*% ginv((C_yy + (1/temp_difference - 1)*C_y_given_x)) %*% C_yx
   if (sum(is.infinite(particles)) > 0) {
     print(det(C_yy + (1/temp_difference - 1)*C_y_given_x))
     stop("Some of the particle values are infinite")
