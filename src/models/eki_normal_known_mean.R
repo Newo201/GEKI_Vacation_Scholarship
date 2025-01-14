@@ -58,22 +58,18 @@ initialise_normal_particles <- function(num_particles, parameters) {
   return(particles)
 }
 
-eki_normal_known_mean <- function(num_particles, true_params, prior_params, adaptive = F) {
-  
-  set.seed(2025)
-  true_data <- likelihood_normal(true_params)
-  set.seed(NULL)
+eki_normal_known_mean <- function(num_particles, true_data, true_params, prior_params, adaptive = F) {
   
   initial_particles <- initialise_normal_particles(num_particles, prior_params)
   
   if (adaptive) {
-    return(eki_adaptive(num_particles, initial_particles, true_data, 
+    return(eki_adaptive(num_particles, initial_particles, true_data, true_params,
                         synthetic_normal_known_mean,
                         densities_normal_known_mean))
   }
   else {
     return(eki(num_particles, initial_particles, true_data, 
-               synthetic_normal_known_mean))
+               true_params, synthetic_normal_known_mean))
   }
   
 }
