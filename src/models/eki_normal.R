@@ -66,11 +66,11 @@ eki_normal <- function(num_particles, true_params, prior_params, adaptive = F) {
   
   if (adaptive) {
     return(eki_adaptive(num_particles, initial_particles, true_data, 
-                        synthetic_normal, densities_normal))
+                        true_params, synthetic_normal, densities_normal))
   }
   else {
     return(eki(num_particles, initial_particles, true_data, 
-               synthetic_normal, densities_normal))
+               true_params, synthetic_normal))
   }
   
 }
