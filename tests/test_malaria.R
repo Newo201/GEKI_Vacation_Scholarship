@@ -1,4 +1,4 @@
-pacman::p_load(pacman, testthat)
+pacman::p_load(pacman, testthat, deSolve, rootSolve)
 
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_malaria.R')
@@ -16,13 +16,32 @@ prior_params <- list(din.sd = 2,
 ## We can look at more informal intuition - e.g. when eta0 is lower dW/dt is lower so
 ## we expect the number of cases to be lower also
 
-test_that('Solution to first equation gives correct parameters')
+# test_that('Solution to first equation gives correct parameters')
+
+test_that('Sum of variables equals population', {
+  parameters <- c(N = 29203486,
+                  L = 66.67,
+                  dimm = 0.93,
+                  d_in = 0.25, 
+                  d_treat0 = 3/52,
+                  p1 = 0.87,
+                  p2 = 0.08, 
+                  amp = 0.67,
+                  R_m = 1.23,
+                  phi = 0.11,
+                  eta0 = 0.11,
+                  k = 0.01, 
+                  Tau = 17.33333)
+  
+  #The initial conditions for solving the ODE 
+  ICs <- solve_steady_state(parameters)
+  expect_equal(Reduce("+", ICs), parameters['N'][[1]])
+})
 
 test_that('Length of likelihood mean is correct', {
   
-  constrained_parameters <- list(d_in = 2/52, phi = 0.25, eta0 = 0.11, sigma = 10)
-  unconstrained_parameters <- unconstrain_malaria_params(constrained_parameters)
-  l_mean <- likelihood_malaria_mean(unconstrained_parameters)
+  constrained_parameters <- list(d_in = 0.3, phi = 0.25, eta0 = 0.05, sigma = 10)
+  l_mean <- likelihood_malaria_mean(constrained_parameters)
   expect_equal(length(l_mean), 129)
 })
 

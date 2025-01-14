@@ -1,5 +1,7 @@
 pacman::p_load(pacman, extraDistr)
 
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/equations_malaria.R')
+
 #################### Parameter Transformations #############################
 
 constrain_malaria_params <- function(parameters) {
@@ -111,7 +113,7 @@ likelihood_malaria_mean <- function(variable_parameters) {
   #Save first simulation;
   simulation.data<-c(NA)
   simulation.data[1]<-out[,"W"][1]
-  for(k in 2:length(Noisydata)){
+  for(k in 2:129){
     simulation.data[k]<-out[,"W"][k]-out[,"W"][k-1]
   }
   return(simulation.data)
