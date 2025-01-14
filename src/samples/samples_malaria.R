@@ -57,6 +57,31 @@ log_sigma_prior_sample <- function(parameters, num_samples) {
 
 ###################### Likelihood ##############################
 
+solve_steady_state(parameters) {
+  
+  I1 = 5
+  I2 =10
+  S = 29203486-I1-I2
+  R = 0
+  ICss <- c(S = S, I1 = I1, I2 =I2, R = R)     #init vals of latent states
+  
+  # Find the Equlibrum status___________________________________
+  Eq<- runsteady(y = ICss, times = c(0,2000), func = mtdrift_theta,  parms = parameters)
+  
+  #store the steady state values________________________________
+  S_1 <- Eq$y['S'][[1]]
+  I1_1 <- Eq$y['I1'][[1]]
+  I2_1 <- Eq$y['I2'][[1]]
+  R_1 <- Eq$y['R'][[1]]
+  
+  # Solve Baseline Model__________________________________________
+  #The initial conditions for solving the ODE   
+  ICs<- c(S=S_1, I1= I1_1,  I2=I2_1 ,R= R_1,W=0)
+  
+  return(ICs)
+  
+}
+
 likelihood_malaria_mean <- function(variable_parameters) {
   
   # Assumes variable parameters input is in constrained form
@@ -79,24 +104,8 @@ likelihood_malaria_mean <- function(variable_parameters) {
   dt= 1/12                                     #step size one monthe per a year
   true_time <- seq(0, 10.67, by = dt)                  #time step
   
-  I1 = 5
-  I2 =10
-  S = 29203486-I1-I2
-  R = 0
-  ICss <- c(S = S, I1 = I1, I2 =I2, R = R)     #init vals of latent states
-  
-  # Find the Equlibrum status___________________________________
-  Eq<- runsteady(y = ICss, times = c(0,2000), func = mtdrift_theta,  parms = parameters)
-  
-  #store the steady state values________________________________
-  S_1 <- Eq$y['S'][[1]]
-  I1_1 <- Eq$y['I1'][[1]]
-  I2_1 <- Eq$y['I2'][[1]]
-  R_1 <- Eq$y['R'][[1]]
-  
-  # Solve Baseline Model__________________________________________
-  #The initial conditions for solving the ODE   
-  ICs<- c(S=S_1, I1= I1_1,  I2=I2_1 ,R= R_1,W=0)
+  #The initial conditions for solving the ODE 
+  ICs <- solve_steady_state(parameters)
   
   #Solve the ODE using the Defulet Solver LSoda
   out <- (ode(y = ICs, times = true_time, func = mtdrift, parms = parameters))
