@@ -7,6 +7,37 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/mcmc_normal.R')
 ```
 
+```{r}
+generate_results <- function(num_particles, true_parameters) {
+  
+  true_data <- likelihood_normal(true_parameters)
+  
+  # Model 1
+  eki_result_known_var <- eki_normal_known_var(num_particles, true_data, true_parameters, 
+                                               prior_params, adaptive = adaptive)
+  plot_eki_normal_known_var(eki_result_known_var, true_parameters, prior_params)
+  
+  # Model 2
+  eki_result_known_mean <- eki_normal_known_mean(num_particles, true_data, true_parameters, 
+                                                 prior_params, adaptive = adaptive)
+  plot_eki_normal_known_mean(eki_result_known_mean, true_parameters, prior_params)
+  
+  # Model 3
+  eki_result <- eki_normal(num_particles, true_parameters, true_data, 
+                           prior_params, adaptive = adaptive)
+  plot_eki_normal(eki_result, true_parameters, prior_params)
+  
+  # MCMC Comparison for Model 3
+  run.1 <- normal_mcmc(true_data, true_params, prior_params)
+  chain.1 <- run.1$batch
+  run.2 <- normal_mcmc(true_data, true_params, prior_params)
+  chain.2 <- run.2$batch
+  plot_mcmc_trace_plots(chain.1, chain.2, 500)
+  plot_mcmc_histogram(chain.1, chain.2, true_params, 500)
+  
+}
+```
+
 # Results For Multivariate Normal Model
 
 ## The Model
@@ -52,22 +83,48 @@ In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively 
 
 ```{r}
 num_dimensions <- c(10, 50, 100)
+num_particles <- 400
 for (dimension in num_dimensions) {
-  num_particles <- 4*dimension
   true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, dimension))
-  
-  # Model 1
-  eki_result_known_var <- eki_normal_known_var(num_particles, true_parameters, prior_params, adaptive = adaptive)
-  plot_eki_normal_known_var(eki_result_known_var, true_parameters, prior_params)
-  
-  # Model 2
-  eki_result_known_mean <- eki_normal_known_mean(num_particles, true_parameters, prior_params, adaptive = adaptive)
-  plot_eki_normal_known_mean(eki_result_known_mean, true_parameters, prior_params)
-  
-  # Model 3
-  eki_result <- eki_normal(num_particles, true_parameters, prior_params, adaptive = adaptive)
-  plot_eki_normal(eki_result, true_parameters, prior_params)
-  
-  # MCMC Comparison for Model 3
+  generate_results(num_particles, true_parameters)
+}
+```
+
+## Changing $\alpha$
+
+In this experiment, I keep $\sigma^2$ fixed at 4, make $x$ a 50-dimensional vector of 1s and change $\alpha$ from 0 to 10 in increments of 2. The purpose of this is to make sure that the EKI algorithm is accurate across of range of $\alpha$ and if it changes how the noise parameter is estimated.
+
+```{r}
+alpha_seq <- seq(0, 10, length.out = 6)
+num_dimensions <- 50 
+num_particles <- 400 
+for (alpha in alpha_seq) {    
+  true_parameters <- list(alpha = alpha, sigma = 2, x = rep(1, num_dimensions))   
+  generate_results(num_particles, true_parameters)
+}
+```
+
+## Changing $\sigma^2$
+
+```{r}
+sigma_seq <- seq(2, 10, length.out = 5)
+num_dimensions <- 50
+num_particles <- 400
+for (sigma in sigma_seq) {
+
+  true_parameters <- list(alpha = 2, sigma = sigma, x = rep(1, num_dimensions))
+  generate_results(num_particles, true_parameters)
+}
+```
+
+## Changing Number of Particles
+
+```{r}
+num_dimensions <- 50
+particle_seq <- c(100, 500, 1000) 
+true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, num_dimensions))
+
+for (num_particles in particle_seq) {
+  generate_results(num_particles, true_parameters)
 }
 ```
