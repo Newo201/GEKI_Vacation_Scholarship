@@ -4,6 +4,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_malaria.R')
 
 ##################### Fixtures #########################
+num_particles <- 5
 
 prior_params <- list(din.sd = 2,
                      phi.mean = 0, phi.sd = 1,
@@ -45,14 +46,34 @@ test_that('Length of likelihood mean is correct', {
   expect_equal(length(l_mean), 129)
 })
 
+test_that('Length of likelihood samples is correct', {
+  
+  constrained_parameters <- list(d_in = 2/52, phi = 0.25, eta0 = 0.11, sigma = 10)
+  unconstrained_parameters <- unconstrain_malaria_params(constrained_parameters)
+  likelihood_sample <- likelihood_malaria(unconstrained_parameters)
+  expect_equal(length(likelihood_sample), 129)
+  
+})
+
 ######################### Initialising Particles ############################
 
 test_that('Dimensions of particles are as expected', {
   
-  particles <- initialise_malaria_particles(400, prior_params)
-  expect_equal(dim(particles), c(400, 4))
-  
+  particles <- initialise_malaria_particles(num_particles, prior_params)
+  expect_equal(dim(particles), c(num_particles, 4))
 })
+
+test_that('Dimensions of synthetic data is as expected', {
+  
+  particles <- initialise_malaria_particles(num_particles, prior_params)
+  likelihood_samples <- synthetic_malaria(num_particles, particles, c())
+  expect_equal(dim(likelihood_samples), c(num_particles, 129))
+  expect_equal(sum(is.na(likelihood_samples)), 0)
+})
+
+particles <- initialise_malaria_particles(num_particles, prior_params)
+likelihood_samples <- synthetic_malaria(num_particles, particles, c())
+sum(is.na(likelihood_samples))
 
 ######################### Other #############################################
 

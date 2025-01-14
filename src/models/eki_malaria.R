@@ -24,17 +24,14 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 
 synthetic_malaria <- function(num_particles, particles, parameters) {
   
-  x.true <- parameters$x
-  d_y <- length(x.true)
-  
-  likelihood_samples <- matrix(nrow = num_particles, ncol = d_y)
+  likelihood_samples <- matrix(nrow = num_particles, ncol = 129)
   
   # For each particle, draw one observation from the likelihood
   # ToDo: vectorise this operation
   for (particle in 1:num_particles) {
     
     # These parameters are in unconstrained form
-    current_params <- c(d_in = particles[particle, 1],
+    current_params <- list(d_in = particles[particle, 1],
                         phi = particles[particle, 2],
                         eta0 = particles[particle, 3],
                         sigma = particles[particle, 4])

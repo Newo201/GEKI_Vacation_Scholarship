@@ -101,6 +101,8 @@ likelihood_malaria_mean <- function(variable_parameters) {
                       k = 0.01, 
                       Tau = 17.33333)
   
+  print(parameters)
+  
   start_res=10                                 #Year Resistance Begins
   dt= 1/12                                     #step size one monthe per a year
   true_time <- seq(0, 10.67, by = dt)                  #time step
