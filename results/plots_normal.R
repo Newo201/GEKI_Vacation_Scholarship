@@ -58,7 +58,7 @@ plot_eki_normal <- function(eki_result, true_params, prior_params) {
 }
 
 # ToDo: add plot of posterior density
-plot_eki_normal_known_var <- function(eki_result, true_params, prior_params) {
+plot_eki_normal_known_var <- function(eki_result, true_data, true_params, prior_params) {
   
   alpha_particles <- eki_result$particles[, 1]
   alpha_sequence <- seq(min(alpha_particles), max(alpha_particles), 
@@ -74,6 +74,17 @@ plot_eki_normal_known_var <- function(eki_result, true_params, prior_params) {
        xlab = expression(alpha), ylab = 'Density')
   lines(alpha_sequence, alpha_prior_density, col = 'blue')
   abline(v = true_alpha, col = 'red')
+  
+  Q <- (prior_params$alpha.sd**2) * diag(1)
+  m <- prior_params$alpha.mean * diag(1)
+  H <- t(t(true_params$x))
+  R <- (true_params$sigma**2)*diag(length(H))
+  
+  post_mean <- m + Q %*% t(H) %*% ginv(H %*% Q %*% t(H) + R) %*% (t(true_data) - H %*% m)
+  post_var <- Q - Q %*% t(H) %*% ginv(H %*% Q %*% t(H) + R) %*% H %*% Q
+  
+  alpha_post_density <- dnorm(alpha_sequence, mean = post_mean, sd = sqrt(post_var))
+  lines(alpha_sequence, alpha_post_density, col = 'green')
 }
 
 plot_eki_normal_known_mean <- function(eki_result, true_params, prior_params) {

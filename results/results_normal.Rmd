@@ -44,7 +44,8 @@ generate_results <- function(num_particles, true_parameters) {
   # Model 1
   eki_result_known_var <- eki_normal_known_var(num_particles, true_data, true_parameters, 
                                                prior_params, adaptive = adaptive)
-  plot_eki_normal_known_var(eki_result_known_var, true_parameters, prior_params)
+  plot_eki_normal_known_var(eki_result_known_var, true_data, 
+                            true_parameters, prior_params)
   
   # Model 2
   eki_result_known_mean <- eki_normal_known_mean(num_particles, true_data, true_parameters, 
@@ -158,4 +159,8 @@ true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, num_dimensions))
 for (num_particles in particle_seq) {
   generate_results(num_particles, true_parameters)
 }
+```
+
+```{r}
+plot(c(1,2,3), c(1,2,3), xlab = expression(sigma^2))
 ```
