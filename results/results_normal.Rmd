@@ -32,6 +32,8 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 
 ```{r}
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/tempering.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/results/plots_normal.R')
 ```
 
 ```{r}
@@ -50,17 +52,17 @@ generate_results <- function(num_particles, true_parameters) {
   plot_eki_normal_known_mean(eki_result_known_mean, true_parameters, prior_params)
   
   # Model 3
-  eki_result <- eki_normal(num_particles, true_parameters, true_data, 
+  eki_result <- eki_normal(num_particles, true_data, true_parameters, 
                            prior_params, adaptive = adaptive)
   plot_eki_normal(eki_result, true_parameters, prior_params)
   
   # MCMC Comparison for Model 3
-  run.1 <- normal_mcmc(true_data, true_params, prior_params)
+  run.1 <- normal_mcmc(true_data, true_parameters, prior_params)
   chain.1 <- run.1$batch
-  run.2 <- normal_mcmc(true_data, true_params, prior_params)
+  run.2 <- normal_mcmc(true_data, true_parameters, prior_params)
   chain.2 <- run.2$batch
   plot_mcmc_trace_plots(chain.1, chain.2, 500)
-  plot_mcmc_histogram(chain.1, chain.2, true_params, 500)
+  plot_mcmc_histogram(chain.1, chain.2, true_parameters, 500)
   
 }
 ```

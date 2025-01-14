@@ -36,7 +36,7 @@ synthetic_normal_known_mean <- function(num_particles, particles, parameters) {
   
 }
 
-initialise_normal_particles <- function(num_particles, parameters) {
+initialise_normal_particles_known_mean <- function(num_particles, parameters) {
   
   x.true <- parameters$x
   d_y <- length(x.true)
@@ -53,7 +53,7 @@ initialise_normal_particles <- function(num_particles, parameters) {
 
 eki_normal_known_mean <- function(num_particles, true_data, true_params, prior_params, adaptive = F) {
   
-  initial_particles <- initialise_normal_particles(num_particles, prior_params)
+  initial_particles <- initialise_normal_particles_known_mean(num_particles, prior_params)
   
   if (adaptive) {
     return(eki_adaptive(num_particles, initial_particles, true_data, true_params,

@@ -4,10 +4,12 @@ plot_mcmc_trace_plots <- function(chain.1, chain.2, burnin = 0, iterations = 1e4
   
   par(mfrow = c(1,2))
   
-  plot(chain.1[(burnin + 1):iterations, 1], type = 'l', main = 'alpha')
+  plot(chain.1[(burnin + 1):iterations, 1], type = 'l', main = 'MCMC', 
+       xlab = 'Iteration', ylab = expression(alpha))
   lines(chain.2[(burnin + 1):iterations, 1], col = 'red')
   
-  plot(chain.1[(burnin + 1):iterations, 2], type = 'l', main = 'sigma2')
+  plot(chain.1[(burnin + 1):iterations, 2], type = 'l', main = 'MCMC', 
+       xlab = 'Iteration', ylab = expression(sigma^2))
   lines(chain.2[(burnin + 1):iterations, 2], col = 'red')
 }
 
@@ -18,9 +20,9 @@ plot_mcmc_histogram <- function(chain.1, chain.2, true_params, burnin = 0,
   combined_chains <- rbind(chain.1.burnin, chain.2.burnin)
   
   par(mfrow = c(1,2))
-  hist(combined_chains[, 1], freq = F, main = 'alpha')
+  hist(combined_chains[, 1], freq = F, main = 'MCMC', xlab = expression(alpha), ylab = 'Density')
   abline(v = true_params$alpha, col = 'red')
-  hist(combined_chains[, 2], freq = F, main = 'sigma2')
+  hist(combined_chains[, 2], freq = F, main = 'MCMC', xlab = expression(log(sigma^2)), ylab = '')
   abline(v = log(true_params$sigma**2), col = 'red')
   
 }
@@ -45,10 +47,12 @@ plot_eki_normal <- function(eki_result, true_params, prior_params) {
   
   par(mfrow = c(1, 2))
   
-  hist(alpha_particles, freq = F, main = 'Alpha', xlab = '')
+  hist(alpha_particles, freq = F, main = 'EKI', 
+       xlab = expression(alpha), ylab = 'Density')
   lines(alpha_sequence, alpha_prior_density, col = 'blue')
   abline(v = true_alpha, col = 'red')
-  hist(sigma2_particles, freq = F, main = 'Sigma2', xlab = '', ylab = '')
+  hist(sigma2_particles, freq = F, main = 'EKI', 
+       xlab = expression(sigma^2), ylab = '')
   lines(sigma2_sequence, sigma2_prior_density, col = 'blue')
   abline(v = true_sigma2, col = 'red')
 }
@@ -66,7 +70,8 @@ plot_eki_normal_known_var <- function(eki_result, true_params, prior_params) {
   
   par(mfrow = c(1, 1))
   
-  hist(alpha_particles, freq = F, main = 'Alpha', xlab = '')
+  hist(alpha_particles, freq = F, main = 'EKI Known Variance', 
+       xlab = expression(alpha), ylab = 'Density')
   lines(alpha_sequence, alpha_prior_density, col = 'blue')
   abline(v = true_alpha, col = 'red')
 }
@@ -82,7 +87,8 @@ plot_eki_normal_known_mean <- function(eki_result, true_params, prior_params) {
   
   par(mfrow = c(1, 1))
   
-  hist(sigma2_particles, freq = F, main = 'Sigma2', xlab = '', ylab = '')
+  hist(sigma2_particles, freq = F, main = 'EKI Known Mean', 
+       xlab = expression(sigma^2), ylab = 'Density')
   lines(sigma2_sequence, sigma2_prior_density, col = 'blue')
   abline(v = true_sigma2, col = 'red')
 }
