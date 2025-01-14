@@ -62,17 +62,15 @@ initialise_malaria_particles <- function(num_particles, parameters) {
   return(particles)
 }
 
-eki_malaria <- function(num_particles, true_params, prior_params, adaptive = F) {
+eki_malaria <- function(num_particles, true_data, prior_params, adaptive = F) {
   
   initial_particles <- initialise_malaria_particles(num_particles, prior_params)
   
   if (adaptive) {
-    return(eki_adaptive(num_particles, initial_particles, true_params, 
-                        likelihood_malaria, synthetic_malaria, densities_malaria))
+    return(eki_adaptive(num_particles, initial_particles, true_data, synthetic_malaria, densities_malaria))
   }
   else {
-    return(eki(num_particles, initial_particles, true_params, 
-               likelihood_malaria, synthetic_malaria, densities_malaria))
+    return(eki(num_particles, initial_particles, true_data, synthetic_malaria))
   }
   
 }
