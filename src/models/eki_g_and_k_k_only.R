@@ -68,17 +68,18 @@ initialise_g_and_k_particles_k_only <- function(num_particles, parameters) {
 
 eki_g_and_k_k_only <- function(num_particles, true_params, prior_params, adaptive = F) {
   
+  set.seed(2025)
+  true_data <- likelihood_g_and_k_summary(true_params)
+  set.seed(NULL)
+  
   initial_particles <- initialise_g_and_k_particles_k_only(num_particles, prior_params)
-  print(dim(initial_particles))
   
   if (adaptive) {
-    return(eki_adaptive(num_particles, initial_particles, true_params, 
-                        likelihood_g_and_k_summary, synthetic_g_and_k_k_only_summary, 
+    return(eki_adaptive(num_particles, initial_particles, true_data, synthetic_g_and_k_k_only_summary, 
                         densities_g_and_k_k_only))
   }
   else {
-    return(eki(num_particles, initial_particles, true_params, 
-               likelihood_g_and_k_summary, synthetic_g_and_k_k_only_summary))
+    return(eki(num_particles, initial_particles, true_data, synthetic_g_and_k_k_only_summary))
   }
   
 }
