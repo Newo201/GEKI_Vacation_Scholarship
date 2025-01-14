@@ -35,7 +35,7 @@ plot_eki_normal <- function(eki_result, true_params, prior_params) {
 ```
 
 ```{r}
-adaptive = FALSE
+adaptive = TRUE
 ```
 
 # Results For Multivariate Normal Model
@@ -80,7 +80,8 @@ num_dimensions <- c(10, 50, 100)
 for (dimension in num_dimensions) {
   num_particles <- 4*dimension
   true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, dimension))
-  eki_result <- eki_normal(num_particles, true_parameters, prior_params, adaptive = adaptive)
+  true_data <- likelihood_normal(true_parameters)
+  eki_result <- eki_normal(num_particles, true_data, true_parameters, prior_params, adaptive = adaptive)
   plot_eki_normal(eki_result, true_parameters, prior_params)
 }
 ```

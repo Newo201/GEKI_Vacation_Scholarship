@@ -70,3 +70,19 @@ plot_eki_normal_known_var <- function(eki_result, true_params, prior_params) {
   lines(alpha_sequence, alpha_prior_density, col = 'blue')
   abline(v = true_alpha, col = 'red')
 }
+
+plot_eki_normal_known_mean <- function(eki_result, true_params, prior_params) {
+  
+  sigma2_particles <- eki_result$particles[, 1]
+  sigma2_sequence <- seq(min(sigma2_particles), max(sigma2_particles),
+                         length.out = 20)
+  sigma2_prior_density <- dnorm(sigma2_sequence, mean = prior_params$sigma2.mean, 
+                                sd = prior_params$sigma2.sd)
+  true_sigma2 <- log(true_params$sigma**2)
+  
+  par(mfrow = c(1, 1))
+  
+  hist(sigma2_particles, freq = F, main = 'Sigma2', xlab = '', ylab = '')
+  lines(sigma2_sequence, sigma2_prior_density, col = 'blue')
+  abline(v = true_sigma2, col = 'red')
+}

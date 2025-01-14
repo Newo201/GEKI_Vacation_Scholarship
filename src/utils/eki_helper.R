@@ -1,5 +1,3 @@
-pacman::p_load(pacman, MASS)
-
 calculate_covariances <- function(particles, likelihood_samples) {
   
   # Calculate the covariance matrices

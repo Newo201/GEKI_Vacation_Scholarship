@@ -1,5 +1,3 @@
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/tempering.R')
-
 ########################## EKI Algorithm ####################################
 
 eki <- function(num_particles, initial_particles, true_data, true_params, synthetic_data_func) {
@@ -64,7 +62,7 @@ eki_adaptive <- function(num_particles, initial_particles, true_data, true_param
     covariances <- calculate_covariances(particles, likelihood_samples)
     
     # Find the next temperature
-    next_temp <- find_next_temp(current_temp, ll_densities)
+    next_temp <- find_next_temp(current_temp, ll_densities, num_particles*0.5)
     # print(next_temp)
     temp_difference <- next_temp - current_temp
     particles <- update_particles(temp_difference, particles, simulated_data, likelihood_samples, covariances, num_particles)

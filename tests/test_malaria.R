@@ -97,3 +97,6 @@ test_that('Parameters are being unconstrained', {
   re_constrained_parameters <- constrain_malaria_params(unconstrained_parameters)
   expect_equal(constrained_parameters, re_constrained_parameters)
 })
+
+
+dnorm(c(1,2,3), mean = c(1,2,3), sd = 2)

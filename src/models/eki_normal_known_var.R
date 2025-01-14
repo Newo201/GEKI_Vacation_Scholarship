@@ -1,10 +1,3 @@
-pacman::p_load(pacman, mvtnorm, purrr)
-
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_normal.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/pdfs/pdfs_normal.R')
-
-
 densities_normal_known_var <- function(true_data, num_particles, particles, parameters) {
   
   x.true <- parameters$x
