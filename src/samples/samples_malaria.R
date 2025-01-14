@@ -1,4 +1,4 @@
-pacman::p_load(pacman, fdrtool)
+pacman::p_load(pacman, extraDistr)
 
 #################### Parameter Transformations #############################
 
@@ -16,7 +16,7 @@ unconstrain_malaria_params <- function(parameters) {
   
   d_in <- log(parameters$d_in)
   phi <- qlogis(parameters$phi) # Logit transformation
-  eta0 <- qlogis(parameters$phi) # Logit transformation
+  eta0 <- qlogis(parameters$eta0) # Logit transformation
   sigma <- log(parameters$sigma)
   
   return(list(d_in = d_in, phi = phi, eta0 = eta0, sigma = sigma))
@@ -28,17 +28,16 @@ unconstrain_malaria_params <- function(parameters) {
 # Generate samples from the prior distributions
 # I think this might be stored in log space, but I have to check
 log_din_prior_sample <- function(parameters, num_samples) {
-  mean = parameters$din.mean # 0
   sd = parameters$din.sd # 2
   
   # Sample from a half-normal distribution and then apply a log transformation
   # so that the parameter is unconstrained
-  return(log(rhalfnorm(num_samples, mean = mean, sd = sd)))
+  return(log(rhnorm(num_samples, sigma = sd)))
 }
 
 logit_phi_prior_sample <- function(parameters, num_samples) {
   mean = parameters$phi.mean # 0
-  sd = parameters$din.sd # 1
+  sd = parameters$phi.sd # 1
   return(rnorm(num_samples, mean = mean, sd = sd))
 }
 
@@ -57,7 +56,7 @@ log_sigma_prior_sample <- function(parameters, num_samples) {
 
 ###################### Likelihood ##############################
 
-solve_steady_state(parameters) {
+solve_steady_state <- function(parameters) {
   
   I1 = 5
   I2 =10
@@ -115,6 +114,7 @@ likelihood_malaria_mean <- function(variable_parameters) {
   for(k in 2:length(Noisydata)){
     simulation.data[k]<-out[,"W"][k]-out[,"W"][k-1]
   }
+  return(simulation.data)
 }
 
 likelihood_malaria <- function(variable_parameters) {
@@ -126,10 +126,3 @@ likelihood_malaria <- function(variable_parameters) {
   
   return(rnorm(n = length(likelihood_mean), mean = likelihood_mean, sd = sigma))
 }
-
-rnorm(n = 3, mean = c(1,5,10), sd = 0.01)
-test_seq <- seq(0, 10, by = 0.01)
-plot(dhalfnorm(test_seq))
-
-hist(abs(rnorm(1000)), freq = F)
-lines(test_seq, dhalfnorm(test_seq), col = 'blue')

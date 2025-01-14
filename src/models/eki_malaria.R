@@ -50,7 +50,7 @@ synthetic_malaria <- function(num_particles, particles, parameters) {
 initialise_malaria_particles <- function(num_particles, parameters) {
   
   # Sample from the prior distribution
-  prior_samples <- matrix(nrow = num_particles, ncol = 2)
+  prior_samples <- matrix(nrow = num_particles, ncol = 4)
   prior_samples[, 1] <- log_din_prior_sample(parameters, num_particles)
   prior_samples[, 2] <- logit_phi_prior_sample(parameters, num_particles)
   prior_samples[, 3] <- logit_eta0_prior_sample(parameters, num_particles)
