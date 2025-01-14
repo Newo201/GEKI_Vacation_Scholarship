@@ -24,7 +24,9 @@ eki <- function(num_particles, initial_particles, true_params, likelihood_func, 
   # Until we reach a temperature of one do the following
   for (temp in 1:10) {
     
+    # print("Hello")
     likelihood_samples <- synthetic_data_func(num_particles, particles, true_params)
+
   
     covariances <- calculate_covariances(particles, likelihood_samples)
     
