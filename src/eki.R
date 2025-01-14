@@ -2,7 +2,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 
 ########################## EKI Algorithm ####################################
 
-eki <- function(num_particles, initial_particles, true_data, synthetic_data_func) {
+eki <- function(num_particles, initial_particles, true_data, true_params, synthetic_data_func) {
 
   # Synthetic_data_func -> a function which draws samples from the likelihood using particle parameters
   ## Takes num_particles, particles and true_params as arguments
@@ -40,7 +40,7 @@ eki <- function(num_particles, initial_particles, true_data, synthetic_data_func
 ################## EKI Algorithm with Adaptive Temperature ##############################
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
 
-eki_adaptive <- function(num_particles, initial_particles, true_data, synthetic_data_func, density_func) {
+eki_adaptive <- function(num_particles, initial_particles, true_data, true_params, synthetic_data_func, density_func) {
   
   # Synthetic_data_func -> a function which draws samples from the likelihood using particle parameters
   ## Takes true_params, particles and number of particles as arguments
@@ -59,7 +59,7 @@ eki_adaptive <- function(num_particles, initial_particles, true_data, synthetic_
   while (current_temp < 1) {
     
     likelihood_samples <- synthetic_data_func(num_particles, particles, true_params)
-    ll_densities <- densitiy_func(true_data, num_particles, particles, true_params)
+    ll_densities <- density_func(true_data, num_particles, particles, true_params)
     
     covariances <- calculate_covariances(particles, likelihood_samples)
     

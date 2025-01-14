@@ -1,0 +1,73 @@
+## Import Functions
+
+```{r}
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal_known_var.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal_known_mean.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/mcmc_normal.R')
+```
+
+# Results For Multivariate Normal Model
+
+## The Model
+
+We assume that we have access to a single observation from a multivariate normal distribution $y \sim N(\alpha x, \sigma^2I)$ where $\alpha$ is a scalar and $x$ is a known vector.
+
+I look at three variations of this model
+
+-   The variance is known, but the mean is not $\theta = \alpha$
+
+-   The mean is known, but the variance is not $\theta = \sigma^2$
+
+-   Both parameters are unknown $\theta = (\alpha, \sigma^2)$.
+
+I look at a range of combinations of $\alpha, x$ and $\sigma^2$, comparing against MCMC sampling. Of particular interest is how well GEKI is able to estimate the noise parameter, since previous EKI algorithms require the noise parameter to be known.
+
+### Priors
+
+In all combinations we draw from the same priors (if that parameter is considered unknown):
+
+-   $\alpha \sim ~ N(0, 5^2)$
+
+-   $\log(\sigma^2) \sim N(2, 1^2)$
+
+```{r}
+prior_params <- list(alpha.mean = 0, alpha.sd = 5, 
+                     sigma2.mean = 2, sigma2.sd = 1)
+```
+
+### Adaptive Tempering
+
+```{r}
+adaptive = TRUE
+```
+
+### Output
+
+For each variation of the model, I plot the EKI histograms of the particles against their prior. In the known mean, unknown variance case, I also plot the posterior since there is an analytical posterior in this special case. This serves as a check that the algorithm has been implemented correctly.
+
+## Changing Number of Dimensions
+
+In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively and let $x$ be a vector of 1s corresponding to 10, 50 and 100 dimensions. I keep the number of particles fixed at 400. The purpose of this is to see how the EKI algorithm performs when the number of dimensions increases.
+
+```{r}
+num_dimensions <- c(10, 50, 100)
+for (dimension in num_dimensions) {
+  num_particles <- 4*dimension
+  true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, dimension))
+  
+  # Model 1
+  eki_result_known_var <- eki_normal_known_var(num_particles, true_parameters, prior_params, adaptive = adaptive)
+  plot_eki_normal_known_var(eki_result_known_var, true_parameters, prior_params)
+  
+  # Model 2
+  eki_result_known_mean <- eki_normal_known_mean(num_particles, true_parameters, prior_params, adaptive = adaptive)
+  plot_eki_normal_known_mean(eki_result_known_mean, true_parameters, prior_params)
+  
+  # Model 3
+  eki_result <- eki_normal(num_particles, true_parameters, prior_params, adaptive = adaptive)
+  plot_eki_normal(eki_result, true_parameters, prior_params)
+  
+  # MCMC Comparison for Model 3
+}
+```

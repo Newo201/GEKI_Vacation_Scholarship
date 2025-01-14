@@ -1,3 +1,8 @@
+---
+title: Generalised Ensemble Kalman Inversion - Multivariate Normal
+output: github_document
+---
+
 ```{r}
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal.R')
 ```
@@ -37,27 +42,40 @@ adaptive = FALSE
 
 ## The Model
 
-We assume that we have access to a single observation from a multivariate normal distribution $y \sim N(\alpha x, \sigma^2I)$ where $\alpha$ is a scalar and $x$ is a known vector. The unknown parameters in this model are $\theta = (\alpha, \sigma^2)$.
+We assume that we have access to a single observation from a multivariate normal distribution $y \sim N(\alpha x, \sigma^2I)$ where $\alpha$ is a scalar and $x$ is a known vector.
+
+I look at three variations of this model
+
+-   The variance is known, but the mean is not $\theta = \alpha$
+
+-   The mean is known, but the variance is not $\theta = \sigma^2$
+
+-   Both parameters are unknown $\theta = (\alpha, \sigma^2)$.
 
 I look at a range of combinations of $\alpha, x$ and $\sigma^2$, comparing against MCMC sampling. Of particular interest is how well GEKI is able to estimate the noise parameter, since previous EKI algorithms require the noise parameter to be known.
 
-In all combinations we draw from the same priors:
+### Priors
+
+In all combinations we draw from the same priors (if that parameter is considered unknown):
 
 -   $\alpha \sim ~ N(0, 5^2)$
 
--   $\log(\sigma^2) \sim N(0, 2^2)$
+-   $\log(\sigma^2) \sim N(2, 1^2)$
 
 ```{r}
 prior_params <- list(alpha.mean = 0, alpha.sd = 5, 
                      sigma2.mean = 2, sigma2.sd = 1)
 ```
 
+### Output
+
+For each variation of the model, I plot the EKI histograms of the particles against their prior. In the known mean, unknown variance case, I also plot the posterior since there is an analytical posterior in this special case. This serves as a check that the algorithm has been implemented correctly.
+
 ## Changing Number of Dimensions
 
 In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively and let $x$ be a vector of 1s corresponding to 10, 50 and 100 dimensions. The purpose of this is to see how the EKI algorithm performs when the number of dimensions increases.
 
 ```{r}
-start.time = Sys.time()
 num_dimensions <- c(10, 50, 100)
 for (dimension in num_dimensions) {
   num_particles <- 4*dimension
@@ -65,8 +83,6 @@ for (dimension in num_dimensions) {
   eki_result <- eki_normal(num_particles, true_parameters, prior_params, adaptive = adaptive)
   plot_eki_normal(eki_result, true_parameters, prior_params)
 }
-end.time = Sys.time()
-end.time - start.time
 ```
 
 Generally speaking, the model does reasonably well at estimating $\alpha$ but appears to under-estimate the noise parameter. As the number of dimensions increases, the distribution of $\alpha$ becomes more concentrated, but the distribution of $\sigma^2$ does not demonstrate any noticeable pattern.
