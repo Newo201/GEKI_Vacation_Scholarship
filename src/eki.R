@@ -2,17 +2,14 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 
 ########################## EKI Algorithm ####################################
 
-eki <- function(num_particles, initial_particles, true_params, likelihood_func, synthetic_data_func) {
-  
-  # Likelihood_func -> a function which draws 1 sample from the likelihood using true parameters (only takes true_params as argument)
+eki <- function(num_particles, initial_particles, true_data, synthetic_data_func) {
+
   # Synthetic_data_func -> a function which draws samples from the likelihood using particle parameters
   ## Takes num_particles, particles and true_params as arguments
   
-  # We make a single draw from the likelihood using the true (unknown parameters)
-  true_data <- likelihood_func(true_params)
   d_y <- length(true_data)
   # I'm replicating this data for the number of particles to make the dimensions easier to work with
-  simulated_data <- matrix(likelihood_func(true_params), nrow = num_particles, ncol = d_y, byrow = T)
+  simulated_data <- matrix(true_data, nrow = num_particles, ncol = d_y, byrow = T)
   
   # Initialise the particles and likelihood draws
   particles <- initial_particles
@@ -43,18 +40,14 @@ eki <- function(num_particles, initial_particles, true_params, likelihood_func, 
 ################## EKI Algorithm with Adaptive Temperature ##############################
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
 
-eki_adaptive <- function(num_particles, initial_particles, true_params, 
-                         likelihood_func, synthetic_data_func, density_func) {
+eki_adaptive <- function(num_particles, initial_particles, true_data, synthetic_data_func, density_func) {
   
-  # Likelihood_func -> a function which draws 1 sample from the likelihood using true parameters (only takes true_params as argument)
   # Synthetic_data_func -> a function which draws samples from the likelihood using particle parameters
   ## Takes true_params, particles and number of particles as arguments
   
-  # We make a single draw from the likelihood using the true (unknown parameters)
-  true_data <- likelihood_func(true_params)
   d_y <- length(true_data)
   # I'm replicating this data for the number of particles to make the dimensions easier to work with
-  simulated_data <- matrix(likelihood_func(true_params), nrow = num_particles, ncol = d_y, byrow = T)
+  simulated_data <- matrix(true_data, nrow = num_particles, ncol = d_y, byrow = T)
   
   # Initialise the particles and likelihood draws
   particles <- initial_particles
