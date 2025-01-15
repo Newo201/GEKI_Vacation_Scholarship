@@ -28,7 +28,6 @@ unconstrain_malaria_params <- function(parameters) {
 ####################### Prior Distributions #######################
 
 # Generate samples from the prior distributions
-# I think this might be stored in log space, but I have to check
 log_din_prior_sample <- function(parameters, num_samples) {
   sd = parameters$din.sd # 2
   
@@ -91,33 +90,32 @@ likelihood_malaria_mean <- function(variable_parameters) {
                       L = 66.67,
                       dimm = 0.93,
                       d_in = variable_parameters$d_in, 
-                      d_treat0 = 3/52,
+                      d_treat = 3/52,
                       p1 = 0.87,
                       p2 = 0.08, 
                       amp = 0.67,
                       R_m = 1.23,
                       phi = variable_parameters$phi,
-                      eta0 = variable_parameters$eta0,
-                      k = 0.01, 
-                      Tau = 17.33333)
+                      eta0 = variable_parameters$eta0)
   
-  print(parameters)
+  # print(parameters)
   
-  start_res=10                                 #Year Resistance Begins
-  dt= 1/12                                     #step size one monthe per a year
-  true_time <- seq(0, 10.67, by = dt)                  #time step
+  dt= 1/12 #step size one monthe per a year
+  # ToDo: double check that this time sequence is correct
+  true_time <- seq(0, 10.75, by = dt)                  #time step
   
   #The initial conditions for solving the ODE 
   ICs <- solve_steady_state(parameters)
   
-  #Solve the ODE using the Defulet Solver LSoda
+  #Solve the ODE using the Default Solver LSoda
   out <- (ode(y = ICs, times = true_time, func = mtdrift, parms = parameters))
   #Save first simulation;
-  simulation.data<-c(NA)
-  simulation.data[1]<-out[,"W"][1]
-  for(k in 2:129){
-    simulation.data[k]<-out[,"W"][k]-out[,"W"][k-1]
-  }
+  # simulation.data<-c(NA)
+  simulation.data <- out[,"W"]
+  # print(length(simulation.data))
+  # for(k in 2:130){
+  #   simulation.data[k]<-out[,"W"][k]-out[,"W"][k-1]
+  # }
   return(simulation.data)
 }
 
@@ -125,8 +123,13 @@ likelihood_malaria <- function(variable_parameters) {
   
   # Assumes parameters are unconstrained
   variable_parameters <- constrain_malaria_params(variable_parameters)
+  print(variable_parameters)
   sigma <- variable_parameters$sigma
-  likelihood_mean <- likelihood_malaria_mean(variable_parameters)
-  
+  # Convert mean to log difference
+  likelihood_mean <- log(diff(likelihood_malaria_mean(variable_parameters)))
+  print(likelihood_mean)
+  # Data is stored in log space
   return(rnorm(n = length(likelihood_mean), mean = likelihood_mean, sd = sigma))
 }
+
+

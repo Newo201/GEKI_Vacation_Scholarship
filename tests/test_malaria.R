@@ -4,7 +4,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_malaria.R')
 
 ##################### Fixtures #########################
-num_particles <- 5
+num_particles <- 400
 
 prior_params <- list(din.sd = 2,
                      phi.mean = 0, phi.sd = 1,
@@ -24,15 +24,13 @@ test_that('Sum of variables equals population', {
                   L = 66.67,
                   dimm = 0.93,
                   d_in = 0.25, 
-                  d_treat0 = 3/52,
+                  d_treat = 3/52,
                   p1 = 0.87,
                   p2 = 0.08, 
                   amp = 0.67,
                   R_m = 1.23,
                   phi = 0.11,
-                  eta0 = 0.11,
-                  k = 0.01, 
-                  Tau = 17.33333)
+                  eta0 = 0.11)
   
   #The initial conditions for solving the ODE 
   ICs <- solve_steady_state(parameters)
@@ -43,7 +41,14 @@ test_that('Length of likelihood mean is correct', {
   
   constrained_parameters <- list(d_in = 0.3, phi = 0.25, eta0 = 0.05, sigma = 10)
   l_mean <- likelihood_malaria_mean(constrained_parameters)
-  expect_equal(length(l_mean), 129)
+  expect_equal(length(l_mean), 130)
+})
+
+test_that('Likelihood mean is monotonically increasing', {
+  constrained_parameters <- list(d_in = 0.3, phi = 0.25, eta0 = 0.05, sigma = 10)
+  l_mean <- likelihood_malaria_mean(constrained_parameters)
+  # print(l_mean)
+  expect_equal(all(diff(l_mean) >= 0), TRUE)
 })
 
 test_that('Length of likelihood samples is correct', {
@@ -98,5 +103,5 @@ test_that('Parameters are being unconstrained', {
   expect_equal(constrained_parameters, re_constrained_parameters)
 })
 
-
-dnorm(c(1,2,3), mean = c(1,2,3), sd = 2)
+constrained_parameters <- list(d_in = 0.001, phi = 0.25, eta0 = 0.05, sigma = 10)
+l_mean <- likelihood_malaria_mean(constrained_parameters)

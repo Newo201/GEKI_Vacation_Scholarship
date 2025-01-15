@@ -3,13 +3,13 @@ mtdrift_theta <- function(t, ICss, parameters) {
   
   with(as.list(c(ICss, parameters)),{
     
-    P = eta0*(p1*I1 + p2*I2)/(I1 + I2)
-    d_treat = parameters['d_treat0'][[1]]	
+    # Not sure what the purpose of this P is since we don't use it elsewhere
+    # P = eta0*(p1*I1 + p2*I2)/(I1 + I2)
     
     a1 = eta0*p1*(1/d_treat) + (1-eta0*p1)*(1/d_in)
     a2 = eta0*p2*(1/d_treat) + (1-eta0*p2)*(1/d_in)
-    
 
+    # N is used instead of P to represent population size
     lambda_val = R_m*((1/L)+a1)*(I1 + I2)/N  # for Steady state calculation
     
     dS =  N/L - (lambda_val + (1/L))*S + (1/dimm)*R
@@ -49,9 +49,8 @@ mtdrift <-function(t, ICs, parameters) {
     
     #################################################################
     
-    C = p1*I1 + p2*I2
-    P = eta0*(p1*I1 + p2*I2)/(I1 + I2)
-    d_treat = 1/Tau
+    # C = p1*I1 + p2*I2
+    # P = eta0*(p1*I1 + p2*I2)/(I1 + I2)
     
     a1 = eta0*p1*(1/d_treat) + (1-eta0*p1)*(1/d_in)
     a2 = eta0*p2*(1/d_treat) + (1-eta0*p2)*(1/d_in)

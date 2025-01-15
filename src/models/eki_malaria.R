@@ -1,26 +1,17 @@
-pacman::p_load(pacman, mvtnorm, purrr)
+densities_malaria <- function(true_data, num_particles, particles, parameters) {
 
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_malaria.R')
-# source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/pdfs_normal.R')
-# 
-# densities_normal <- function(true_data, num_particles, particles, parameters) {
-# 
-#   x.true <- parameters$x
-#   d_y <- length(x.true)
-# 
-#   likelihood_densities <- rep(0, num_particles)
-# 
-#   # For each particle, draw one observation from the likelihood
-#   # ToDo: vectorise this operation
-#   for (particle in 1:num_particles) {
-#     current_params = list(alpha = particles[particle, 1], x = x.true, sigma = sqrt(exp(particles[particle, 2])))
-#     likelihood_densities[particle] <- loglike_pdf(true_data, current_params)
-#   }
-# 
-#   return(likelihood_densities)
-# 
-# }
+  likelihood_densities <- rep(0, num_particles)
+
+  # For each particle, draw one observation from the likelihood
+  # ToDo: vectorise this operation
+  for (particle in 1:num_particles) {
+    current_params = list(sigma = particles[, 4])
+    likelihood_densities[particle] <- loglike_malaria(true_data, current_params)
+  }
+
+  return(likelihood_densities)
+
+}
 
 synthetic_malaria <- function(num_particles, particles, parameters) {
   
@@ -36,7 +27,10 @@ synthetic_malaria <- function(num_particles, particles, parameters) {
                         eta0 = particles[particle, 3],
                         sigma = particles[particle, 4])
     
-    likelihood_samples[particle, ] <- likelihood_malaria(current_params)
+    # print(current_params)
+    sample <- likelihood_malaria(current_params)
+    # print(sample)
+    likelihood_samples[particle, ] <- sample
     
   }
   
@@ -63,11 +57,12 @@ eki_malaria <- function(num_particles, true_data, prior_params, adaptive = F) {
   
   initial_particles <- initialise_malaria_particles(num_particles, prior_params)
   
+  # No true parameters are required for malaria model so I am passing in an empty vector
   if (adaptive) {
-    return(eki_adaptive(num_particles, initial_particles, true_data, synthetic_malaria, densities_malaria))
+    return(eki_adaptive(num_particles, initial_particles, true_data, c(), synthetic_malaria, densities_malaria))
   }
   else {
-    return(eki(num_particles, initial_particles, true_data, synthetic_malaria))
+    return(eki(num_particles, initial_particles, true_data, c(), synthetic_malaria))
   }
   
 }
