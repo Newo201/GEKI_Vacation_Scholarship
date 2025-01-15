@@ -5,6 +5,7 @@ eki_known_noise <- function(num_particles, initial_particles, true_data, true_pa
 
   # Synthetic_data_func -> a function which calculates likelihood means from a given set of parameters
   ## Takes num_particles, particles and true_params as arguments
+  known_noise = true_params$sigma
   
   d_y <- length(true_data)
   # I'm replicating this data for the number of particles to make the dimensions easier to work with
@@ -40,7 +41,9 @@ eki_known_noise <- function(num_particles, initial_particles, true_data, true_pa
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
 
 eki_adaptive_known_noise <- function(num_particles, initial_particles, true_data, true_params, 
-                                     synthetic_mean_func, density_func, known_noise) {
+                                     synthetic_mean_func, density_func) {
+  
+  known_noise = true_params$sigma
   
   # Synthetic_data_func -> a function which draws samples from the likelihood using particle parameters
   ## Takes true_params, particles and number of particles as arguments
