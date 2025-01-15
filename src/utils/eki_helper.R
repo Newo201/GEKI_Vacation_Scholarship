@@ -23,7 +23,7 @@ calculate_covariances_known_noise <- function(particles, likelihood_means) {
   C_xh = cov(particles, likelihood_means)
   C_hx = cov(likelihood_means, particles)
   
-  return(list(C_xx = C_xx, C_yy = C_yy, C_xy = C_xy, C_yx = C_yx))
+  return(list(C_xx = C_xx, C_hh = C_hh, C_xh = C_xh, C_hx = C_hx))
   
 }
 
@@ -57,9 +57,9 @@ update_particles_known_noise <- function(temp_difference, particles, simulated_d
                                          known_noise) {
   
   C_hx <- covariances$C_hx
-  C_hh <- covariances$C_hy
+  C_hh <- covariances$C_hh
   
-  d_y <- dim(likelihood_samples)[2]
+  d_y <- dim(likelihood_means)[2]
   R <- known_noise**2 * diag(d_y)
   
   # Generate perturbations
