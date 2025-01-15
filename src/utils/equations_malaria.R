@@ -55,7 +55,7 @@ mtdrift <-function(t, ICs, parameters) {
     a1 = eta0*p1*(1/d_treat) + (1-eta0*p1)*(1/d_in)
     a2 = eta0*p2*(1/d_treat) + (1-eta0*p2)*(1/d_in)
     
-    lambda_val = (R_m*amp*cos(2*pi*(t-phi))+R_m)*(a1 + (1/L))*(I1+I2)/N # for actual simulation
+    lambda_val = (amp*cos(2*pi*(t-phi))+R_m)*(a1 + (1/L))*(I1+I2)/N # for actual simulation
     
     dS =  N/L - (lambda_val + 1/L)*S + 1/dimm*R
     dI1 = lambda_val*S - (a1 + (1/L))*I1
