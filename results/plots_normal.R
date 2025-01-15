@@ -19,10 +19,24 @@ plot_mcmc_histogram <- function(chain.1, chain.2, true_params, burnin = 0,
   chain.2.burnin <- chain.2[(burnin + 1): iterations, ]
   combined_chains <- rbind(chain.1.burnin, chain.2.burnin)
   
+  alpha_particles <- combined_chains[, 1]
+  alpha_sequence <- seq(min(alpha_particles), max(alpha_particles), 
+                        length.out = 20)
+  alpha_prior_density <- dnorm(alpha_sequence, mean = prior_params$alpha.mean, 
+                               sd = prior_params$alpha.sd)
+  true_alpha <- true_params$alpha
+  sigma2_particles <- combined_chains[, 2]
+  sigma2_sequence <- seq(min(sigma2_particles), max(sigma2_particles),
+                         length.out = 20)
+  sigma2_prior_density <- dnorm(sigma2_sequence, mean = prior_params$sigma2.mean, 
+                                sd = prior_params$sigma2.sd)
+  
   par(mfrow = c(1,2))
-  hist(combined_chains[, 1], freq = F, main = 'MCMC', xlab = expression(alpha), ylab = 'Density')
+  hist(alpha_particles, freq = F, main = 'MCMC', xlab = expression(alpha), ylab = 'Density')
+  lines(alpha_sequence, alpha_prior_density, col = 'blue')
   abline(v = true_params$alpha, col = 'red')
   hist(combined_chains[, 2], freq = F, main = 'MCMC', xlab = expression(log(sigma^2)), ylab = '')
+  lines(sigma2_sequence, sigma2_prior_density, col = 'blue')
   abline(v = log(true_params$sigma**2), col = 'red')
   
 }
@@ -52,7 +66,7 @@ plot_eki_normal <- function(eki_result, true_params, prior_params) {
   lines(alpha_sequence, alpha_prior_density, col = 'blue')
   abline(v = true_alpha, col = 'red')
   hist(sigma2_particles, freq = F, main = 'EKI', 
-       xlab = expression(sigma^2), ylab = '')
+       xlab = expression(log(sigma^2)), ylab = '')
   lines(sigma2_sequence, sigma2_prior_density, col = 'blue')
   abline(v = true_sigma2, col = 'red')
 }
@@ -99,7 +113,7 @@ plot_eki_normal_known_mean <- function(eki_result, true_params, prior_params) {
   par(mfrow = c(1, 1))
   
   hist(sigma2_particles, freq = F, main = 'EKI Known Mean', 
-       xlab = expression(sigma^2), ylab = 'Density')
+       xlab = expression(log(sigma^2)), ylab = 'Density')
   lines(sigma2_sequence, sigma2_prior_density, col = 'blue')
   abline(v = true_sigma2, col = 'red')
 }
