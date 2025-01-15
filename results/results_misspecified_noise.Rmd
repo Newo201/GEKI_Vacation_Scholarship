@@ -1,5 +1,37 @@
 # Results for Misspecified Noise
 
+## Imports
+
+### External Functions
+
+```{r}
+pacman::p_load(pacman, testthat, deSolve, rootSolve)
+```
+
+### Algorithms
+
+```{r}
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki.R')
+```
+
+### Models
+
+```{r}
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria.R')
+```
+
+### **Sampling**
+
+```{r}
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_malaria.R')
+```
+
+### Utils
+
+```{r}
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
+```
+
 ## Introduction
 
 When looking at the multivariate normal model, it was found that GEKI does not do a good job at estimating the noise parameter. Following on from those results, the next step of the project was to investigate whether GEKI outperforms EKI in the cases where the noise parameter is known, but misspecified. Specifically, it is chosen to be too small. In the context of EKI we would expect the concentration of the particles to be too narrow and potentially away from the true parameter when we diverge from the linear Gaussian setting.
@@ -7,3 +39,12 @@ When looking at the multivariate normal model, it was found that GEKI does not d
 ## Multivariate Normal Model
 
 ## Malaria Transmission Model
+
+```{r}
+num_particles <- 400
+
+prior_params <- list(din.sd = 2,
+                     phi.mean = 0, phi.sd = 1,
+                     eta0.mean = 0, eta0.sd = 1,
+                     sigma.mean = 10, sigma.sd = 4)
+```

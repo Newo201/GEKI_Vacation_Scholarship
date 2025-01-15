@@ -6,9 +6,9 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 
 constrain_malaria_params <- function(parameters) {
   
-  d_in <- exp(parameters$d_in) + 0.16
-  phi <- plogis(parameters$phi) # Logistic transformation
-  eta0 <- plogis(parameters$eta0) * 0.96 + 0.04 # Logistic transformation
+  d_in <- exp(parameters$d_in) + 0.16 # Transformation to [0.16, infinity)
+  phi <- plogis(parameters$phi) # Logistic transformation to [0, 1]
+  eta0 <- plogis(parameters$eta0) * 0.96 + 0.04 # Logistic transformation to [0.04, 1]
   sigma <- exp(parameters$sigma)
   
   return(list(d_in = d_in, phi = phi, eta0 = eta0, sigma = sigma))
