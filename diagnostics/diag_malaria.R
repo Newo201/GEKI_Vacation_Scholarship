@@ -4,7 +4,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_malaria.R')
 
 # Observations decrease as d_in increases
-d_in_seq <- seq(0.2, 0.5, by = 0.05)
+d_in_seq <- seq(0.2, 50, by = 0.5)
 res <- c()
 for (d_in in d_in_seq) {
   constrained_params = list(d_in = d_in, phi = 0.25, eta0 = 0.11)

@@ -61,7 +61,7 @@ eki_malaria_known_var <- function(num_particles, true_data, true_params, prior_p
     return(eki_adaptive(num_particles, initial_particles, true_data, true_params, synthetic_malaria_known_var, densities_malaria_known_var))
   }
   else {
-    return(eki(num_particles, initial_particles, true_data, true_params, synthetic_malaria))
+    return(eki(num_particles, initial_particles, true_data, true_params, synthetic_malaria_known_var))
   }
   
 }

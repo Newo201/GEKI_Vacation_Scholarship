@@ -5,7 +5,7 @@
 ### External Functions
 
 ```{r}
-pacman::p_load(pacman, testthat, deSolve, rootSolve)
+pacman::p_load(pacman, testthat, deSolve, rootSolve, MASS, mvtnorm, extraDistr)
 ```
 
 ### Algorithms
@@ -17,7 +17,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 ### Models
 
 ```{r}
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_known_var.R')
 ```
 
 ### **Sampling**
@@ -41,10 +41,79 @@ When looking at the multivariate normal model, it was found that GEKI does not d
 ## Malaria Transmission Model
 
 ```{r}
+plot_eki_malaria <- function(eki_result) {
+  
+  d_in_particles <- exp(eki_result$particles[, 1]) + 0.16
+  d_in_seq <- seq(min(d_in_particles), max(d_in_particles), length.out = 50)
+  phi_particles <- plogis(eki_result$particles[, 2])
+  eta0_particles <- plogis(eki_result$particles[, 3]) * 0.96 + 0.04
+  
+  hist(d_in_particles, breaks = d_in_seq, freq = F)
+  abline(v = 0.5, col = 'red')
+  hist(phi_particles, freq = F)
+  abline(v = 0.25, col = 'red')
+  hist(eta0_particles, freq = F)
+  abline(v = 0.11, col = 'red')
+
+}
+```
+
+```{r}
+# ToDo: load this from a file
+true_data = log(c(3477.25092158, 2082.2602636, 8177.80134323, 15493.864566, 22287.2797051,
+              32042.3673181, 36046.3061152, 27856.1329092, 18969.6005656, 11128.6168762,
+              7643.53885775, 4332.17189315, 7291.31949705, 11819.4212998, 18264.6568702,
+              25580.4676059, 32200.1716912, 34464.7275665, 36552.0375701, 39338.9890421,
+              28710.0439327, 17210.018684, 5013.12932384, 6231.12659698, 5184.31550775,
+              10757.9659648, 19990.9104681, 28700.7019139, 34797.5054285, 38454.7795789,
+              40892.2890471, 33224.5114377, 25034.8432056, 18065.1921426, 11966.621219,
+              7610.46306115, 5344.6447508, 9523.30454982, 17535.4744231, 25897.591274,
+              34955.5622885, 42445.3365652, 48018.2295612, 35124.9810635, 26935.0603444,
+              19268.0401959, 11950.4620512, 5502.19663687, 8635.56026865, 14905.8223501,
+              19435.1865879, 24486.4414483, 27796.0410039, 31453.8201283, 34239.7616523,
+              28139.1708327, 20646.3667121, 14373.5797606, 10365.8536585, 5833.20708983,
+              9141.79669747, 14540.9786396, 20115.1340706, 24295.5612786, 30391.1023582,
+              28647.9321315, 32826.0869565, 22894.7634197, 16970.156037, 12614.2503661,
+              9128.66737363, 6338.68605767, 10692.3193456, 15918.2952078, 22537.746806,
+              28111.902237, 32641.2664748, 35252.7394839, 35075.2411251, 31241.9835378,
+              26537.3933242, 20961.9754583, 14863.1520477, 10506.9938898, 5104.27712973,
+              8412.36176337, 13289.1481089, 18514.6189971, 23217.9467757, 26527.2938444,
+              32797.3034389, 24781.8512347, 18855.981417, 14325.8597182, 9795.4855325,
+              6134.92905115, 4390.74887643, 6479.57380195, 8742.86724234, 11529.3137403,
+              14316.5176993, 16928.7481695, 15880.6746453, 18666.8686563, 14483.9165783,
+              11695.7026713, 8210.37216583, 5073.4737161, 2806.39297076, 4894.96540928,
+              8378.02353179, 11861.0816543, 14995.960208, 19001.9189012, 19174.6200071,
+              28232.5910216, 20738.271979, 16208.1502803, 11678.2810685, 5753.42119881,
+              3660.05150735, 5575.41786598, 9058.72847548, 13064.9396556, 17593.7989194,
+              21774.4786144, 22992.9808615, 26650.0025249, 33268.4441751))
+```
+
+```{r}
 num_particles <- 400
 
 prior_params <- list(din.sd = 2,
                      phi.mean = 0, phi.sd = 1,
-                     eta0.mean = 0, eta0.sd = 1,
-                     sigma.mean = 10, sigma.sd = 4)
+                     eta0.mean = 0, eta0.sd = 1)
+
+true_params <- list(sigma = 0.5)
 ```
+
+### GEKI Results
+
+```{r}
+eki_result <- eki_malaria_known_var(num_particles, true_data, true_params, prior_params)
+```
+
+```{r}
+plot_eki_malaria(eki_result)
+```
+
+```{r}
+initial_particles <- initialise_malaria_particles_known_var(num_particles, prior_params)
+initial_din <- exp(initial_particles[, 1]) + 0.16
+din_sequence <- seq(min(initial_din), max(initial_din), length.out = 50)
+hist(exp(initial_particles[, 1]), freq = F)
+lines(din_sequence, dhnorm(din_sequence, sigma = 2))
+```
+
+### EKI Results
