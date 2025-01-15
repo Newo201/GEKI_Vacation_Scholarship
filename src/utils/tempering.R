@@ -1,5 +1,3 @@
-pacman::p_load(pacman, purrr)
-
 get_weights <- function(next_temp, current_temp, ll_densities) {
   
   change_in_temp <- next_temp - current_temp

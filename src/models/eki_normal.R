@@ -1,9 +1,3 @@
-pacman::p_load(pacman, mvtnorm, purrr)
-
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples_normal.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/pdfs_normal.R')
-
 densities_normal <- function(true_data, num_particles, particles, parameters) {
   
   x.true <- parameters$x
@@ -56,17 +50,17 @@ initialise_normal_particles <- function(num_particles, parameters) {
   return(particles)
 }
 
-eki_normal <- function(num_particles, true_params, prior_params, adaptive = F) {
+eki_normal <- function(num_particles, true_data, true_params, prior_params, adaptive = F) {
   
   initial_particles <- initialise_normal_particles(num_particles, prior_params)
   
   if (adaptive) {
-    return(eki_adaptive(num_particles, initial_particles, true_params, 
-                        likelihood_normal, synthetic_normal, densities_normal))
+    return(eki_adaptive(num_particles, initial_particles, true_data, 
+                        true_params, synthetic_normal, densities_normal))
   }
   else {
-    return(eki(num_particles, initial_particles, true_params, 
-               likelihood_normal, synthetic_normal, densities_normal))
+    return(eki(num_particles, initial_particles, true_data, 
+               true_params, synthetic_normal))
   }
   
 }

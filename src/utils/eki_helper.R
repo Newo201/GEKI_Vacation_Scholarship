@@ -1,5 +1,3 @@
-pacman::p_load(pacman, MASS)
-
 calculate_covariances <- function(particles, likelihood_samples) {
   
   # Calculate the covariance matrices
@@ -28,6 +26,9 @@ update_particles <- function(temp_difference, particles, simulated_data, likelih
   
   # Generate perturbations
   eta <- rmvnorm(n = num_particles, mean = rep(0, d_y), sigma = (1/temp_difference - 1)*C_y_given_x)
+  
+  # print(dim(simulated_data))
+  # print(dim(likelihood_samples))
   
   # Move the particles
   # particles <- particles + t(C_xy %*% ginv((C_yy + (1/temp_difference - 1)*C_y_given_x)) %*% t((simulated_data - likelihood_samples - eta)))

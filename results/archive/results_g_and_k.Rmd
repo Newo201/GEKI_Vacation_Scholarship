@@ -1,0 +1,167 @@
+```{r}
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_g_and_k.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_g_and_k_a_only.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_g_and_k_b_only.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_g_and_k_g_only.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_g_and_k_k_only.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_g_and_k_abg.R')
+```
+
+```{r}
+plot_eki_g_and_k_a_only <- function(eki_result, true_params, prior_params) {
+  
+  a_particles <- pnorm(eki_result$particles)*10
+  # a_particles <- eki_result$particles[, 1]
+  true_a <- pnorm(true_params$a)*10
+  
+  par(mfrow = c(1, 1))
+  
+  hist(a_particles, freq = F, main = 'A', xlab = '')
+  abline(v = true_a, col = 'red')
+}
+
+plot_eki_g_and_k_b_only <- function(eki_result, true_params, prior_params) {
+  
+  b_particles <- pnorm(eki_result$particles)*10
+  # a_particles <- eki_result$particles[, 1]
+  true_b <- pnorm(true_params$b)*10
+  
+  par(mfrow = c(1, 1))
+  
+  hist(b_particles, freq = F, main = 'B', xlab = '')
+  abline(v = true_b, col = 'red')
+}
+
+plot_eki_g_and_k_g_only <- function(eki_result, true_params, prior_params) {
+  
+  g_particles <- pnorm(eki_result$particles)*10
+  # a_particles <- eki_result$particles[, 1]
+  true_g <- pnorm(true_params$g)*10
+  
+  par(mfrow = c(1, 1))
+  
+  hist(g_particles, freq = F, main = 'g', xlab = '')
+  abline(v = true_g, col = 'red')
+}
+
+plot_eki_g_and_k_k_only <- function(eki_result, true_params, prior_params) {
+  
+  k_particles <- pnorm(eki_result$particles)*10
+  # a_particles <- eki_result$particles[, 1]
+  true_k <- pnorm(true_params$k)*10
+  
+  par(mfrow = c(1, 1))
+  
+  hist(k_particles, freq = F, main = 'k', xlab = '')
+  abline(v = true_k, col = 'red')
+}
+```
+
+```{r}
+plot_eki_g_and_k_abg <- function(eki_result, true_params, prior_params) {
+  
+  a_particles <- pnorm(eki_result$particles[, 1])*10
+  true_a <- pnorm(true_params$a)*10
+  
+  b_particles <- pnorm(eki_result$particles[, 2])*10
+  true_b <- pnorm(true_params$b)*10
+  
+  g_particles <- pnorm(eki_result$particles[, 3])*10
+  true_g <- pnorm(true_params$g)*10
+  
+  par(mfrow = c(1, 3))
+  
+  hist(a_particles, freq = F, main = 'A', xlab = '')
+  abline(v = true_a, col = 'red')
+  hist(b_particles, freq = F, main = 'B', xlab = '', ylab = '')
+  abline(v = true_b, col = 'red')
+  hist(g_particles, freq = F, main = 'g', xlab = '', ylab = '')
+  abline(v = true_g, col = 'red')
+}
+
+
+plot_eki_g_and_k <- function(eki_result, true_params, prior_params) {
+  
+  a_particles <- pnorm(eki_result$particles[, 1])*10
+  true_a <- pnorm(true_params$a)*10
+  
+  b_particles <- pnorm(eki_result$particles[, 2])*10
+  true_b <- pnorm(true_params$b)*10
+  
+  g_particles <- pnorm(eki_result$particles[, 3])*10
+  true_g <- pnorm(true_params$g)*10
+  
+  # k_particles <- pnorm(eki_result$particles[, 4])*10
+  k_particles <- pnorm(eki_result$particles[, 4])*10
+  true_k <- pnorm(true_params$k)*10
+  print(true_k)
+
+  
+  par(mfrow = c(1, 2))
+  
+  hist(a_particles, freq = F, main = 'A', xlab = '')
+  abline(v = true_a, col = 'red')
+  hist(b_particles, freq = F, main = 'B', xlab = '', ylab = '')
+  abline(v = true_b, col = 'red')
+  hist(g_particles, freq = F, main = 'g', xlab = '', ylab = '')
+  abline(v = true_g, col = 'red')
+  hist(k_particles, freq = F, main = 'k', xlab = '', ylab = '')
+  abline(v = true_k, col = 'red')
+}
+```
+
+```{r}
+prior_params <- list()
+```
+
+```{r}
+true_parameters <- list(a = qnorm(3/10), b = qnorm(1/10), g = qnorm(2/10), 
+                        k = qnorm(1/20))
+eki_result <- eki_g_and_k(1000, true_parameters, 
+                         prior_params, adaptive = F)
+plot_eki_g_and_k(eki_result, true_parameters, prior_params)
+```
+
+```{r}
+true_parameters <- list(a = qnorm(3/10), b = qnorm(1/10), g = qnorm(2/10), 
+                        k = qnorm(1/20))
+eki_result <- eki_g_and_k_a_only(400, true_parameters, 
+                         prior_params, adaptive = F)
+plot_eki_g_and_k_a_only(eki_result, true_parameters, prior_params)
+```
+
+```{r}
+pnorm(eki_result$particles)*10
+```
+
+```{r}
+true_parameters <- list(a = qnorm(3/10), b = qnorm(1/10), g = qnorm(2/10), 
+                        k = qnorm(1/20))
+eki_result <- eki_g_and_k_b_only(400, true_parameters, 
+                         prior_params, adaptive = F)
+plot_eki_g_and_k_b_only(eki_result, true_parameters, prior_params)
+```
+
+```{r}
+true_parameters <- list(a = qnorm(3/10), b = qnorm(1/10), g = qnorm(2/10), 
+                        k = qnorm(1/20))
+eki_result <- eki_g_and_k_g_only(1000, true_parameters, 
+                         prior_params, adaptive = F)
+plot_eki_g_and_k_g_only(eki_result, true_parameters, prior_params)
+```
+
+```{r}
+true_parameters <- list(a = qnorm(3/10), b = qnorm(1/10), g = qnorm(2/10), 
+                        k = qnorm(1/20))
+eki_result <- eki_g_and_k_k_only(1000, true_parameters, 
+                         prior_params, adaptive = F)
+plot_eki_g_and_k_k_only(eki_result, true_parameters, prior_params)
+```
+
+```{r}
+true_parameters <- list(a = qnorm(3/10), b = qnorm(1/10), g = qnorm(2/10), 
+                        k = qnorm(1/20))
+eki_result <- eki_g_and_k_abg(1000, true_parameters, 
+                         prior_params, adaptive = F)
+plot_eki_g_and_k_abg(eki_result, true_parameters, prior_params)
+```
