@@ -114,6 +114,3 @@ test_that('Parameters are being unconstrained', {
   print(re_constrained_parameters)
   expect_equal(constrained_parameters, re_constrained_parameters)
 })
-
-# constrained_parameters <- list(d_in = 0.001, phi = 0.25, eta0 = 0.05, sigma = 10)
-# l_mean <- likelihood_malaria_mean(constrained_parameters)
