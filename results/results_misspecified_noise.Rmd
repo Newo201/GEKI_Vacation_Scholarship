@@ -1,0 +1,9 @@
+# Results for Misspecified Noise
+
+## Introduction
+
+When looking at the multivariate normal model, it was found that GEKI does not do a good job at estimating the noise parameter. Following on from
+
+## Multivariate Normal Model
+
+## Malaria Transmission Model
