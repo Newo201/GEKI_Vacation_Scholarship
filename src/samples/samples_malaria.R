@@ -6,9 +6,9 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 
 constrain_malaria_params <- function(parameters) {
   
-  d_in <- exp(parameters$d_in)
+  d_in <- exp(parameters$d_in) + 0.16
   phi <- plogis(parameters$phi) # Logistic transformation
-  eta0 <- plogis(parameters$eta0) # Logistic transformation
+  eta0 <- plogis(parameters$eta0) * 0.96 + 0.04 # Logistic transformation
   sigma <- exp(parameters$sigma)
   
   return(list(d_in = d_in, phi = phi, eta0 = eta0, sigma = sigma))
@@ -16,9 +16,9 @@ constrain_malaria_params <- function(parameters) {
 
 unconstrain_malaria_params <- function(parameters) {
   
-  d_in <- log(parameters$d_in)
+  d_in <- log(parameters$d_in - 0.16)
   phi <- qlogis(parameters$phi) # Logit transformation
-  eta0 <- qlogis(parameters$eta0) # Logit transformation
+  eta0 <- qlogis((parameters$eta0 - 0.04)/0.96) # Logit transformation
   sigma <- log(parameters$sigma)
   
   return(list(d_in = d_in, phi = phi, eta0 = eta0, sigma = sigma))
@@ -123,11 +123,11 @@ likelihood_malaria <- function(variable_parameters) {
   
   # Assumes parameters are unconstrained
   variable_parameters <- constrain_malaria_params(variable_parameters)
-  print(variable_parameters)
+  # print(variable_parameters)
   sigma <- variable_parameters$sigma
   # Convert mean to log difference
   likelihood_mean <- log(diff(likelihood_malaria_mean(variable_parameters)))
-  print(likelihood_mean)
+  # print(likelihood_mean)
   # Data is stored in log space
   return(rnorm(n = length(likelihood_mean), mean = likelihood_mean, sd = sigma))
 }
