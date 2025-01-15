@@ -2,7 +2,7 @@
 
 ## Introduction
 
-When looking at the multivariate normal model, it was found that GEKI does not do a good job at estimating the noise parameter. Following on from
+When looking at the multivariate normal model, it was found that GEKI does not do a good job at estimating the noise parameter. Following on from those results, the next step of the project was to investigate whether GEKI outperforms EKI in the cases where the noise parameter is known, but misspecified. Specifically, it is chosen to be too small. In the context of EKI we would expect the concentration of the particles to be too narrow and potentially away from the true parameter when we diverge from the linear Gaussian setting.
 
 ## Multivariate Normal Model
 
