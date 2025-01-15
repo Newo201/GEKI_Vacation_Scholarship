@@ -1,7 +1,6 @@
 ########################## EKI Algorithm ####################################
 
-eki_known_noise <- function(num_particles, initial_particles, true_data, true_params, synthetic_mean_func,
-                            known_noise) {
+eki_known_noise <- function(num_particles, initial_particles, true_data, true_params, synthetic_mean_func) {
 
   # Synthetic_data_func -> a function which calculates likelihood means from a given set of parameters
   ## Takes num_particles, particles and true_params as arguments
