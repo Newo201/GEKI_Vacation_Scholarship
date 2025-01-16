@@ -1,6 +1,6 @@
 ########################## EKI Algorithm ####################################
 
-eki <- function(num_particles, initial_particles, true_data, true_params, synthetic_data_func) {
+eki <- function(num_particles, initial_particles, true_data, true_params, synthetic_mean_func, synthetic_data_func) {
 
   # Synthetic_data_func -> a function which draws samples from the likelihood using particle parameters
   ## Takes num_particles, particles and true_params as arguments
@@ -19,10 +19,9 @@ eki <- function(num_particles, initial_particles, true_data, true_params, synthe
   # Until we reach a temperature of one do the following
   for (temp in 1:10) {
     
-    # print("Hello")
-    likelihood_samples <- synthetic_data_func(num_particles, particles, true_params)
+    likelihood_means <- synthetic_mean_func(num_particles, particles, true_params)
+    likelihood_samples <- synthetic_data_func(num_particles, particles, likelihood_means, true_params)
 
-  
     covariances <- calculate_covariances(particles, likelihood_samples)
     
     # ToDo:  Calculate the current temperature
@@ -36,9 +35,9 @@ eki <- function(num_particles, initial_particles, true_data, true_params, synthe
 }
 
 ################## EKI Algorithm with Adaptive Temperature ##############################
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
 
-eki_adaptive <- function(num_particles, initial_particles, true_data, true_params, synthetic_data_func, density_func) {
+eki_adaptive <- function(num_particles, initial_particles, true_data, true_params, 
+                         synthetic_mean_func, synthetic_data_func, density_func) {
   
   # Synthetic_data_func -> a function which draws samples from the likelihood using particle parameters
   ## Takes true_params, particles and number of particles as arguments
@@ -56,8 +55,9 @@ eki_adaptive <- function(num_particles, initial_particles, true_data, true_param
   
   while (current_temp < 1) {
     
-    likelihood_samples <- synthetic_data_func(num_particles, particles, true_params)
-    ll_densities <- density_func(true_data, num_particles, particles, true_params)
+    likelihood_means <- synthetic_mean_func(num_particles, particles, true_params)
+    likelihood_samples <- synthetic_data_func(num_particles, particles, likelihood_means, true_params)
+    ll_densities <- density_func(true_data, num_particles, particles, likelihood_means, true_params)
     
     covariances <- calculate_covariances(particles, likelihood_samples)
     

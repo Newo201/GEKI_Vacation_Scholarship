@@ -1,42 +1,4 @@
-densities_normal <- function(true_data, num_particles, particles, parameters) {
-  
-  x.true <- parameters$x
-  d_y <- length(x.true)
-  
-  likelihood_densities <- rep(0, num_particles)
-  
-  # For each particle, draw one observation from the likelihood
-  # ToDo: vectorise this operation
-  for (particle in 1:num_particles) {
-    current_params = list(alpha = particles[particle, 1], x = x.true, sigma = sqrt(exp(particles[particle, 2])))
-    likelihood_densities[particle] <- loglike_pdf(true_data, current_params)
-  }
-  
-  return(likelihood_densities)
-  
-}
-
-synthetic_normal <- function(num_particles, particles, parameters, mean = F) {
-  
-  x.true <- parameters$x
-  d_y <- length(x.true)
-  
-  likelihood_samples <- matrix(nrow = num_particles, ncol = d_y)
-  
-  # For each particle, draw one observation from the likelihood
-  # ToDo: vectorise this operation
-  for (particle in 1:num_particles) {
-    current_params = list(alpha = particles[particle, 1], x = x.true, sigma = sqrt(exp(particles[particle, 2])))
-    if (mean) {
-      likelihood_samples[particle, ] <- current_params$alpha*current_params$x
-    } else {
-      likelihood_samples[particle, ] <- likelihood_normal(current_params)
-    }
-  }
-  
-  return(likelihood_samples)
-
-}
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/synthetic_normal.R')
 
 initialise_normal_particles <- function(num_particles, parameters) {
   
@@ -60,11 +22,14 @@ eki_normal <- function(num_particles, true_data, true_params, prior_params, adap
   
   if (adaptive) {
     return(eki_adaptive(num_particles, initial_particles, true_data, 
-                        true_params, synthetic_normal, densities_normal))
+                        true_params, synthetic_mean_normal, synthetic_data_normal, densities_normal))
   }
   else {
     return(eki(num_particles, initial_particles, true_data, 
-               true_params, synthetic_normal))
+               true_params, synthetic_mean_normal, synthetic_data_normal))
   }
   
 }
+
+
+

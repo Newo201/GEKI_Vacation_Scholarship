@@ -157,3 +157,25 @@ test_that('Dimensions of weights are correct', {
   expect_equal(length(get_weights(0.1, 0, ll_densities)), num_particles)
 })
 
+dim((particles[, 1]))
+means <-  particles[, 1] %*% t(true_params_nd$x)
+rowSums(dnorm(simulated_data_nd, mean = means, sd = exp(particles[, 2]), log = T))
+
+dnorm(true_data_nd, mean = diag(5), log = T)
+
+rowSums(dnorm(true_data_nd, mean = means, log = T))
+rowSums(dnorm(simulated_data_nd, mean = means, log = T))
+rowSums(dnorm(simulated_data_nd, mean = means, sd = rep(2, 400), log = T))
+
+test_mean <- particles[1, 1] * true_params_nd$x
+simulated_data_nd[1, ]
+dmvnorm(simulated_data_nd, mean = rep(0, 5), sigma = diag(5), log = T)
+dmvnorm()
+
+dmvnorm(rep(1, 5), mean = rep(0, 5), sigma = diag(5), log = T)
+sum(dnorm(rep(1,5), mean = 0, sd = 1, log = T))
+
+dnorm(simulated_data_nd[1, ], mean = 0, sd = 1)
+sum(dnorm(simulated_data_nd[1, ], mean = 0, sd = 1, log = T))
+
+dmvnorm(diag(3), mean = c(1,2,3))

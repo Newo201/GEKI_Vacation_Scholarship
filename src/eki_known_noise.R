@@ -1,8 +1,8 @@
 ########################## EKI Algorithm ####################################
 
-eki_known_noise <- function(num_particles, initial_particles, true_data, true_params, synthetic_data_func) {
+eki_known_noise <- function(num_particles, initial_particles, true_data, true_params, synthetic_mean_func) {
 
-  # Synthetic_data_func -> a function which calculates likelihood means from a given set of parameters
+  # synthetic_mean_func -> a function which calculates likelihood means from a given set of parameters
   ## Takes num_particles, particles and true_params as arguments
   known_noise = true_params$sigma
   
@@ -23,7 +23,7 @@ eki_known_noise <- function(num_particles, initial_particles, true_data, true_pa
   for (temp in 1:10) {
     
     # print("Hello")
-    likelihood_means <- synthetic_data_func(num_particles, particles, true_params, mean = T)
+    likelihood_means <- synthetic_mean_func(num_particles, particles, true_params, mean = T)
     covariances <- calculate_covariances_known_noise(particles, likelihood_means)
     
     # ToDo:  Calculate the current temperature
@@ -42,11 +42,11 @@ eki_known_noise <- function(num_particles, initial_particles, true_data, true_pa
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
 
 eki_adaptive_known_noise <- function(num_particles, initial_particles, true_data, true_params, 
-                                     synthetic_data_func, density_func) {
+                                     synthetic_mean_func, density_func) {
   
   known_noise = true_params$sigma
   
-  # Synthetic_data_func -> a function which draws samples from the likelihood using particle parameters
+  # synthetic_mean_func -> a function which draws samples from the likelihood using particle parameters
   ## Takes true_params, particles and number of particles as arguments
   
   d_y <- length(true_data)
@@ -62,8 +62,8 @@ eki_adaptive_known_noise <- function(num_particles, initial_particles, true_data
   
   while (current_temp < 1) {
     
-    likelihood_means <- synthetic_data_func(num_particles, particles, true_params, mean = T)
-    ll_densities <- density_func(true_data, num_particles, particles, true_params)
+    likelihood_means <- synthetic_mean_func(num_particles, particles, true_params, mean = T)
+    ll_densities <- density_func(true_data, num_particles, particles, likelihood_means, true_params)
     
     covariances <- calculate_covariances_known_noise(particles, likelihood_means)
     
