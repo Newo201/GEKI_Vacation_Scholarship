@@ -136,7 +136,7 @@ In this experiment, I keep $\sigma^2$ fixed at 4, make $x$ a 50-dimensional vect
 ```{r}
 alpha_seq <- seq(0, 10, length.out = 6)
 num_dimensions <- 50 
-num_particles <- 400 
+num_particles <- 400
 for (alpha in alpha_seq) {    
   true_parameters <- list(alpha = alpha, sigma = 2, x = rep(1, num_dimensions))   
   generate_results(num_particles, true_parameters)

@@ -44,7 +44,7 @@ update_particles <- function(temp_difference, particles, simulated_data, likelih
   # Move the particles
   # particles <- particles + t(C_xy %*% ginv((C_yy + (1/temp_difference - 1)*C_y_given_x)) %*% t((simulated_data - likelihood_samples - eta)))
   # ToDo: make sure that adjusting the dimensions produces the same update
-  particles <- particles + (simulated_data - likelihood_samples - eta) %*% ginv((C_yy + (1/temp_difference - 1)*C_y_given_x)) %*% C_yx
+  particles <- particles + (simulated_data - likelihood_samples - eta) %*% ginv(C_yy + (1/temp_difference - 1)*C_y_given_x) %*% C_yx
   if (sum(is.infinite(particles)) > 0) {
     print(det(C_yy + (1/temp_difference - 1)*C_y_given_x))
     stop("Some of the particle values are infinite")
@@ -62,9 +62,17 @@ update_particles_known_noise <- function(temp_difference, particles, simulated_d
   d_y <- dim(likelihood_means)[2]
   R <- known_noise**2 * diag(d_y)
   
+  # # # print(likelihood_means)
+  # # print(ginv((C_hh + R)))
+  # 
+  # print(ginv((C_hh + (1/temp_difference))*R) %*% C_hx)
+  
   # Generate perturbations
   eta <- rmvnorm(n = num_particles, mean = rep(0, d_y), sigma = (1/temp_difference)*R)
-  particles <- particles + (simulated_data - likelihood_means - eta) %*% ginv((C_hh + (1/temp_difference))*R) %*% C_hx
+  # print(particles)
+  # print((simulated_data - likelihood_means - eta))
+  particles <- particles + (simulated_data - likelihood_means - eta) %*% ginv(C_hh + (1/temp_difference)*R) %*% C_hx
+  # print(particles)
 
   return(particles)
 }

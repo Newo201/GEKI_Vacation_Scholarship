@@ -13,7 +13,7 @@ densities_malaria_known_var <- function(true_data, num_particles, particles, par
 
 }
 
-synthetic_malaria_known_var <- function(num_particles, particles, parameters) {
+synthetic_malaria_known_var <- function(num_particles, particles, parameters, mean = F) {
   
   likelihood_samples <- matrix(nrow = num_particles, ncol = 129)
   
@@ -28,7 +28,14 @@ synthetic_malaria_known_var <- function(num_particles, particles, parameters) {
                         sigma = log(parameters$sigma))
     
     # print(current_params)
-    sample <- likelihood_malaria(current_params)
+    if (mean) {
+      current_params <- constrain_malaria_params(current_params)
+      sample <- log(diff(likelihood_malaria_mean(current_params)))
+    }
+    else {
+      sample <- likelihood_malaria(current_params)
+    }
+
     # print(sample)
     likelihood_samples[particle, ] <- sample
     
@@ -52,16 +59,23 @@ initialise_malaria_particles_known_var <- function(num_particles, parameters) {
   return(particles)
 }
 
-eki_malaria_known_var <- function(num_particles, true_data, true_params, prior_params, adaptive = F) {
+eki_malaria_known_var <- function(num_particles, true_data, true_params, prior_params, adaptive = F, general = T) {
   
   initial_particles <- initialise_malaria_particles_known_var(num_particles, prior_params)
   
   # True parameters are specified noise
-  if (adaptive) {
+  if (adaptive && general) {
     return(eki_adaptive(num_particles, initial_particles, true_data, true_params, synthetic_malaria_known_var, densities_malaria_known_var))
   }
-  else {
+  else if (adaptive) {
+    return(eki_adaptive_known_noise(num_particles, initial_particles, true_data, true_params, 
+                                    synthetic_malaria_known_var, densities_malaria_known_var))
+  } 
+  else if (general) {
     return(eki(num_particles, initial_particles, true_data, true_params, synthetic_malaria_known_var))
+  }
+  else {
+    return(eki_known_noise(num_particles, initial_particles, true_data, true_params, synthetic_malaria_known_var))
   }
   
 }

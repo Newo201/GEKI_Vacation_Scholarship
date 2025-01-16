@@ -123,7 +123,7 @@ likelihood_malaria <- function(variable_parameters) {
   
   # Assumes parameters are unconstrained
   variable_parameters <- constrain_malaria_params(variable_parameters)
-  print(variable_parameters)
+  # print(variable_parameters)
   sigma <- variable_parameters$sigma
   # Convert mean to log difference
   likelihood_mean <- log(diff(likelihood_malaria_mean(variable_parameters)))

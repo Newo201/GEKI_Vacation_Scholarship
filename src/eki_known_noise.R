@@ -1,10 +1,12 @@
 ########################## EKI Algorithm ####################################
 
-eki_known_noise <- function(num_particles, initial_particles, true_data, true_params, synthetic_mean_func) {
+eki_known_noise <- function(num_particles, initial_particles, true_data, true_params, synthetic_data_func) {
 
   # Synthetic_data_func -> a function which calculates likelihood means from a given set of parameters
   ## Takes num_particles, particles and true_params as arguments
   known_noise = true_params$sigma
+  
+  print(known_noise)
   
   d_y <- length(true_data)
   # I'm replicating this data for the number of particles to make the dimensions easier to work with
@@ -21,8 +23,8 @@ eki_known_noise <- function(num_particles, initial_particles, true_data, true_pa
   for (temp in 1:10) {
     
     # print("Hello")
-    likelihood_means <- synthetic_mean_func(num_particles, particles, true_params)
-    covariances <- calculate_covariances(particles, likelihood_means)
+    likelihood_means <- synthetic_data_func(num_particles, particles, true_params, mean = T)
+    covariances <- calculate_covariances_known_noise(particles, likelihood_means)
     
     # ToDo:  Calculate the current temperature
     temp_difference = 1/10
@@ -40,7 +42,7 @@ eki_known_noise <- function(num_particles, initial_particles, true_data, true_pa
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
 
 eki_adaptive_known_noise <- function(num_particles, initial_particles, true_data, true_params, 
-                                     synthetic_mean_func, density_func) {
+                                     synthetic_data_func, density_func) {
   
   known_noise = true_params$sigma
   
@@ -60,7 +62,7 @@ eki_adaptive_known_noise <- function(num_particles, initial_particles, true_data
   
   while (current_temp < 1) {
     
-    likelihood_means <- synthetic_mean_func(num_particles, particles, true_params)
+    likelihood_means <- synthetic_data_func(num_particles, particles, true_params, mean = T)
     ll_densities <- density_func(true_data, num_particles, particles, true_params)
     
     covariances <- calculate_covariances(particles, likelihood_means)
