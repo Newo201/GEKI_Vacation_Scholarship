@@ -65,7 +65,7 @@ eki_adaptive_known_noise <- function(num_particles, initial_particles, true_data
     likelihood_means <- synthetic_data_func(num_particles, particles, true_params, mean = T)
     ll_densities <- density_func(true_data, num_particles, particles, true_params)
     
-    covariances <- calculate_covariances(particles, likelihood_means)
+    covariances <- calculate_covariances_known_noise(particles, likelihood_means)
     
     # Find the next temperature
     next_temp <- find_next_temp(current_temp, ll_densities, num_particles*0.5)

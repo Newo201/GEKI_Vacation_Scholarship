@@ -5,8 +5,15 @@ densities_malaria <- function(true_data, num_particles, particles, parameters) {
   # For each particle, draw one observation from the likelihood
   # ToDo: vectorise this operation
   for (particle in 1:num_particles) {
-    current_params = list(sigma = particles[, 4])
-    likelihood_densities[particle] <- loglike_malaria(true_data, current_params)
+    current_params <- list(d_in = particles[particle, 1],
+                           phi = particles[particle, 2],
+                           eta0 = particles[particle, 3],
+                           sigma = log(parameters$sigma))
+    current_params <- constrain_malaria_params(current_params)
+    # TODO: currently I am solving the diff equation twice: here and in sampling function
+    # Need to figure out how to optimise the workflow to avoid this
+    current_mean <- log(diff(likelihood_malaria_mean(current_params)))
+    likelihood_densities[particle] <- loglike_malaria(true_data, current_mean, current_params)
   }
 
   return(likelihood_densities)
