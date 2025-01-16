@@ -1,11 +1,12 @@
-pacman::p_load(pacman, testthat, deSolve, rootSolve)
+pacman::p_load(pacman, testthat, deSolve, rootSolve, purrr)
 
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_d_in_only.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/synthetic_malaria.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_malaria.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
 
 ##################### Fixtures #########################
-num_particles <- 400
+num_particles <- 50
 
 prior_params <- list(din.sd = 2,
                      phi.mean = 0, phi.sd = 1,
@@ -55,8 +56,8 @@ test_that('Likelihood mean is monotonically increasing', {
 test_that('Length of likelihood samples is correct', {
   
   constrained_parameters <- list(d_in = 26/52, phi = 0.25, eta0 = 0.11, sigma = 10)
-  unconstrained_parameters <- unconstrain_malaria_params(constrained_parameters)
-  likelihood_sample <- likelihood_malaria(unconstrained_parameters)
+  l_mean <- likelihood_malaria_mean(constrained_parameters)
+  likelihood_sample <- likelihood_malaria(log(diff(l_mean)), constrained_parameters)
   expect_equal(length(likelihood_sample), 129)
   
 })
@@ -72,7 +73,8 @@ test_that('Dimensions of particles are as expected', {
 test_that('Dimensions of synthetic data is as expected', {
 
   particles <- initialise_malaria_particles(num_particles, prior_params)
-  likelihood_samples <- synthetic_malaria(num_particles, particles, c())
+  l_means <- synthetic_mean_malaria(num_particles, particles, c())
+  likelihood_samples <- synthetic_data_malaria_known_var(num_particles, particles, l_means, list(sigma = 0.5))
   expect_equal(dim(likelihood_samples), c(num_particles, 129))
   expect_equal(sum(is.na(likelihood_samples)), 0)
 })
@@ -118,24 +120,28 @@ test_that('Parameters are being unconstrained', {
 
 ######################## Looking at Covariances ########################
 
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_malaria.R')
+# source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria.R')
+# source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_malaria.R')
+# 
+# data_path = "C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/data/Malariah_data.rds"
+# true_data = log(readRDS(data_path))
+# simulated_data <- matrix(true_data, nrow = num_particles, ncol = 129, byrow = T)
+# 
+# true_parameters <- list(d_in = 0.5, phi = 0.5, eta0 = 0.001, sigma = 0.5)
+# true_unconstrained_parameters <- unconstrain_malaria_params(true_parameters)
+# true_constrained_parameters <- constrain_malaria_params(true_unconstrained_parameters)
+# initial_particles <- initialise_malaria_particles_d_in_only(num_particles, prior_params)
+# likelihood_samples <- synthetic_malaria_d_in_only(num_particles, initial_particles, true_unconstrained_parameters)
+# covariances <- calculate_covariances(initial_particles, likelihood_samples)
+# 
+# covariances$C_xx
+# covariances$C_yy
+# 
+# (simulated_data - likelihood_samples)
+# ginv(covariances$C_yy + 9*covariances$C_y_given_x_inv) %*% covariances$C_yx
+# 
+# (simulated_data - likelihood_samples) %*% ginv(covariances$C_yy + 9*covariances$C_y_given_x_inv) %*% covariances$C_yx
 
-data_path = "C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/data/Malariah_data.rds"
-true_data = log(readRDS(data_path))
-simulated_data <- matrix(true_data, nrow = num_particles, ncol = 129, byrow = T)
-
-true_parameters <- list(d_in = 0.5, phi = 0.5, eta0 = 0.001, sigma = 0.5)
-true_unconstrained_parameters <- unconstrain_malaria_params(true_parameters)
-true_constrained_parameters <- constrain_malaria_params(true_unconstrained_parameters)
-initial_particles <- initialise_malaria_particles_d_in_only(num_particles, prior_params)
-likelihood_samples <- synthetic_malaria_d_in_only(num_particles, initial_particles, true_unconstrained_parameters)
-covariances <- calculate_covariances(initial_particles, likelihood_samples)
-
-covariances$C_xx
-covariances$C_yy
-
-(simulated_data - likelihood_samples)
-ginv(covariances$C_yy + 9*covariances$C_y_given_x_inv) %*% covariances$C_yx
-
-(simulated_data - likelihood_samples) %*% ginv(covariances$C_yy + 9*covariances$C_y_given_x_inv) %*% covariances$C_yx
+particles <- initialise_malaria_particles(num_particles, prior_params)
+l_means <- synthetic_mean_malaria(num_particles, particles, c())
+likelihood_samples <- synthetic_data_malaria_known_var(num_particles, particles, l_means, list(sigma = 0.5))

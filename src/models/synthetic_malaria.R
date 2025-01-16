@@ -49,22 +49,27 @@ synthetic_mean_malaria <- function(num_particles, particles, parameters, d_in_on
       # These parameters are in unconstrained form
       current_params <- list(d_in = particles[particle, 1],
                              phi = parameters$phi,
-                             eta0 = parameters$phi)
+                             eta0 = parameters$eta0, 
+                             sigma = 1)
     } else {
       # These parameters are in unconstrained form
+      # Don't need sigma here just adding it so the code doesn't throw an error
       current_params <- list(d_in = particles[particle, 1],
                              phi = particles[particle, 2],
-                             eta0 = particles[particle, 3])
+                             eta0 = particles[particle, 3], 
+                             sigma = 1)
     }
 
     
     # print(current_params)
     current_constrained_params <- constrain_malaria_params(current_params)
-    means <- likelihood_mean_malaria(likelihood_means, current_constrained_params)
-    # print(sample)
-    likelihood_means[particle, ] <- means
+    means <- likelihood_malaria_mean(current_constrained_params)
+    # print(means)
+    # Convert to log difference
+    likelihood_means[particle, ] <- log(diff(means))
     
   }
+
   return(likelihood_means)
 }
 
@@ -101,8 +106,8 @@ synthetic_data_malaria <- function(num_particles, particles, likelihood_means,
 
     
     # print(current_params)
-    sample <- likelihood_malaria(likelihood_means, current_params)
-    # print(sample)
+    current_constrained_params <- constrain_malaria_params(current_params)
+    sample <- likelihood_malaria(likelihood_means[particle, ], current_constrained_params)
     likelihood_samples[particle, ] <- sample
     
   }

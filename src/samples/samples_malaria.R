@@ -119,17 +119,15 @@ likelihood_malaria_mean <- function(variable_parameters) {
   return(simulation.data)
 }
 
-likelihood_malaria <- function(variable_parameters) {
+likelihood_malaria <- function(likelihood_means, variable_parameters) {
   
-  # Assumes parameters are unconstrained
-  variable_parameters <- constrain_malaria_params(variable_parameters)
-  # print(variable_parameters)
+  # Assumes parameters are constrained
   sigma <- variable_parameters$sigma
-  # Convert mean to log difference
-  likelihood_mean <- log(diff(likelihood_malaria_mean(variable_parameters)))
+  # # Convert mean to log difference
+  # likelihood_mean <- log(diff(likelihood_malaria_mean(variable_parameters)))
   # print(likelihood_mean)
   # Data is stored in log space
-  return(rnorm(n = length(likelihood_mean), mean = likelihood_mean, sd = sigma))
+  return(rnorm(n = length(likelihood_means), mean = likelihood_means, sd = sigma))
 }
 
 
