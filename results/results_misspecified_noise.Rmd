@@ -20,6 +20,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 
 ```{r}
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_known_var.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_d_in_only.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal_known_var.R')
 ```
 
@@ -89,30 +90,33 @@ prior_params <- list(din.sd = 2,
                      phi.mean = 0, phi.sd = 1,
                      eta0.mean = 0, eta0.sd = 1)
 
-true_params <- list(sigma = 0.5)
+true_params <- list(sigma = 0.5, phi = 0.5, eta0 = 0.05, d_in = 0.5)
+true_unconstrained_params = unconstrain_malaria_params(true_params)
 ```
 
 ```{r}
 # EKI
-eki_result <- eki_malaria_known_var(num_particles, true_data, true_params, prior_params, general = F, adaptive = adaptive)
+eki_result <- eki_malaria_known_var(num_particles, true_data, 
+                                    true_unconstrained_params, prior_params, 
+                                    general = F, adaptive = adaptive)
 plot_eki_malaria(eki_result)
 
 # GEKI
-eki_result <- eki_malaria_known_var(num_particles, true_data, true_params, prior_params, adaptive = adaptive)
+eki_result <- eki_malaria_known_var(num_particles, true_data, 
+                                    true_unconstrained_params, 
+                                    prior_params, adaptive = adaptive)
+plot_eki_malaria(eki_result)
+```
+
+### $d_{in}$ Only
+
+```{r}
+eki_result <- eki_malaria_d_in_only(num_particles, true_data, 
+                                    true_unconstrained_params, 
+                                    prior_params, adaptive = F)
 plot_eki_malaria(eki_result)
 ```
 
 ```{r}
-plot_eki_malaria(eki_result)
-```
-
-### EKI Results
-
-```{r}
-sum(dnorm(c(1,2,3), mean = c(1,2,3), log = T))
-```
-
-```{r}
-log(1/sqrt(2*pi))
-dnorm(1, mean = 1, log = T)
+plot_eki_malaria_d_in_only(eki_result)
 ```

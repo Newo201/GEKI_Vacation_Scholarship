@@ -8,7 +8,7 @@ densities_malaria_d_in_only <- function(true_data, num_particles, particles, par
     # These parameters are in unconstrained form
     current_params <- list(d_in = particles[particle, 1],
                            phi = parameters$phi,
-                           eta0 = parameters$phi,
+                           eta0 = parameters$eta0,
                            sigma = parameters$sigma)
     current_params <- constrain_malaria_params(current_params)
     # TODO: currently I am solving the diff equation twice: here and in sampling function
@@ -33,7 +33,7 @@ synthetic_malaria_d_in_only <- function(num_particles, particles, parameters, me
     # These parameters are in unconstrained form
     current_params <- list(d_in = particles[particle, 1],
                            phi = parameters$phi,
-                           eta0 = parameters$phi,
+                           eta0 = parameters$eta0,
                            sigma = parameters$sigma)
     
     # print(current_params)

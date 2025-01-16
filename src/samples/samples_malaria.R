@@ -8,7 +8,7 @@ constrain_malaria_params <- function(parameters) {
   
   d_in <- exp(parameters$d_in) + 0.16 # Transformation to [0.16, infinity)
   phi <- plogis(parameters$phi) # Logistic transformation to [0, 1]
-  eta0 <- plogis(parameters$eta0) * 0.96 + 0.04 # Logistic transformation to [0.04, 1]
+  eta0 <- plogis(parameters$eta0) # Logistic transformation to [0, 1]
   sigma <- exp(parameters$sigma)
   
   return(list(d_in = d_in, phi = phi, eta0 = eta0, sigma = sigma))
@@ -18,7 +18,7 @@ unconstrain_malaria_params <- function(parameters) {
   
   d_in <- log(parameters$d_in - 0.16)
   phi <- qlogis(parameters$phi) # Logit transformation
-  eta0 <- qlogis((parameters$eta0 - 0.04)/0.96) # Logit transformation
+  eta0 <- qlogis(parameters$eta0) # Logit transformation
   sigma <- log(parameters$sigma)
   
   return(list(d_in = d_in, phi = phi, eta0 = eta0, sigma = sigma))

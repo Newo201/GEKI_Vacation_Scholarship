@@ -9,7 +9,7 @@ densities_malaria_known_var <- function(true_data, num_particles, particles, par
     current_params <- list(d_in = particles[particle, 1],
                            phi = particles[particle, 2],
                            eta0 = particles[particle, 3],
-                           sigma = log(parameters$sigma))
+                           sigma = parameters$sigma)
     current_params <- constrain_malaria_params(current_params)
     # TODO: currently I am solving the diff equation twice: here and in sampling function
     # Need to figure out how to optimise the workflow to avoid this
@@ -34,7 +34,7 @@ synthetic_malaria_known_var <- function(num_particles, particles, parameters, me
     current_params <- list(d_in = particles[particle, 1],
                         phi = particles[particle, 2],
                         eta0 = particles[particle, 3],
-                        sigma = log(parameters$sigma))
+                        sigma = parameters$sigma)
     
     # print(current_params)
     if (mean) {

@@ -8,7 +8,7 @@ densities_malaria <- function(true_data, num_particles, particles, parameters) {
     current_params <- list(d_in = particles[particle, 1],
                            phi = particles[particle, 2],
                            eta0 = particles[particle, 3],
-                           sigma = log(parameters$sigma))
+                           sigma = particles[particle, 4])
     current_params <- constrain_malaria_params(current_params)
     # TODO: currently I am solving the diff equation twice: here and in sampling function
     # Need to figure out how to optimise the workflow to avoid this
