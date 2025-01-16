@@ -1,11 +1,9 @@
 # ToDo: make sure log likelihood can handle y containing more than one observation in the correct way
-loglike_pdf <- function(y, parameters) {
-  alpha = parameters$alpha
+loglike_pdf <- function(y, mean, parameters) {
   sigma2 = parameters$sigma**2
-  x = parameters$x
   # print(dim(y))
-  d_y = length(x)
-  return(dmvnorm(y, mean = alpha*x, sigma = sigma2*diag(d_y), log = T))
+  d_y = length(mean)
+  return(dmvnorm(y, mean = mean, sigma = sigma2*diag(d_y), log = T))
 }
 
 alpha_logprior_pdf <- function(alpha, prior_params) {

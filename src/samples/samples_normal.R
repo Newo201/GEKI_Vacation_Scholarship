@@ -21,13 +21,8 @@ logsigma2_prior_sample <- function(parameters, num_samples) {
 ###################### Sampling From Likelihood ###############################
 
 # Generate samples from the normal distribution
-likelihood_normal <- function(parameters) {
-  alpha = parameters$alpha
-  x = parameters$x
+likelihood_normal <- function(likelihood_mean, parameters) {
+  dim <- length(likelihood_mean)
   sigma2 = parameters$sigma**2
-  dim = length(x)
-  # print(dim)
-  # print(sigma2)
-  # print(sigma2*diag(dim))
-  return(rmvnorm(1, mean = alpha*x, sigma = sigma2*diag(dim)))
+  return(rmvnorm(1, mean = likelihood_mean, sigma = sigma2*diag(dim)))
 }

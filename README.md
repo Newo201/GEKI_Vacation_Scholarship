@@ -20,7 +20,7 @@ Duffield and Singh (2022) proposed a Generalised Ensemble Kalman Inversion algor
 
 The purpose of this research is to implement the GEKI algorithm (Duffield and Singh, 2022) and to test its performance in two situations:
 
--   A simulated multivariate normal model where we seek to estimate the mean and variance
+-   A simulated multivariate normal model where we seek to estimate the mean and variance: `results/results_normal.md`
 
 -   A malaria transmission model
 
@@ -71,3 +71,7 @@ The idea is to use pseudo weights $w_l^{(i)} \propto exp(-\frac{1}{2}(\lambda_l-
 Given $\lambda_{l-1}$ we want to choose $\lambda_l$ such that the $ESS = \rho N$ where $\rho$ is a hyper-parameter (set to $\frac{1}{2}$). We can find this using any standard root finding algorithm; I use the `uniroot` function in R. In cases where the $\lambda_l > 1$ we set $\lambda_l = 1$ and make this our final iteration.
 
 ## References
+
+Samuel Duffield and Sumeetpal S. Singh (2022). *Ensemble Kalman inversion for general likelihoods*. Statistics & Probability Letters, Volume 187, 109523
+
+Alahmadi Amani A., Flegg Jennifer A., Cochrane Davis G., Drovandi Christopher C. and Keith Jonathan M.(2020). *A comparison of approximate versus exact techniques for Bayesian parameter inference in nonlinear ordinary differential equation models.* R. Soc. Open Sci. Volume 7, 191315

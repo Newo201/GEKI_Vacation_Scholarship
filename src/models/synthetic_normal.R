@@ -35,7 +35,7 @@ synthetic_data_normal <- function(num_particles, particles, likelihood_means, pa
     } else {
       current_params = list(sigma = sqrt(exp(particles[particle, 2])))
     }
-    likelihood_samples[particle, ] <- likelihood_normal(likelihood_means, current_params)
+    likelihood_samples[particle, ] <- likelihood_normal(likelihood_means[particle, ], current_params)
   }
   
   return(likelihood_samples)
@@ -50,7 +50,9 @@ synthetic_mean_normal <- function(num_particles, particles, parameters, known_me
   if (known_mean) {
     return(matrix(parameters$alpha * x.true, nrow = num_particles, ncol = length(x.true)))
   } else {
-    return(particles[, 1] %*% x.true)
+    # print(particles[, 1])
+    # print(x.true)
+    return(t(t(particles[, 1])) %*% x.true)
   }
 
 }

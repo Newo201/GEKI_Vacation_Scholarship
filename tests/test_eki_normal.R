@@ -1,10 +1,13 @@
+pacman::p_load(pacman, testthat, mvtnorm, purrr, matrixcalc, MASS)
+
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/synthetic_normal.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_normal.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/pdfs/pdfs_normal.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/tempering.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
 
-pacman::p_load(pacman, testthat, mvtnorm, purrr, matrixcalc, MASS)
+
 
 # I believe we need to make sure the number of particles > number of dimensions which makes logical sense
 num_particles <- 400
@@ -20,18 +23,21 @@ true_params_nd = list(alpha = 2, sigma = 2, x = rep(1, num_dimensions))
 
 particles <- initialise_normal_particles(num_particles, prior_params)
 
-likelihood_samples_1d <- synthetic_normal(num_particles, particles, true_params_1d)
+likelihood_means_1d <- synthetic_mean_normal(num_particles, particles, true_params_1d)
+likelihood_samples_1d <- synthetic_data_normal(num_particles, particles, likelihood_means_1d, true_params_1d)
 
-true_data_1d <- likelihood_normal(true_params_1d)
+true_data_1d <- likelihood_normal(2, true_params_1d)
 simulated_data_1d <- matrix(true_data_1d, nrow = num_particles, ncol = 1, byrow = T)
 
-likelihood_samples_2d <- synthetic_normal(num_particles, particles, true_params_2d)
-true_data_2d <- likelihood_normal(true_params_2d)
+likelihood_means_2d <- synthetic_mean_normal(num_particles, particles, true_params_2d)
+likelihood_samples_2d <- synthetic_data_normal(num_particles, particles, likelihood_means_2d, true_params_2d)
+true_data_2d <- likelihood_normal(rep(2, 2), true_params_2d)
 simulated_data_2d <- matrix(true_data_2d, nrow = num_particles, ncol = 2, byrow = T)
 
 
-likelihood_samples_nd <- synthetic_normal(num_particles, particles, true_params_nd)
-true_data_nd <-likelihood_normal(true_params_nd)
+likelihood_means_nd <- synthetic_mean_normal(num_particles, particles, true_params_nd)
+likelihood_samples_nd <- synthetic_data_normal(num_particles, particles, likelihood_means_nd, true_params_nd)
+true_data_nd <-likelihood_normal(rep(2, num_dimensions), true_params_nd)
 simulated_data_nd <- matrix(true_data_nd, nrow = num_particles, ncol = num_dimensions, byrow = T)
 
 covariances_1d <- calculate_covariances(particles, likelihood_samples_1d)
@@ -125,14 +131,14 @@ test_that('Covariance matrices are positive semi definite', {
 
 test_that('ESS is between 1 and N', {
 
-  ll_densities = densities_normal(true_data_1d, num_particles, particles, true_params_1d)
+  ll_densities = densities_normal(true_data_1d, num_particles, particles, likelihood_means_1d, true_params_1d)
   expect_lte(estimate_ess(0.1, 0, ll_densities),  num_particles)
   expect_gte(estimate_ess(0.1, 0, ll_densities),  1)
 
 })
 
 test_that('Next selected temperature is always >= current_temp and <= 1', {
-  ll_densities = densities_normal(true_data_1d, num_particles, particles, true_params_1d)
+  ll_densities = densities_normal(true_data_1d, num_particles, particles, likelihood_means_1d, true_params_1d)
   expect_lte(find_next_temp(0.1, ll_densities, num_particles*0.5), 1)
   expect_gt(find_next_temp(0.1, ll_densities, num_particles*0.5), 0.1)
 })
@@ -148,34 +154,38 @@ test_next_temp_valid <- function(current_temp, ll_densities, target_ess) {
 test_that('Next selected temperature gives the correct ESS', {
   # expect_lt(test_next_temp_valid(0.1, simulated_data_1d, likelihood_samples_1d, covariances_1d, num_particles, num_particles*0.5), 0.5)
   # expect_lt(test_next_temp_valid(0.1, simulated_data_2d, likelihood_samples_2d, covariances_2d, num_particles, num_particles*0.5), 0.5)
-  ll_densities = densities_normal(true_data_nd, num_particles, particles, true_params_nd)
+  ll_densities = densities_normal(true_data_nd, num_particles, particles, likelihood_means_nd, true_params_nd)
   expect_lt(test_next_temp_valid(0.1, ll_densities, num_particles*0.5), 0.5)
 })
 
 test_that('Dimensions of weights are correct', {
-  ll_densities = densities_normal(true_data_1d, num_particles, particles, true_params_1d)
+  ll_densities = densities_normal(true_data_1d, num_particles, particles, likelihood_means_1d, true_params_1d)
   expect_equal(length(get_weights(0.1, 0, ll_densities)), num_particles)
 })
 
-dim((particles[, 1]))
-means <-  particles[, 1] %*% t(true_params_nd$x)
-rowSums(dnorm(simulated_data_nd, mean = means, sd = exp(particles[, 2]), log = T))
-
-dnorm(true_data_nd, mean = diag(5), log = T)
-
-rowSums(dnorm(true_data_nd, mean = means, log = T))
-rowSums(dnorm(simulated_data_nd, mean = means, log = T))
-rowSums(dnorm(simulated_data_nd, mean = means, sd = rep(2, 400), log = T))
-
-test_mean <- particles[1, 1] * true_params_nd$x
-simulated_data_nd[1, ]
-dmvnorm(simulated_data_nd, mean = rep(0, 5), sigma = diag(5), log = T)
-dmvnorm()
-
-dmvnorm(rep(1, 5), mean = rep(0, 5), sigma = diag(5), log = T)
-sum(dnorm(rep(1,5), mean = 0, sd = 1, log = T))
-
-dnorm(simulated_data_nd[1, ], mean = 0, sd = 1)
-sum(dnorm(simulated_data_nd[1, ], mean = 0, sd = 1, log = T))
-
-dmvnorm(diag(3), mean = c(1,2,3))
+# dim((particles[, 1]))
+# means <-  particles[, 1] %*% t(true_params_nd$x)
+# rowSums(dnorm(simulated_data_nd, mean = means, sd = exp(particles[, 2]), log = T))
+# 
+# dnorm(true_data_nd, mean = diag(5), log = T)
+# 
+# rowSums(dnorm(true_data_nd, mean = means, log = T))
+# rowSums(dnorm(simulated_data_nd, mean = means, log = T))
+# rowSums(dnorm(simulated_data_nd, mean = means, sd = rep(2, 400), log = T))
+# 
+# test_mean <- particles[1, 1] * true_params_nd$x
+# simulated_data_nd[1, ]
+# dmvnorm(simulated_data_nd, mean = rep(0, 5), sigma = diag(5), log = T)
+# dmvnorm()
+# 
+# dmvnorm(rep(1, 5), mean = rep(0, 5), sigma = diag(5), log = T)
+# sum(dnorm(rep(1,5), mean = 0, sd = 1, log = T))
+# 
+# dnorm(simulated_data_nd[1, ], mean = 0, sd = 1)
+# sum(dnorm(simulated_data_nd[1, ], mean = 0, sd = 1, log = T))
+# 
+# dmvnorm(diag(3), mean = c(1,2,3))
+# 
+# t(particles[, 1]) %*% rep(1, 5))
+# 
+# dim(t(t(particles[, 1])) %*% rep(1, 5))
