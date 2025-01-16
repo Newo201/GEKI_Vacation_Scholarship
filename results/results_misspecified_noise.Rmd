@@ -43,7 +43,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 ```
 
 ```{r}
-adaptive = TRUE
+adaptive = FALSE
 ```
 
 ## Introduction
@@ -90,7 +90,7 @@ prior_params <- list(din.sd = 2,
                      phi.mean = 0, phi.sd = 1,
                      eta0.mean = 0, eta0.sd = 1)
 
-true_params <- list(sigma = 0.5, phi = 0.5, eta0 = 0.05, d_in = 0.5)
+true_params <- list(sigma = 0.5, phi = 0.5, eta0 = 0.04, d_in = 0.5)
 true_unconstrained_params = unconstrain_malaria_params(true_params)
 ```
 
