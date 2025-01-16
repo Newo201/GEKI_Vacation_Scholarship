@@ -99,13 +99,13 @@ true_unconstrained_params = unconstrain_malaria_params(true_params)
 eki_result <- eki_malaria_known_var(num_particles, true_data, 
                                     true_unconstrained_params, prior_params, 
                                     general = F, adaptive = adaptive)
-plot_eki_malaria(eki_result)
+plot_eki_malaria_known_var(eki_result)
 
 # GEKI
 eki_result <- eki_malaria_known_var(num_particles, true_data, 
                                     true_unconstrained_params, 
                                     prior_params, adaptive = adaptive)
-plot_eki_malaria(eki_result)
+plot_eki_malaria_known_var(eki_result)
 ```
 
 ### $d_{in}$ Only
@@ -113,10 +113,6 @@ plot_eki_malaria(eki_result)
 ```{r}
 eki_result <- eki_malaria_d_in_only(num_particles, true_data, 
                                     true_unconstrained_params, 
-                                    prior_params, adaptive = F)
-plot_eki_malaria(eki_result)
-```
-
-```{r}
+                                    prior_params, adaptive = adaptive)
 plot_eki_malaria_d_in_only(eki_result)
 ```
