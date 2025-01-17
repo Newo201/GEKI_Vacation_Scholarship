@@ -51,3 +51,10 @@ lines(time, true_data)
 
 res
 
+f <- function(x, y, z) {
+  x + y + z
+}
+vf <- Vectorize(f, vectorize.args = c("x", "y"), SIMPLIFY = F)
+f(1:3, 1:3, 2)
+vf(1:3, 1:3)
+vf(y = 1:3)
