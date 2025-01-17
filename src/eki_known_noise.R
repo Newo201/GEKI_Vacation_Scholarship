@@ -70,7 +70,7 @@ eki_adaptive_known_noise <- function(num_particles, initial_particles, true_data
     
     # Find the next temperature
     next_temp <- find_next_temp(current_temp, ll_densities, num_particles*0.5)
-    print(glue("Next temp is {next_temp}")
+    print(glue("Next temp is {next_temp}"))
     # print(next_temp)
     temp_difference <- next_temp - current_temp
     particles <- update_particles_known_noise(temp_difference, particles, simulated_data, 
