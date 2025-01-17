@@ -100,12 +100,14 @@ eki_result <- eki_malaria_known_var(num_particles, true_data,
                                     true_unconstrained_params, prior_params, 
                                     general = F, adaptive = adaptive)
 plot_eki_malaria_known_var(eki_result)
+plot_eki_posterior_predictive(eki_result, true_data, true_params)
 
 # GEKI
 eki_result <- eki_malaria_known_var(num_particles, true_data, 
                                     true_unconstrained_params, 
                                     prior_params, adaptive = adaptive)
 plot_eki_malaria_known_var(eki_result)
+plot_eki_posterior_predictive(eki_result, true_data, true_params)
 ```
 
 ### $d_{in}$ Only
@@ -115,4 +117,12 @@ eki_result <- eki_malaria_d_in_only(num_particles, true_data,
                                     true_unconstrained_params, 
                                     prior_params, adaptive = adaptive)
 plot_eki_malaria_d_in_only(eki_result)
+```
+
+```{r}
+plot_eki_posterior_predictive_d_in_only(eki_result, true_data, true_unconstrained_params)
+```
+
+```{r}
+mean(exp(eki_result$particles) + 0.16)
 ```

@@ -38,9 +38,16 @@ plot(eta0_seq, res)
 
 ######################### Plotting Data #################################
 
-constrained_params = list(d_in = 500, phi = 0.5, eta0 = 0.001)
+constrained_params = list(d_in = 3.35, phi = 0.5, eta0 = 0.04, sigma = 0.5)
+unconstrained_params <- unconstrain_malaria_params(constrained_params)
 time = seq(1/12, 10.75, by = 1/12)
-res <- log(diff(likelihood_malaria_mean(constrained_params)))
-plot(time, res, type = 'l', col = 'red', ylim = c(min(min(true_data), min(res)), max(max(true_data, max(res)))))
+means <- log(diff(likelihood_malaria_mean(constrained_params)))
+samples <- likelihood_malaria(unconstrained_params)
+
+print(mean(res))
+plot(time, means, type = 'l', col = 'red', ylim = c(min(min(true_data), min(res)), max(max(true_data, max(res)))))
+lines(time, samples, col = 'blue')
 lines(time, true_data)
+
+res
 
