@@ -82,21 +82,21 @@ solve_steady_state <- function(parameters) {
   
 }
 
-likelihood_malaria_mean <- function(variable_parameters) {
+likelihood_malaria_mean <- function(d_in, phi, eta0) {
   
-  # Assumes variable parameters input is in constrained form
+  print(d_in)
   
   parameters <- c(N = 29203486,
                       L = 66.67,
                       dimm = 0.93,
-                      d_in = variable_parameters$d_in, 
+                      d_in = exp(d_in) + 0.16, 
                       d_treat = 3/52,
                       p1 = 0.87,
                       p2 = 0.08, 
                       amp = 0.67,
                       R_m = 1.23,
-                      phi = variable_parameters$phi,
-                      eta0 = variable_parameters$eta0)
+                      phi = plogis(phi),
+                      eta0 = plogis(eta0))
   
   # print(parameters)
   
