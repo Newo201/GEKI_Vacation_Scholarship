@@ -55,7 +55,7 @@ plot_sigma2_particles <- function(sigma2_particles, true_params, prior_params, a
 
 plot_mcmc_trace_plots <- function(chain.1, chain.2, burnin = 0, iterations = 1e4) {
   
-  par(mfrow = c(1,2))
+  # par(mfrow = c(1,2))
   
   plot(chain.1[(burnin + 1):iterations, 1], type = 'l', main = 'MCMC', 
        xlab = 'Iteration', ylab = expression(alpha))
@@ -76,7 +76,7 @@ plot_mcmc_histogram <- function(chain.1, chain.2, true_params, prior_params,
   alpha_particles <- combined_chains[, 1]
   sigma2_particles <- exp(combined_chains[, 2])
   
-  par(mfrow = c(1,2))
+  # par(mfrow = c(1,2))
   plot_alpha_particles(alpha_particles, true_params, prior_params, 'MCMC', kde = kde)
   plot_sigma2_particles(sigma2_particles, true_params, prior_params, 'MCMC', kde = kde)
   
