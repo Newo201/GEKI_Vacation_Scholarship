@@ -6,7 +6,7 @@ plot_d_in_particles <- function(d_in_particles, true_params, prior_params, kde =
   
   d_in_seq <- seq(min(d_in_particles), max(d_in_particles), length.out = 50)
   # ToDo: add parameters for prior
-  d_in_prior <- dhnorm(d_in_seq - 0.16, sigma = 2)
+  d_in_prior <- dhnorm(d_in_seq - 0.16, sigma = prior_params$din.sd)
   
   if (kde) {
     d_in_post_density <- density(d_in_particles)
@@ -28,8 +28,7 @@ plot_d_in_particles <- function(d_in_particles, true_params, prior_params, kde =
 plot_phi_particles <- function(phi_particles, true_params, prior_params, kde = T) {
   
   phi_seq <- seq(min(phi_particles), max(phi_particles), length.out = 50)
-  # Todo: fix up prior
-  phi_prior <- dunif(phi_seq)
+  phi_prior <- plogis(dnorm(phi_seq, mean = prior_params$phi.mean, sd = prior_params$phi.sd))
   
   if (kde) {
     phi_post_density <- density(phi_particles)
@@ -51,7 +50,7 @@ plot_eta0_particles <- function(eta0_particles, true_params, prior_params, kde =
   
   eta0_seq <- seq(min(eta0_particles), max(eta0_particles), length.out = 50)
   # Todo: fix up prior
-  eta0_prior <- dunif(eta0_seq)
+  eta0_prior <- plogis(dnorm(eta0_seq, mean = prior_params$eta0.mean, sd = prior_params$eta0.sd))
   
   if (kde) {
     eta0_post_density <- density(eta0_particles)
@@ -73,7 +72,7 @@ plot_sigma_particles <- function(sigma_particles, true_params, prior_params) {
   
   sigma_seq <- seq(min(sigma_particles), max(sigma_particles), length.out = 50)
   # Add parameters
-  sigma_prior <- dlnorm(mean = 10, sd = 4)
+  sigma_prior <- dlnorm(mean = prior_params$sigma.mean, sd = prior_params$sigma.sd)
   
   if (kde) {
     sigma_post_density <- density(sigma_particles)
