@@ -38,10 +38,11 @@ plot(eta0_seq, res)
 
 ######################### Plotting Data #################################
 
-# constrained_params = list(d_in = 3.35, phi = 0.5, eta0 = 0.04, sigma = 0.5)
-# unconstrained_params <- unconstrain_malaria_params(constrained_params)
-# time = seq(1/12, 10.75, by = 1/12)
-# means <- log(diff(likelihood_malaria_mean(constrained_params)))
+constrained_params = list(d_in = 5, phi = 0.5, eta0 = 0.04, sigma = 0.5)
+unconstrained_params <- unconstrain_malaria_params(constrained_params)
+time = seq(1/12, 10.75, by = 1/12)
+means <- log(diff(likelihood_malaria_mean(constrained_params)))
+means
 # samples <- likelihood_malaria(unconstrained_params)
 # 
 # print(mean(res))

@@ -106,6 +106,7 @@ likelihood_malaria_mean <- function(variable_parameters) {
   
   #The initial conditions for solving the ODE 
   ICs <- solve_steady_state(parameters)
+  # print(ICs)
   
   #Solve the ODE using the Default Solver LSoda
   out <- (ode(y = ICs, times = true_time, func = mtdrift, parms = parameters))

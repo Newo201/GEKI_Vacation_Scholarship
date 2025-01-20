@@ -50,7 +50,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 ```
 
 ```{r}
-adaptive = FALSE
+adaptive = TRUE
 ```
 
 ## Introduction
@@ -88,8 +88,8 @@ Notably, this happens in both EKI and GEKI because GEKI was designed to remain a
 ## Malaria Transmission Model
 
 ```{r}
-data_path = "C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/data/Malariah_data.rds"
-true_data = log(readRDS(data_path))
+# data_path = "C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/data/Malariah_data.rds"
+# true_data = log(readRDS(data_path))
 
 num_particles <- 400
 
@@ -97,8 +97,9 @@ prior_params <- list(din.sd = 2,
                      phi.mean = 0, phi.sd = 1,
                      eta0.mean = 0, eta0.sd = 1)
 
-true_params <- list(sigma = 0.5, phi = 0.5, eta0 = 0.04, d_in = 0.5)
+true_params <- list(sigma = 0.5, phi = 0.25, eta0 = 0.11, d_in = 0.5)
 true_unconstrained_params = unconstrain_malaria_params(true_params)
+true_data <- likelihood_malaria(true_unconstrained_params)
 ```
 
 ```{r}
@@ -106,8 +107,17 @@ true_unconstrained_params = unconstrain_malaria_params(true_params)
 eki_result <- eki_malaria_known_var(num_particles, true_data, 
                                     true_unconstrained_params, prior_params, 
                                     general = F, adaptive = adaptive)
-plot_eki_malaria_known_var(eki_result)
+plot_eki_malaria_known_var(eki_result, true_params)
 plot_eki_posterior_predictive(eki_result, true_data, true_unconstrained_params)
+```
+
+```{r}
+plot_eki_malaria_known_var(eki_result, true_params)
+plot_eki_posterior_predictive(eki_result, true_data, true_unconstrained_params)
+```
+
+```{r}
+mean(exp(eki_result$particles[, 1]))
 ```
 
 ```{r}
