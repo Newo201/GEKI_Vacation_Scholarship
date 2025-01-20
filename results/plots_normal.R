@@ -11,9 +11,11 @@ plot_alpha_particles <- function(alpha_particles, true_params, prior_params, alg
   
   if (kde) {
     alpha_post_density <- density(alpha_particles)
-    plot(alpha_post_density, main = algorithm, xlab = expression(alpha), ylab = 'Density')
+    plot(alpha_post_density, main = algorithm, xlab = expression(alpha), ylab = 'Density',
+         cex.main = 2, cex.lab = 1.5)
   } else {
-    hist(alpha_particles, freq = F, main = algorithm, xlab = expression(alpha), ylab = 'Density')
+    hist(alpha_particles, freq = F, main = algorithm, xlab = expression(alpha), ylab = 'Density',
+         cex.main = 2, cex.lab = 1.5)
   }
   
   lines(alpha_sequence, alpha_prior_density, col = 'blue')
@@ -22,7 +24,7 @@ plot_alpha_particles <- function(alpha_particles, true_params, prior_params, alg
   legend("topleft", 
          legend = c("Estimated Posterior", "Prior", "True Value"),
          col = c("black", "blue", "red"),
-         pch = 16)
+         lty = 1, cex = 0.8)
   
 }
 
@@ -36,10 +38,12 @@ plot_sigma2_particles <- function(sigma2_particles, true_params, prior_params, a
   
   if (kde) {
     sigma2_post_density <- density(sigma2_particles)
-    plot(sigma2_post_density, main = algorithm, xlab = expression(sigma^2), ylab = 'Density')
+    plot(sigma2_post_density, main = algorithm, xlab = expression(sigma^2), ylab = 'Density',
+         cex.main = 2, cex.lab = 1.5)
   } else {
     hist(sigma2_particles, freq = F, main = algorithm, 
-         xlab = expression(sigma^2), ylab = 'Density')
+         xlab = expression(sigma^2), ylab = 'Density',
+         cex.main = 2, cex.lab = 1.5)
   }
 
   lines(sigma2_sequence, sigma2_prior_density, col = 'blue')
@@ -47,7 +51,7 @@ plot_sigma2_particles <- function(sigma2_particles, true_params, prior_params, a
   legend("topleft", 
          legend = c("Estimated Posterior", "Prior", "True Value"),
          col = c("black", "blue", "red"),
-         pch = 16)
+         lty = 1, cex = 0.8)
   
 }
 
@@ -90,7 +94,7 @@ plot_eki_normal <- function(eki_result, true_params, prior_params, kde = T) {
   alpha_particles <- eki_result$particles[, 1]
   sigma2_particles <- eki_result$particles[, 2]
   
-  par(mfrow = c(1, 2))
+  # par(mfrow = c(1, 2))
   plot_alpha_particles(alpha_particles, true_params, prior_params, 'EKI Normal', kde = kde)
   
   plot_sigma2_particles(sigma2_particles, true_params, prior_params, 'EKI Normal', kde = kde)
@@ -122,7 +126,7 @@ plot_eki_normal_known_var <- function(eki_result, true_data, true_params,
   legend("topleft", 
          legend = c("Estimated Posterior", "Prior", "True Value", "Analytical Posterior"),
          col = c("black", "blue", "red", "green"),
-         pch = 16)
+         lty = 1, cex = 0.8)
 }
 
 plot_eki_normal_known_mean <- function(eki_result, true_params, prior_params, kde = T) {
