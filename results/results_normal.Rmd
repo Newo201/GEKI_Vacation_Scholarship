@@ -71,8 +71,9 @@ generate_results <- function(num_particles, true_parameters) {
   chain.1 <- run.1$batch
   run.2 <- normal_mcmc(true_data, true_parameters, prior_params)
   chain.2 <- run.2$batch
-  plot_mcmc_trace_plots(chain.1, chain.2, 500)
-  plot_mcmc_histogram(chain.1, chain.2, true_parameters, 500)
+  plot_mcmc_trace_plots(chain.1, chain.2, burnin = 500)
+  plot_mcmc_histogram(chain.1, chain.2, true_parameters, prior_params, 
+                      burnin = 500)
   
 }
 ```
@@ -107,7 +108,7 @@ prior_params <- list(alpha.mean = 0, alpha.sd = 5,
 ### Adaptive Tempering
 
 ```{r}
-adaptive = TRUE
+adaptive = FALSE
 ```
 
 ### Output

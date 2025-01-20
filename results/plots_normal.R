@@ -21,7 +21,7 @@ plot_alpha_particles <- function(alpha_particles, true_params, prior_params, alg
   
 }
 
-plot_sigma2_particles <- function(sigma2_particles, true_params, algorithm, kde = T) {
+plot_sigma2_particles <- function(sigma2_particles, true_params, prior_params, algorithm, kde = T) {
   
   sigma2_sequence <- seq(min(sigma2_particles), max(sigma2_particles),
                          length.out = 20)
@@ -31,7 +31,7 @@ plot_sigma2_particles <- function(sigma2_particles, true_params, algorithm, kde 
   
   if (kde) {
     sigma2_post_density <- density(sigma2_particles)
-    plot(alpha_post_density, main = algorithm, xlab = expression(alpha), ylab = 'Density')
+    plot(sigma2_post_density, main = algorithm, xlab = expression(sigma^2), ylab = 'Density')
   } else {
     hist(sigma2_particles, freq = F, main = algorithm, 
          xlab = expression(sigma^2), ylab = 'Density')
@@ -57,8 +57,9 @@ plot_mcmc_trace_plots <- function(chain.1, chain.2, burnin = 0, iterations = 1e4
   lines(chain.2[(burnin + 1):iterations, 2], col = 'red')
 }
 
-plot_mcmc_histogram <- function(chain.1, chain.2, true_params, prior_params, burnin = 0, 
-                           iterations = 1e4) {
+plot_mcmc_histogram <- function(chain.1, chain.2, true_params, prior_params, 
+                                burnin = 0, iterations = 1e4, kde = T) {
+  
   chain.1.burnin <- chain.1[(burnin + 1): iterations, ]
   chain.2.burnin <- chain.2[(burnin + 1): iterations, ]
   combined_chains <- rbind(chain.1.burnin, chain.2.burnin)
@@ -67,33 +68,36 @@ plot_mcmc_histogram <- function(chain.1, chain.2, true_params, prior_params, bur
   sigma2_particles <- exp(combined_chains[, 2])
   
   par(mfrow = c(1,2))
-  plot_alpha_particles(alpha_particles, true_params, prior_params)
-  plot_sigma2_particles(sigma2_particles, true_params, prior_params)
+  plot_alpha_particles(alpha_particles, true_params, prior_params, 'MCMC', kde = kde)
+  plot_sigma2_particles(sigma2_particles, true_params, prior_params, 'MCMC', kde = kde)
   
 }
 
 
 ############################### EKI #########################################
 
-plot_eki_normal <- function(eki_result, true_params, prior_params) {
+plot_eki_normal <- function(eki_result, true_params, prior_params, kde = T) {
   
   alpha_particles <- eki_result$particles[, 1]
   sigma2_particles <- eki_result$particles[, 2]
   
   par(mfrow = c(1, 2))
-  plot_alpha_particles(alpha_particles, true_params, prior_params)
-  plot_sigma2_particles(sigma2_particles, true_params, prior_params)
+  plot_alpha_particles(alpha_particles, true_params, prior_params, 'EKI Normal', kde = kde)
+  plot_sigma2_particles(sigma2_particles, true_params, prior_params, 'EKI Normal', kde = kde)
   
 }
 
 # ToDo: add plot of posterior density
-plot_eki_normal_known_var <- function(eki_result, true_data, true_params, prior_params) {
+plot_eki_normal_known_var <- function(eki_result, true_data, true_params, 
+                                      prior_params, kde = T) {
   
   alpha_particles <- eki_result$particles[, 1]
+  alpha_sequence <- seq(min(alpha_particles), max(alpha_particles), 
+                        length.out = 20)
   
   par(mfrow = c(1, 1))
   
-  plot_alpha_particles(alpha_particles, true_params, prior_params)
+  plot_alpha_particles(alpha_particles, true_params, prior_params, 'EKI Known Var', kde = kde)
   
   Q <- (prior_params$alpha.sd**2) * diag(1)
   m <- prior_params$alpha.mean * diag(1)
@@ -107,13 +111,12 @@ plot_eki_normal_known_var <- function(eki_result, true_data, true_params, prior_
   lines(alpha_sequence, alpha_post_density, col = 'green')
 }
 
-plot_eki_normal_known_mean <- function(eki_result, true_params, prior_params) {
+plot_eki_normal_known_mean <- function(eki_result, true_params, prior_params, kde = T) {
   
   sigma2_particles <- eki_result$particles[, 1]
   
   par(mfrow = c(1, 1))
   
-  plot_alpha_particles(alpha_particles, true_params, prior_params)
-  plot_sigma2_particles(sigma2_particles, true_params, prior_params)
+  plot_sigma2_particles(sigma2_particles, true_params, prior_params, 'EKI Known Mean', kde = kde)
   
 }
