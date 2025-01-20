@@ -50,7 +50,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 ```
 
 ```{r}
-adaptive = TRUE
+adaptive = FALSE
 ```
 
 ## Introduction
