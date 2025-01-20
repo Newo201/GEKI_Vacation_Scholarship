@@ -3,16 +3,17 @@
 plot_alpha_particles <- function(alpha_particles, true_params, prior_params, algorithm,
                                  kde = T) {
   
-  alpha_sequence <- seq(min(alpha_particles), max(alpha_particles), 
-                        length.out = 20)
+  true_alpha <- true_params$alpha
+  alpha_sequence <- seq(min(c(alpha_particles, true_alpha)), max(c(alpha_particles, true_alpha)), 
+                        length.out = 50)
   alpha_prior_density <- dnorm(alpha_sequence, mean = prior_params$alpha.mean, 
                                sd = prior_params$alpha.sd)
-  true_alpha <- true_params$alpha
+
   
   if (kde) {
     alpha_post_density <- density(alpha_particles)
     plot(alpha_post_density, main = algorithm, xlab = expression(alpha), ylab = 'Density',
-         cex.main = 2, cex.lab = 1.5)
+         cex.main = 2, cex.lab = 1.5, xlim = c(min(alpha_sequence), max(alpha_sequence)))
   } else {
     hist(alpha_particles, freq = F, main = algorithm, xlab = expression(alpha), ylab = 'Density',
          cex.main = 2, cex.lab = 1.5)
@@ -30,19 +31,20 @@ plot_alpha_particles <- function(alpha_particles, true_params, prior_params, alg
 
 plot_sigma2_particles <- function(sigma2_particles, true_params, prior_params, algorithm, kde = T) {
   
-  sigma2_sequence <- seq(min(sigma2_particles), max(sigma2_particles),
-                         length.out = 20)
+  true_sigma2 <- log(true_params$sigma**2)
+  sigma2_sequence <- seq(min(c(sigma2_particles, true_sigma2)), max(c(sigma2_particles, true_sigma2)),
+                         length.out = 50)
   sigma2_prior_density <- dnorm(sigma2_sequence, mean = prior_params$sigma2.mean, 
                                 sd = prior_params$sigma2.sd)
-  true_sigma2 <- true_params$sigma**2
+
   
   if (kde) {
     sigma2_post_density <- density(sigma2_particles)
-    plot(sigma2_post_density, main = algorithm, xlab = expression(sigma^2), ylab = 'Density',
-         cex.main = 2, cex.lab = 1.5)
+    plot(sigma2_post_density, main = algorithm, xlab = expression(log(sigma^2)), ylab = 'Density',
+         cex.main = 2, cex.lab = 1.5, xlim = c(min(sigma2_sequence), max(sigma2_sequence)))
   } else {
     hist(sigma2_particles, freq = F, main = algorithm, 
-         xlab = expression(sigma^2), ylab = 'Density',
+         xlab = expression(log(sigma^2)), ylab = 'Density',
          cex.main = 2, cex.lab = 1.5)
   }
 
@@ -78,7 +80,7 @@ plot_mcmc_histogram <- function(chain.1, chain.2, true_params, prior_params,
   combined_chains <- rbind(chain.1.burnin, chain.2.burnin)
   
   alpha_particles <- combined_chains[, 1]
-  sigma2_particles <- exp(combined_chains[, 2])
+  sigma2_particles <- combined_chains[, 2]
   
   # par(mfrow = c(1,2))
   plot_alpha_particles(alpha_particles, true_params, prior_params, 'MCMC', kde = kde)

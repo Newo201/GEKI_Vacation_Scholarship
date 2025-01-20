@@ -151,7 +151,7 @@ All EKI models and MCMC do well at estimating the mean parameter. There is no ch
 In this experiment I change the true value of $\sigma$ from $2$ to $10$ in increments of $2$. The purpose of this is to determine whether the EKI algorithm can detect values of $\sigma$ which are further away from the prior. Additionally, we would expect the $\alpha$ particles to become more diffuse as the true value of $\sigma$ increases.
 
 ```{r}
-sigma_seq <- seq(2, 10, length.out = 5)
+sigma_seq <- seq(8, 10, length.out = 5)
 num_dimensions <- 50
 num_particles <- 400
 for (sigma in sigma_seq) {
