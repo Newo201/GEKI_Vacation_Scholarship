@@ -171,35 +171,35 @@ plot_eki_prior_predictive_d_in_only <- function(prior_particles, true_data, true
 
 ############################## Marginal Posteriors ################################
 
-plot_eki_malaria <- function(eki_result, true_params, prior_params) {
+plot_eki_malaria <- function(eki_result, true_params, prior_params, kde = T) {
   
   d_in_particles <- exp(eki_result$particles[, 1]) + 0.16
   phi_particles <- plogis(eki_result$particles[, 2])
   eta0_particles <- plogis(eki_result$particles[, 3])
   sigma_particles <- exp(eki_result$particles[, 4])
   
-  plot_d_in_particles(d_in_particles, true_params, prior_params)
-  plot_phi_particles(phi_particles, true_params, prior_params)
-  plot_eta0_particles(eta0_particles, true_params, prior_params)
-  plot_sigma_particles(sigma_particles, true_params, prior_params)
+  plot_d_in_particles(d_in_particles, true_params, prior_params, kde = kde)
+  plot_phi_particles(phi_particles, true_params, prior_params, kde = kde)
+  plot_eta0_particles(eta0_particles, true_params, prior_params, kde = kde)
+  plot_sigma_particles(sigma_particles, true_params, prior_params, kde = kde)
   
 }
 
-plot_eki_malaria_known_var <- function(eki_result, true_params) {
+plot_eki_malaria_known_var <- function(eki_result, true_params, prior_params, kde = T) {
   
   d_in_particles <- exp(eki_result$particles[, 1]) + 0.16
   phi_particles <- plogis(eki_result$particles[, 2])
   eta0_particles <- plogis(eki_result$particles[, 3])
   
-  plot_d_in_particles(d_in_particles, true_params, prior_params)
-  plot_phi_particles(phi_particles, true_params, prior_params)
-  plot_eta0_particles(eta0_particles, true_params, prior_params)
+  plot_d_in_particles(d_in_particles, true_params, prior_params, kde = kde)
+  plot_phi_particles(phi_particles, true_params, prior_params, kde = kde)
+  plot_eta0_particles(eta0_particles, true_params, prior_params, kde = kde)
   
 }
 
-plot_eki_malaria_d_in_only <- function(eki_result, true_params) {
+plot_eki_malaria_d_in_only <- function(eki_result, true_params, prior_params, kde = T) {
   
   d_in_particles <- exp(eki_result$particles[, 1]) + 0.16
-  plot_d_in_particles(d_in_particles, true_params, prior_params)
+  plot_d_in_particles(d_in_particles, true_params, prior_params, kde = kde)
   
 }
