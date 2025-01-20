@@ -19,6 +19,11 @@ plot_alpha_particles <- function(alpha_particles, true_params, prior_params, alg
   lines(alpha_sequence, alpha_prior_density, col = 'blue')
   abline(v = true_params$alpha, col = 'red')
   
+  legend("topleft", 
+         legend = c("Estimated Posterior", "Prior", "True Value"),
+         col = c("black", "blue", "red"),
+         pch = 16)
+  
 }
 
 plot_sigma2_particles <- function(sigma2_particles, true_params, prior_params, algorithm, kde = T) {
@@ -39,6 +44,10 @@ plot_sigma2_particles <- function(sigma2_particles, true_params, prior_params, a
 
   lines(sigma2_sequence, sigma2_prior_density, col = 'blue')
   abline(v = true_sigma2, col = 'red')
+  legend("topleft", 
+         legend = c("Estimated Posterior", "Prior", "True Value"),
+         col = c("black", "blue", "red"),
+         pch = 16)
   
 }
 
@@ -83,6 +92,7 @@ plot_eki_normal <- function(eki_result, true_params, prior_params, kde = T) {
   
   par(mfrow = c(1, 2))
   plot_alpha_particles(alpha_particles, true_params, prior_params, 'EKI Normal', kde = kde)
+  
   plot_sigma2_particles(sigma2_particles, true_params, prior_params, 'EKI Normal', kde = kde)
   
 }
@@ -97,8 +107,8 @@ plot_eki_normal_known_var <- function(eki_result, true_data, true_params,
   
   par(mfrow = c(1, 1))
   
-  plot_alpha_particles(alpha_particles, true_params, prior_params, 'EKI Known Var', kde = kde)
-  
+  plot_alpha_particles(alpha_particles, true_params, prior_params, 
+                       'EKI Known Var', kde = kde)
   Q <- (prior_params$alpha.sd**2) * diag(1)
   m <- prior_params$alpha.mean * diag(1)
   H <- t(t(true_params$x))
@@ -109,6 +119,10 @@ plot_eki_normal_known_var <- function(eki_result, true_data, true_params,
   
   alpha_post_density <- dnorm(alpha_sequence, mean = post_mean, sd = sqrt(post_var))
   lines(alpha_sequence, alpha_post_density, col = 'green')
+  legend("topleft", 
+         legend = c("Estimated Posterior", "Prior", "True Value", "Analytical Posterior"),
+         col = c("black", "blue", "red", "green"),
+         pch = 16)
 }
 
 plot_eki_normal_known_mean <- function(eki_result, true_params, prior_params, kde = T) {
