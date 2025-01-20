@@ -1,5 +1,57 @@
 pacman::p_load(pacman, matrixStats, glue)
 
+############################# Helper Functions #####################################
+
+plot_d_in_particles <- function(d_in_particles, true_params, prior_params) {
+  
+  d_in_particles <- exp(eki_result$particles[, 1]) + 0.16
+  d_in_seq <- seq(min(d_in_particles), max(d_in_particles), length.out = 50)
+  # ToDo: add parameters for prior
+  d_in_prior <- dhnorm(d_in_seq - 0.16, sigma = 2)
+  
+  hist(d_in_particles, breaks = d_in_seq, freq = F, xlab = expression(d[inf]))
+  lines(d_in_seq, d_in_prior, col = 'blue')
+  abline(v = true_params$d_in, col = 'red')
+  
+}
+
+plot_phi_particles <- function(phi_particles, true_params, prior_params) {
+  
+  phi_particles <- plogis(eki_result$particles[, 2])
+  phi_seq <- seq(min(phi_particles), max(phi_particles), length.out = 50)
+  # Todo: fix up prior
+  phi_prior <- dunif(phi_seq)
+  
+  hist(phi_particles, breaks = phi_seq, freq = F, xlab = expression(phi))
+  lines(phi_seq, phi_prior, col = 'blue')
+  abline(v = true_params$phi, col = 'red')
+}
+
+plot_eta0_particles <- function(eta0_particles, true_params, prior_params) {
+  
+  eta0_particles <- plogis(eki_result$particles[, 3])
+  eta0_seq <- seq(min(eta0_particles), max(eta0_particles), length.out = 50)
+  # Todo: fix up prior
+  eta0_prior <- dunif(eta0_seq)
+  
+  hist(eta0_particles, breaks = eta0_seq, freq = F, xlab = expression(eta[0]))
+  lines(eta0_seq, eta0_prior, col = 'blue')
+  abline(v = true_params$eta0, col = 'red')
+}
+
+plot_sigma_particles <- function(sigma_particles, true_params, prior_params) {
+  
+  sigma_particles <- exp(eki_result$particles[, 4])
+  sigma_seq <- seq(min(sigma_particles), max(sigma_particles), length.out = 50)
+  # Add parameters
+  sigma_prior <- dlnorm(mean = 10, sd = 4)
+  
+  hist(sigma_particles, freq = F, xlab = expression(sigma))
+  lines(sigma_seq, sigma_prior, col = 'blue')
+  abline(v = true_params$sigma, col = 'red')
+  
+}
+
 ############################# Posterior Predictive ##################################
 
 plot_eki_posterior_predictive <- function(eki_result, true_data, true_params) {
