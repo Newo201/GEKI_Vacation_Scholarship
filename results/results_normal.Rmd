@@ -12,7 +12,7 @@ output: github_document
 ### External Packages
 
 ```{r}
-pacman::p_load(pacman, purrr, mvtnorm, mcmc, MASS)
+pacman::p_load(pacman, purrr, mvtnorm, mcmc, MASS, glue)
 ```
 
 ### Algorithms

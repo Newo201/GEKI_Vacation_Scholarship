@@ -10,7 +10,7 @@ Owen Jackson
 ### External Packages
 
 ``` r
-pacman::p_load(pacman, purrr, mvtnorm, mcmc, MASS)
+pacman::p_load(pacman, purrr, mvtnorm, mcmc, MASS, glue)
 ```
 
 ### Algorithms
@@ -69,8 +69,9 @@ generate_results <- function(num_particles, true_parameters) {
   chain.1 <- run.1$batch
   run.2 <- normal_mcmc(true_data, true_parameters, prior_params)
   chain.2 <- run.2$batch
-  plot_mcmc_trace_plots(chain.1, chain.2, 500)
-  plot_mcmc_histogram(chain.1, chain.2, true_parameters, 500)
+  plot_mcmc_trace_plots(chain.1, chain.2, burnin = 500)
+  plot_mcmc_histogram(chain.1, chain.2, true_parameters, prior_params, 
+                      burnin = 500)
   
 }
 ```
@@ -111,7 +112,7 @@ prior_params <- list(alpha.mean = 0, alpha.sd = 5,
 ### Adaptive Tempering
 
 ``` r
-adaptive = TRUE
+adaptive = FALSE
 ```
 
 ### Output
@@ -139,7 +140,122 @@ for (dimension in num_dimensions) {
 }
 ```
 
-![](results_normal_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-2.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-3.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-4.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-5.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-6.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-7.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-8.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-9.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-10.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-11.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-12.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-13.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-14.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-15.png)<!-- -->
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-9-2.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-9-3.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-4.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-5.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-6.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-7.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-8.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-9-9.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-9-10.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-9-11.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-12.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-13.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-14.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-15.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-16.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-9-17.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-9-18.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-9-19.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-20.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-21.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-22.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-23.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-9-24.png)<!-- -->
 
 Overall, EKI covers both parameters quite well in this scenario.
 However, it is worth noting that the prior for $\sigma^2$ already covers
@@ -159,14 +275,246 @@ the noise parameter is estimated.
 ``` r
 alpha_seq <- seq(0, 10, length.out = 6)
 num_dimensions <- 50 
-num_particles <- 400 
+num_particles <- 400
 for (alpha in alpha_seq) {    
   true_parameters <- list(alpha = alpha, sigma = 2, x = rep(1, num_dimensions))   
   generate_results(num_particles, true_parameters)
 }
 ```
 
-![](results_normal_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-2.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-3.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-4.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-5.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-6.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-7.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-8.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-9.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-10.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-11.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-12.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-13.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-14.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-15.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-16.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-17.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-18.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-19.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-20.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-21.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-22.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-23.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-24.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-25.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-26.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-27.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-28.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-29.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-30.png)<!-- -->
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-2.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-3.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-4.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-5.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-6.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-7.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-8.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-9.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-10.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-11.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-12.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-13.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-14.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-15.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-16.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-17.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-18.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-19.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-20.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-21.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-22.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-23.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-24.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-25.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-26.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-27.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-28.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-29.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-30.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-31.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-32.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-33.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-34.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-35.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-36.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-37.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-38.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-39.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-40.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-41.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-42.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-10-43.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-44.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-45.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-46.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-47.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-10-48.png)<!-- -->
 
 All EKI models and MCMC do well at estimating the mean parameter. There
 is no change in how the noise parameter is being estimated across a
@@ -182,7 +530,7 @@ the prior. Additionally, we would expect the $\alpha$ particles to
 become more diffuse as the true value of $\sigma$ increases.
 
 ``` r
-sigma_seq <- seq(2, 10, length.out = 5)
+sigma_seq <- seq(8, 10, length.out = 5)
 num_dimensions <- 50
 num_particles <- 400
 for (sigma in sigma_seq) {
@@ -192,7 +540,200 @@ for (sigma in sigma_seq) {
 }
 ```
 
-![](results_normal_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-2.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-3.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-4.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-5.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-6.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-7.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-8.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-9.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-10.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-11.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-12.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-13.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-14.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-15.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-16.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-17.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-18.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-19.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-20.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-21.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-22.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-23.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-24.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-25.png)<!-- -->
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-2.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-3.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-4.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-5.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-6.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-7.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-8.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-9.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-10.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-11.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-12.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-13.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-14.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-15.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-16.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-17.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-18.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-19.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-20.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-21.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-22.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-23.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-24.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-25.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-26.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-27.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-28.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-29.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-30.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-31.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-32.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-33.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-34.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-11-35.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-36.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-37.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-38.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-39.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-11-40.png)<!-- -->
 
 In the known variance case, the results for the mean parameter are what
 we expect. That is, the particles are centered around the true value and
@@ -220,7 +761,122 @@ for (num_particles in particle_seq) {
 }
 ```
 
-![](results_normal_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-2.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-3.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-4.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-5.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-6.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-7.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-8.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-9.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-10.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-11.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-12.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-13.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-14.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-15.png)<!-- -->
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-12-2.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-12-3.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-4.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-5.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-6.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-7.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-8.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-12-9.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-12-10.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-12-11.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-12.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-13.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-14.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-15.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-16.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-12-17.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-12-18.png)<!-- -->
+
+    ## Next temp is 0.1
+    ## Next temp is 0.2
+    ## Next temp is 0.3
+    ## Next temp is 0.4
+    ## Next temp is 0.5
+    ## Next temp is 0.6
+    ## Next temp is 0.7
+    ## Next temp is 0.8
+    ## Next temp is 0.9
+    ## Next temp is 1
+
+![](results_normal_files/figure-gfm/unnamed-chunk-12-19.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-20.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-21.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-22.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-23.png)<!-- -->![](results_normal_files/figure-gfm/unnamed-chunk-12-24.png)<!-- -->
 
 Indeed we find that this is the case.
 
