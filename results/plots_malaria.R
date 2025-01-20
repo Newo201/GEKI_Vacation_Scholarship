@@ -2,13 +2,19 @@ pacman::p_load(pacman, matrixStats, glue)
 
 ############################# Helper Functions #####################################
 
-plot_d_in_particles <- function(d_in_particles, true_params, prior_params) {
+plot_d_in_particles <- function(d_in_particles, true_params, prior_params, kde = T) {
   
   d_in_seq <- seq(min(d_in_particles), max(d_in_particles), length.out = 50)
   # ToDo: add parameters for prior
   d_in_prior <- dhnorm(d_in_seq - 0.16, sigma = 2)
   
-  hist(d_in_particles, breaks = d_in_seq, freq = F, xlab = expression(d[inf]))
+  if (kde) {
+    d_in_post_density <- density(d_in_particles)
+    plot(d_in_post_density)
+  } else {
+    hist(d_in_particles, breaks = d_in_seq, freq = F, xlab = expression(d[inf]))
+  }
+
   lines(d_in_seq, d_in_prior, col = 'blue')
   abline(v = true_params$d_in, col = 'red')
   
@@ -19,13 +25,19 @@ plot_d_in_particles <- function(d_in_particles, true_params, prior_params) {
   
 }
 
-plot_phi_particles <- function(phi_particles, true_params, prior_params) {
+plot_phi_particles <- function(phi_particles, true_params, prior_params, kde = T) {
   
   phi_seq <- seq(min(phi_particles), max(phi_particles), length.out = 50)
   # Todo: fix up prior
   phi_prior <- dunif(phi_seq)
   
-  hist(phi_particles, breaks = phi_seq, freq = F, xlab = expression(phi))
+  if (kde) {
+    phi_post_density <- density(phi_particles)
+    plot(phi_post_densitiy)
+  } else {
+    hist(phi_particles, breaks = phi_seq, freq = F, xlab = expression(phi))
+  }
+  
   lines(phi_seq, phi_prior, col = 'blue')
   abline(v = true_params$phi, col = 'red')
   
@@ -35,13 +47,19 @@ plot_phi_particles <- function(phi_particles, true_params, prior_params) {
          pch = 16)
 }
 
-plot_eta0_particles <- function(eta0_particles, true_params, prior_params) {
+plot_eta0_particles <- function(eta0_particles, true_params, prior_params, kde = T) {
   
   eta0_seq <- seq(min(eta0_particles), max(eta0_particles), length.out = 50)
   # Todo: fix up prior
   eta0_prior <- dunif(eta0_seq)
   
-  hist(eta0_particles, breaks = eta0_seq, freq = F, xlab = expression(eta[0]))
+  if (kde) {
+    eta0_post_density <- density(eta0_particles)
+    plot(eta0_post_density)
+  } else {
+    hist(eta0_particles, breaks = eta0_seq, freq = F, xlab = expression(eta[0]))
+  }
+  
   lines(eta0_seq, eta0_prior, col = 'blue')
   abline(v = true_params$eta0, col = 'red')
   
@@ -57,7 +75,13 @@ plot_sigma_particles <- function(sigma_particles, true_params, prior_params) {
   # Add parameters
   sigma_prior <- dlnorm(mean = 10, sd = 4)
   
-  hist(sigma_particles, freq = F, xlab = expression(sigma))
+  if (kde) {
+    sigma_post_density <- density(sigma_particles)
+    plot(sigma_post_density)
+  } else {
+    hist(sigma_particles, freq = F, xlab = expression(sigma))
+  }
+  
   lines(sigma_seq, sigma_prior, col = 'blue')
   abline(v = true_params$sigma, col = 'red')
   
