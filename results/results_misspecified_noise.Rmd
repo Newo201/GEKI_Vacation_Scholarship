@@ -112,8 +112,25 @@ plot_eki_posterior_predictive(eki_result, true_data, true_unconstrained_params)
 ```
 
 ```{r}
-plot_eki_malaria_known_var(eki_result, true_params)
-plot_eki_posterior_predictive(eki_result, true_data, true_unconstrained_params)
+cor.test(d_in_particles, eta0_particles)
+```
+
+```{r}
+d_in_particles <- exp(eki_result$particles[, 1]) + 0.16
+eta0_particles <- plogis(eki_result$particles[, 3])
+plot(eta0_particles, d_in_particles)
+model <- lm(d_in_particles ~ eta0_particles)
+abline(model, col = 'red')
+cor(d_in_particles, eta0_particles)
+```
+
+```{r}
+summary(model)
+```
+
+```{r}
+particles <- initialise_malaria_particles_d_in_only(num_particles, prior_params)
+plot_eki_prior_predictive_d_in_only(particles, true_data, true_params)
 ```
 
 ```{r}
@@ -133,9 +150,13 @@ plot_eki_posterior_predictive(eki_result, true_data, true_unconstrained_params)
 
 ```{r}
 eki_result <- eki_malaria_d_in_only(num_particles, true_data, 
-                                    true_unconstrained_params, 
+                                    true_unconstrained_params, general = F,
                                     prior_params, adaptive = adaptive)
-plot_eki_malaria_d_in_only(eki_result)
+plot_eki_malaria_d_in_only(eki_result, true_params)
+```
+
+```{r}
+plot_eki_malaria_d_in_only(eki_result, true_params)
 ```
 
 ```{r}
