@@ -23,11 +23,12 @@ eki_known_noise <- function(num_particles, initial_particles, true_data, true_pa
   for (temp in 1:10) {
     
     # print("Hello")
-    likelihood_means <- synthetic_mean_func(num_particles, particles, true_params, mean = T)
+    likelihood_means <- synthetic_mean_func(num_particles, particles, true_params)
     covariances <- calculate_covariances_known_noise(particles, likelihood_means)
     
     # ToDo:  Calculate the current temperature
     temp_difference = 1/10
+    print(temp)
     particles <- update_particles_known_noise(temp_difference, particles, simulated_data, 
                                               likelihood_means, covariances, num_particles,
                                               known_noise)
@@ -62,14 +63,14 @@ eki_adaptive_known_noise <- function(num_particles, initial_particles, true_data
   
   while (current_temp < 1) {
     
-    likelihood_means <- synthetic_mean_func(num_particles, particles, true_params, mean = T)
+    likelihood_means <- synthetic_mean_func(num_particles, particles, true_params)
     ll_densities <- density_func(true_data, num_particles, particles, likelihood_means, true_params)
     
     covariances <- calculate_covariances_known_noise(particles, likelihood_means)
     
     # Find the next temperature
     next_temp <- find_next_temp(current_temp, ll_densities, num_particles*0.5)
-    # print(next_temp)
+    print(next_temp)
     temp_difference <- next_temp - current_temp
     particles <- update_particles_known_noise(temp_difference, particles, simulated_data, 
                                               likelihood_means, covariances, num_particles,

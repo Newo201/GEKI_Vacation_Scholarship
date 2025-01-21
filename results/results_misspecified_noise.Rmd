@@ -22,6 +22,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_known_var.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_d_in_only.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal_known_var.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/synthetic_malaria.R')
 ```
 
 ### **Sampling and PDFS**
@@ -43,7 +44,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 ```
 
 ```{r}
-adaptive = FALSE
+adaptive = TRUE
 ```
 
 ## Introduction
@@ -84,7 +85,7 @@ Notably, this happens in both EKI and GEKI because GEKI was designed to remain a
 data_path = "C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/data/Malariah_data.rds"
 true_data = log(readRDS(data_path))
 
-num_particles <- 400
+num_particles <- 50
 
 prior_params <- list(din.sd = 2,
                      phi.mean = 0, phi.sd = 1,
@@ -98,14 +99,22 @@ true_unconstrained_params = unconstrain_malaria_params(true_params)
 # EKI
 eki_result <- eki_malaria_known_var(num_particles, true_data, 
                                     true_unconstrained_params, prior_params, 
-                                    general = F, adaptive = adaptive)
+                                    general = T, adaptive = adaptive)
 plot_eki_malaria_known_var(eki_result)
 
 # GEKI
-eki_result <- eki_malaria_known_var(num_particles, true_data, 
-                                    true_unconstrained_params, 
-                                    prior_params, adaptive = adaptive)
-plot_eki_malaria_known_var(eki_result)
+# eki_result <- eki_malaria_known_var(num_particles, true_data, 
+#                                     true_unconstrained_params, 
+#                                     prior_params, adaptive = adaptive)
+# plot_eki_malaria_known_var(eki_result)
+```
+
+```{r}
+exp(0.131)
+```
+
+```{r}
+eki_result$particles[, 3]
 ```
 
 ### $d_{in}$ Only
