@@ -84,7 +84,7 @@ solve_steady_state <- function(parameters) {
 
 likelihood_malaria_mean <- function(d_in, phi, eta0) {
   
-  print(d_in)
+  # print(d_in)
   
   parameters <- c(N = 29203486,
                       L = 66.67,
@@ -116,6 +116,7 @@ likelihood_malaria_mean <- function(d_in, phi, eta0) {
   # for(k in 2:130){
   #   simulation.data[k]<-out[,"W"][k]-out[,"W"][k-1]
   # }
+  # print(mean(simulation.data))
   return(simulation.data)
 }
 

@@ -2,15 +2,29 @@ densities_malaria <- function(true_data, num_particles, particles, likelihood_me
                               parameters, known_var = F) {
   
   likelihood_densities <- rep(0, num_particles)
+  # 
+  # loglike_vectorised <- Vectorize(loglike_malaria, vectorize.args = c("likelihood_means", "sigma"))
+  # 
+  # if (known_var) {
+  #   return(likelihood_densities <- loglike_vectorised(true_data, likelihood_means, exp(parameters$sigma)))
+  # } else {
+  #   return(likelihood_densities <- loglike_vectorised(true_data, likelihood_means, exp(particles[2, ])))
+  # }
+  # 
   
-  loglike_vectorised <- Vectorize(loglike_malaria, vectorize.args = c("likelihood_means", "sigma"))
-  
-  if (known_var) {
-    return(likelihood_densities <- loglike_vectorised(true_data, likelihood_means, parameters$sigma))
-  } else {
-    return(likelihood_densities <- loglike_vectorised(true_data, likelihood_means, exp(particles[2, ])))
+  for (particle in 1:num_particles) {
+    
+    current_mean = likelihood_means[particle, ]
+    
+    if (known_var) {
+      current_sd = exp(parameters$sigma)
+    } else {
+      current_sd = exp(particles[particle, 2])
+    }
+    
+    likelihood_densities[particle] <- loglike_malaria(true_data, current_mean, current_sd)
+    
   }
-  
   
   # # For each particle, draw one observation from the likelihood
   # # ToDo: vectorise this operation
@@ -93,7 +107,7 @@ synthetic_mean_malaria <- function(num_particles, particles, parameters, d_in_on
 
   }
 
-  return(log(diff(likelihood_means)))
+  return(likelihood_means)
 }
 
 synthetic_mean_malaria_d_in_only <- partial(synthetic_mean_malaria, d_in_only = T)
@@ -103,6 +117,7 @@ synthetic_data_malaria <- function(num_particles, particles, likelihood_means,
   
   likelihood_samples <- matrix(nrow = num_particles, ncol = 129)
   
+  # print(num_particles)
   # For each particle, draw one observation from the likelihood
   # ToDo: vectorise this operation
   for (particle in 1:num_particles) {
@@ -130,6 +145,7 @@ synthetic_data_malaria <- function(num_particles, particles, likelihood_means,
     
     # print(current_params)
     current_constrained_params <- constrain_malaria_params(current_params)
+    # print(current_constrained_params)
     sample <- likelihood_malaria(likelihood_means[particle, ], current_constrained_params)
     likelihood_samples[particle, ] <- sample
     
