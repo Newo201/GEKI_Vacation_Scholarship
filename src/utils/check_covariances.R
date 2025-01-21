@@ -56,7 +56,7 @@ check_stepsize <- function(num_particles, prior_params, true_params) {
 
 ############################# Plots ###################################
 
-plot_covariance_against_sigma2 <- function(covariance_func) {
+plot_covariance_against_sigma2 <- function(covariance_func, covariance_type) {
   sigma2_seq <- seq(-2, 2, length.out = 50)
   res <- c()
   for (sigma2 in sigma2_seq) {
@@ -64,7 +64,9 @@ plot_covariance_against_sigma2 <- function(covariance_func) {
     true_params = list(alpha = 2, sigma = 2, x = rep(0, 50))
     res <- c(res, covariance_func(1000, prior_params, true_params))
   }
-  plot(exp(sigma2_seq), res, xlab = 'sigma2', ylab = '')
+  plot(exp(sigma2_seq), res, xlab = expression(sigma^2), ylab = 'Covariance', 
+       main = glue('Empirical {covariance_type}'), cex.main = 2, cex.lab = 1.5)
+  abline(h = 0, col = 'red')
 }
 
 plot_covariance_against_sigma2_dispersion <- function(covariance_func) {

@@ -16,7 +16,7 @@ densities_normal <- function(true_data, num_particles, particles, parameters) {
   
 }
 
-synthetic_normal <- function(num_particles, particles, parameters) {
+synthetic_normal <- function(num_particles, particles, parameters, mean = F) {
   
   x.true <- parameters$x
   d_y <- length(x.true)
@@ -27,7 +27,11 @@ synthetic_normal <- function(num_particles, particles, parameters) {
   # ToDo: vectorise this operation
   for (particle in 1:num_particles) {
     current_params = list(alpha = particles[particle, 1], x = x.true, sigma = sqrt(exp(particles[particle, 2])))
-    likelihood_samples[particle, ] <- likelihood_normal(current_params)
+    if (mean) {
+      likelihood_samples[particle, ] <- current_params$alpha*current_params$x
+    } else {
+      likelihood_samples[particle, ] <- likelihood_normal(current_params)
+    }
   }
   
   return(likelihood_samples)

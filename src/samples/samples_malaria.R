@@ -6,9 +6,9 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 
 constrain_malaria_params <- function(parameters) {
   
-  d_in <- exp(parameters$d_in)
-  phi <- plogis(parameters$phi) # Logistic transformation
-  eta0 <- plogis(parameters$eta0) # Logistic transformation
+  d_in <- exp(parameters$d_in) + 0.16 # Transformation to [0.16, infinity)
+  phi <- plogis(parameters$phi) # Logistic transformation to [0, 1]
+  eta0 <- plogis(parameters$eta0) # Logistic transformation to [0, 1]
   sigma <- exp(parameters$sigma)
   
   return(list(d_in = d_in, phi = phi, eta0 = eta0, sigma = sigma))
@@ -16,7 +16,7 @@ constrain_malaria_params <- function(parameters) {
 
 unconstrain_malaria_params <- function(parameters) {
   
-  d_in <- log(parameters$d_in)
+  d_in <- log(parameters$d_in - 0.16)
   phi <- qlogis(parameters$phi) # Logit transformation
   eta0 <- qlogis(parameters$eta0) # Logit transformation
   sigma <- log(parameters$sigma)
@@ -106,6 +106,7 @@ likelihood_malaria_mean <- function(variable_parameters) {
   
   #The initial conditions for solving the ODE 
   ICs <- solve_steady_state(parameters)
+  # print(ICs)
   
   #Solve the ODE using the Default Solver LSoda
   out <- (ode(y = ICs, times = true_time, func = mtdrift, parms = parameters))
@@ -123,11 +124,11 @@ likelihood_malaria <- function(variable_parameters) {
   
   # Assumes parameters are unconstrained
   variable_parameters <- constrain_malaria_params(variable_parameters)
-  print(variable_parameters)
+  # print(variable_parameters)
   sigma <- variable_parameters$sigma
   # Convert mean to log difference
   likelihood_mean <- log(diff(likelihood_malaria_mean(variable_parameters)))
-  print(likelihood_mean)
+  # print(likelihood_mean)
   # Data is stored in log space
   return(rnorm(n = length(likelihood_mean), mean = likelihood_mean, sd = sigma))
 }

@@ -26,6 +26,7 @@ eki <- function(num_particles, initial_particles, true_data, true_params, synthe
     covariances <- calculate_covariances(particles, likelihood_samples)
     
     # ToDo:  Calculate the current temperature
+    print(glue("Next temp is {temp/10}"))
     temp_difference = 1/10
     particles <- update_particles(temp_difference, particles, simulated_data, likelihood_samples, covariances, num_particles)
     current_temp <- current_temp + 1/10
@@ -63,6 +64,7 @@ eki_adaptive <- function(num_particles, initial_particles, true_data, true_param
     
     # Find the next temperature
     next_temp <- find_next_temp(current_temp, ll_densities, num_particles*0.5)
+    print(glue("Next temp is {next_temp}"))
     # print(next_temp)
     temp_difference <- next_temp - current_temp
     particles <- update_particles(temp_difference, particles, simulated_data, likelihood_samples, covariances, num_particles)
