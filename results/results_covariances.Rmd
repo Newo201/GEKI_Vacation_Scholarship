@@ -5,6 +5,9 @@ output:
 
 ```{r}
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/check_covariances.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
 ```
 
 # Checking Covariances
@@ -37,9 +40,9 @@ The results are what we expect, where there is a strong positive linear relation
 In this section, I check the cross covariance of the generated data and the current particles. In the known variance case the large sample limit is $HQ = 25x^T$. Of course, this is a $d_y \times 1$ matrix, but the cross covariance in the unknown variance case will be $d_y \times 2$. I conjecture that the second column will be zeros, since there is no correlation between the noise parameter $\sigma^2$ and the generated data. The intuition is that higher levels of $\sigma^2$ increase the dispersion of the generated data but not its location. To test for this I look at the mean of the entries in the second column of the covariance matrices.
 
 ```{r}
-plot_covariance_against_sigma2(check_c_yx)
-plot_covariance_against_sigma2_dispersion(check_c_yx)
-plot_covariance_against_alpha(check_c_yx)
+plot_covariance_against_sigma2(check_c_yx, "cross covariance")
+plot_covariance_against_sigma2_dispersion(check_c_yx, "cross_covariance")
+plot_covariance_against_alpha(check_c_yx, "cross covariance")
 ```
 
 In all plots we see a random fluctuation around zero. Interestingly, as the dispersion of the prior for $\sigma^2$ increases, so does the magnitude of these fluctuations. Ideally, we would want to see this same behavior reflected in the step-size, since the less confident we are in the prior, the more our particles should respond to the data.
