@@ -164,10 +164,10 @@ plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrain
 
 ### Misspecified Noise
 
-We again consider $\theta = (\eta_0, \phi)$, but under-specify the noise, relative to the true data. Since the noise of the true data is $\sigma = 0.5$ we choose instead $\sigma = 0.25$.
+We again consider $\theta = (\eta_0, \phi)$, but under-specify the noise, relative to the true data. Since the noise of the true data is $\sigma = 0.5$ we choose instead $\sigma = 0.33$.
 
 ```{r}
-true_params <- list(sigma = 0.25, phi = 0.25, eta0 = 0.11, d_in = 0.5)
+true_params <- list(sigma = 1, phi = 0.25, eta0 = 0.11, d_in = 0.5)
 true_unconstrained_params = unconstrain_malaria_params(true_params)
 ```
 
@@ -175,8 +175,8 @@ true_unconstrained_params = unconstrain_malaria_params(true_params)
 # EKI
 eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
                                     true_unconstrained_params, prior_params, 
-                                    general = F, adaptive = adaptive)
-plot_eki_malaria_known_d_in(eki_result, true_params)
+                                    general = T, adaptive = adaptive)
+plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
 plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
 ```
 
@@ -185,27 +185,27 @@ plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrain
 eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
                                     true_unconstrained_params, prior_params, 
                                     adaptive = adaptive)
-plot_eki_malaria_known_d_in(eki_result, true_params)
+plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
 plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
 ```
 
 ### $d_{in}$ Only
 
 ```{r}
-eki_result <- eki_malaria_d_in_only(num_particles, true_data, 
-                                    true_unconstrained_params, general = F,
-                                    prior_params, adaptive = adaptive)
-plot_eki_malaria_d_in_only(eki_result, true_params)
+# eki_result <- eki_malaria_d_in_only(num_particles, true_data, 
+#                                     true_unconstrained_params, general = F,
+#                                     prior_params, adaptive = adaptive)
+# plot_eki_malaria_d_in_only(eki_result, true_params)
 ```
 
 ```{r}
-plot_eki_malaria_d_in_only(eki_result, true_params)
+# plot_eki_malaria_d_in_only(eki_result, true_params)
 ```
 
 ```{r}
-plot_eki_posterior_predictive_d_in_only(eki_result, true_data, true_unconstrained_params)
+# plot_eki_posterior_predictive_d_in_only(eki_result, true_data, true_unconstrained_params)
 ```
 
 ```{r}
-mean(exp(eki_result$particles) + 0.16)
+# mean(exp(eki_result$particles) + 0.16)
 ```

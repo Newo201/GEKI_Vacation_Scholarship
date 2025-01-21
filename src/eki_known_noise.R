@@ -4,7 +4,7 @@ eki_known_noise <- function(num_particles, initial_particles, true_data, true_pa
 
   # Synthetic_data_func -> a function which calculates likelihood means from a given set of parameters
   ## Takes num_particles, particles and true_params as arguments
-  known_noise = true_params$sigma
+  known_noise = exp(true_params$sigma)
   
   print(known_noise)
   
@@ -45,7 +45,9 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 eki_adaptive_known_noise <- function(num_particles, initial_particles, true_data, true_params, 
                                      synthetic_data_func, density_func) {
   
-  known_noise = true_params$sigma
+  # Assumes params are in constrained form
+  known_noise = exp(true_params$sigma)
+  print(known_noise)
   
   # Synthetic_data_func -> a function which draws samples from the likelihood using particle parameters
   ## Takes true_params, particles and number of particles as arguments
