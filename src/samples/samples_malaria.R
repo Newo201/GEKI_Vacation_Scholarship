@@ -120,7 +120,7 @@ likelihood_malaria_mean <- function(d_in, phi, eta0) {
   return(simulation.data)
 }
 
-likelihood_malaria <- function(likelihood_means, variable_parameters) {
+likelihood_malaria <- function(likelihood_means, variable_parameters, log_obs = T) {
   
   # Assumes parameters are constrained
   sigma <- variable_parameters$sigma
@@ -128,7 +128,15 @@ likelihood_malaria <- function(likelihood_means, variable_parameters) {
   # likelihood_mean <- log(diff(likelihood_malaria_mean(variable_parameters)))
   # print(likelihood_mean)
   # Data is stored in log space
-  return(rnorm(n = length(likelihood_means), mean = likelihood_means, sd = sigma))
+  if (log_obs) {
+    return(rnorm(n = length(likelihood_means), mean = likelihood_means, sd = sigma))
+  } else {
+    return(rlnorm(n = length(likelihood_means), mean = likelihood_means, sd = sigma))
+  }
+
 }
+
+means <- rep(10, 129)
+likelihood_malaria(means, list(sigma = 1), log_obs = F)
 
 

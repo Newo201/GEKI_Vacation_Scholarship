@@ -59,11 +59,12 @@ eki_adaptive <- function(num_particles, initial_particles, true_data, true_param
     # print(particles)
     likelihood_means <- synthetic_mean_func(num_particles, particles, true_params)
     likelihood_samples <- synthetic_data_func(num_particles, particles, likelihood_means, true_params)
+    print(likelihood_samples)
     ll_densities <- density_func(true_data, num_particles, particles, likelihood_means, true_params)
     # print(ll_densities)
     
     covariances <- calculate_covariances(particles, likelihood_samples)
-    print(covariances)
+    # print(covariances)
     
     # Find the next temperature
     next_temp <- find_next_temp(current_temp, ll_densities, num_particles*0.5)
