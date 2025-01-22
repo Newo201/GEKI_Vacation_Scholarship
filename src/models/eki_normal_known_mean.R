@@ -21,7 +21,7 @@ synthetic_normal_known_mean <- function(num_particles, particles, parameters) {
   
   x.true <- parameters$x
   alpha.true <- parameters$alpha
-  d_y <- length(x.true)
+  d_y <- 2
   
   likelihood_samples <- matrix(nrow = num_particles, ncol = d_y)
   
@@ -29,7 +29,10 @@ synthetic_normal_known_mean <- function(num_particles, particles, parameters) {
   # ToDo: vectorise this operation
   for (particle in 1:num_particles) {
     current_params = list(alpha = alpha.true, x = x.true, sigma = sqrt(exp(particles[particle, 1])))
-    likelihood_samples[particle, ] <- likelihood_normal(current_params)
+    # likelihood_samples[particle, ] <- likelihood_normal(current_params)
+    sample <- likelihood_normal(current_params)
+    # Summarise into sufficient statistics
+    likelihood_samples[particle, ] <- c(mean(sample), sd(sample))
   }
   
   return(likelihood_samples)

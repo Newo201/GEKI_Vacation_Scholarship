@@ -157,3 +157,4 @@ test_that('Dimensions of weights are correct', {
   expect_equal(length(get_weights(0.1, 0, ll_densities)), num_particles)
 })
 
+colMeans()
