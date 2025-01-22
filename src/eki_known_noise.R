@@ -53,6 +53,7 @@ eki_adaptive_known_noise <- function(num_particles, initial_particles, true_data
   ## Takes true_params, particles and number of particles as arguments
   
   d_y <- length(true_data)
+  R <- known_noise**2 * diag(d_y)
   # I'm replicating this data for the number of particles to make the dimensions easier to work with
   simulated_data <- matrix(true_data, nrow = num_particles, ncol = d_y, byrow = T)
   
@@ -66,9 +67,9 @@ eki_adaptive_known_noise <- function(num_particles, initial_particles, true_data
   while (current_temp < 1) {
     
     likelihood_means <- synthetic_data_func(num_particles, particles, true_params, mean = T)
-    ll_densities <- density_func(true_data, num_particles, particles, true_params)
     
     covariances <- calculate_covariances_known_noise(particles, likelihood_means)
+    ll_densities <- calculate_pseudo_densities(true_data, num_particles, likelihood_means, R)
     
     # Find the next temperature
     next_temp <- find_next_temp(current_temp, ll_densities, num_particles*0.5)

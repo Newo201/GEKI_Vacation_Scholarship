@@ -1,25 +1,26 @@
-densities_normal_known_var <- function(true_data, num_particles, particles, parameters) {
-  
-  x.true <- parameters$x
-  sigma.true <- parameters$sigma
-  d_y <- length(x.true)
-  
-  likelihood_densities <- rep(0, num_particles)
-  
-  # ToDo: vectorise this operation
-  for (particle in 1:num_particles) {
-    current_params = list(alpha = particles[particle, 1], x = x.true, sigma = sigma.true)
-    likelihood_densities[particle] <- loglike_pdf(true_data, current_params)
-  }
-  
-  return(likelihood_densities)
-}
+# densities_normal_known_var <- function(true_data, num_particles, particles, parameters) {
+#   
+#   x.true <- parameters$x
+#   sigma.true <- parameters$sigma
+#   d_y <- length(x.true)
+#   
+#   likelihood_densities <- rep(0, num_particles)
+#   
+#   # ToDo: vectorise this operation
+#   for (particle in 1:num_particles) {
+#     current_params = list(alpha = particles[particle, 1], x = x.true, sigma = sigma.true)
+#     likelihood_densities[particle] <- loglike_pdf(true_data, current_params)
+#   }
+#   
+#   return(likelihood_densities)
+# }
+
 
 synthetic_normal_known_var <- function(num_particles, particles, parameters, mean = F) {
   
   x.true <- parameters$x
   sigma.true <- parameters$sigma
-  d_y <- length(x.true)
+  d_y <- 2
   
   likelihood_samples <- matrix(nrow = num_particles, ncol = d_y)
   
@@ -30,7 +31,9 @@ synthetic_normal_known_var <- function(num_particles, particles, parameters, mea
     if (mean) {
       likelihood_samples[particle, ] <- current_params$alpha*current_params$x
     } else {
-      likelihood_samples[particle, ] <- likelihood_normal(current_params)
+      sample <- likelihood_normal(current_params)
+      # Summarise into sufficient statistics
+      likelihood_samples[particle, ] <- c(mean(sample), sd(sample))
     }
 
   }
@@ -65,7 +68,7 @@ eki_normal_known_var <- function(num_particles, true_data, true_params, prior_pa
   }
   else if (adaptive) {
     return(eki_adaptive_known_noise(num_particles, initial_particles, true_data, true_params,
-                                    synthetic_normal_known_var, densities_normal_known_var))
+                                    synthetic_normal_known_var))
   }
   else if (general) {
     return(eki(num_particles, initial_particles, true_data, 

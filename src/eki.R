@@ -39,7 +39,7 @@ eki <- function(num_particles, initial_particles, true_data, true_params, synthe
 ################## EKI Algorithm with Adaptive Temperature ##############################
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
 
-eki_adaptive <- function(num_particles, initial_particles, true_data, true_params, synthetic_data_func, density_func) {
+eki_adaptive <- function(num_particles, initial_particles, true_data, true_params, synthetic_data_func) {
   
   # Synthetic_data_func -> a function which draws samples from the likelihood using particle parameters
   ## Takes true_params, particles and number of particles as arguments
@@ -59,10 +59,10 @@ eki_adaptive <- function(num_particles, initial_particles, true_data, true_param
     
     likelihood_samples <- synthetic_data_func(num_particles, particles, true_params)
     # print(likelihood_samples)
-    ll_densities <- density_func(true_data, num_particles, particles, true_params)
-    # print(ll_densities)
     
     covariances <- calculate_covariances(particles, likelihood_samples)
+    ll_densities <- calculate_pseudo_densities(true_data, num_particles, likelihood_samples, covariances$C_y_given_x_inv)
+    # print(ll_densities)
     
     # Find the next temperature
     next_temp <- find_next_temp(current_temp, ll_densities, num_particles*0.5)
