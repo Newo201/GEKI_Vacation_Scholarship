@@ -1,3 +1,15 @@
+calculate_pseudo_densities <- function(true_data, num_particles, likelihood_samples, noise_matrix_inv) {
+  
+  likelihood_densities <- rep(0, num_particles)
+  
+  for (particle in 1:num_particles) {
+    likelihood_densities[particle] <- (true_data - likelihood_samples[particle, ]) %*% noise_matrix_inv %*% (true_data - likelihood_samples[particle, ])
+  }
+  
+  return (likelihood_densities)
+  
+}
+
 calculate_covariances <- function(particles, likelihood_samples) {
   
   # Calculate the covariance matrices
