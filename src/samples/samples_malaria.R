@@ -45,6 +45,7 @@ logit_phi_prior_sample <- function(parameters, num_samples) {
 logit_eta0_prior_sample <- function(parameters, num_samples) {
   mean = parameters$eta0.mean # 0
   sd = parameters$eta0.sd # 1
+  print(c(mean, sd))
   return(rnorm(num_samples, mean = mean, sd = sd))
 }
 

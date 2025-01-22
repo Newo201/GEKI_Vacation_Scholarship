@@ -13,7 +13,7 @@ output: github_document
 
 ```{r}
 pacman::p_load(pacman, testthat, deSolve, rootSolve, MASS, mvtnorm, extraDistr, 
-               purrr, glue)
+               purrr, glue, logitnorm)
 ```
 
 ### Algorithms
@@ -26,6 +26,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 ### Models
 
 ```{r}
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_known_var.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_known_d_in.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_d_in_only.R')
@@ -208,4 +209,44 @@ plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrain
 
 ```{r}
 # mean(exp(eki_result$particles) + 0.16)
+```
+
+### Using Observations on Normal Scale
+
+Previously we have used the model $log(y(t)) \sim N(log(W(t)-W(t-1)), \sigma^2)$, where our synthetic data was generated on the log scale. Instead we wish to look at $y(t) \sim logNormal(log(W(t)-W(t-1)), \sigma^2)$.
+
+```{r}
+num_particles <- 400
+
+prior_params <- list(din.sd = 2,
+                     phi.mean = 0, phi.sd = 1,
+                     eta0.mean = 0, eta0.sd = 1,
+                     sigma.mean = 0, sigma.sd = 1)
+
+true_params <- list(sigma = 0.5, phi = 0.25, eta0 = 0.11, d_in = 0.5)
+true_unconstrained_params = unconstrain_malaria_params(true_params)
+true_data <- likelihood_malaria(true_unconstrained_params, log_obs = F)
+```
+
+```{r}
+eki_result <- eki_malaria(num_particles, true_data, true_unconstrained_params, prior_params, 
+                          adaptive = T)
+```
+
+```{r}
+exp(-1729.123)
+```
+
+```{r}
+plot_eki_malaria(eki_result, true_params, prior_params)
+```
+
+```{r}
+plot(seq(0, 1, by = 0.1), dlogitnorm(seq(0, 1, by = 0.1)))
+```
+
+```{r}
+particles <- initialise_malaria_particles(num_particles, prior_params)
+hist(particles[, 3], freq = F)
+hist(plogis(particles[, 3]), freq = F)
 ```
