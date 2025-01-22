@@ -21,7 +21,7 @@ eki <- function(num_particles, initial_particles, true_data, true_params, synthe
     
     # print("Hello")
     likelihood_samples <- synthetic_data_func(num_particles, particles, true_params)
-
+    print(mean(likelihood_samples))
   
     covariances <- calculate_covariances(particles, likelihood_samples)
     
@@ -58,7 +58,7 @@ eki_adaptive <- function(num_particles, initial_particles, true_data, true_param
   while (current_temp < 1) {
     
     likelihood_samples <- synthetic_data_func(num_particles, particles, true_params)
-    # print(likelihood_samples)
+    print(mean(likelihood_samples))
     ll_densities <- density_func(true_data, num_particles, particles, true_params)
     # print(ll_densities)
     

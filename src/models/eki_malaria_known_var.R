@@ -14,7 +14,7 @@ densities_malaria_known_var <- function(true_data, num_particles, particles, par
     # TODO: currently I am solving the diff equation twice: here and in sampling function
     # Need to figure out how to optimise the workflow to avoid this
     current_mean <- log(diff(likelihood_malaria_mean(current_params)))
-    likelihood_densities[particle] <- loglike_malaria(true_data, current_mean, current_params)
+    likelihood_densities[particle] <- loglike_malaria(true_data, current_mean, current_params, log_obs = F)
     # print(likelihood_densities[particle])
   }
 
@@ -42,7 +42,7 @@ synthetic_malaria_known_var <- function(num_particles, particles, parameters, me
       sample <- log(diff(likelihood_malaria_mean(current_params)))
     }
     else {
-      sample <- likelihood_malaria(current_params)
+      sample <- likelihood_malaria(current_params, log_obs = F)
     }
 
     # print(sample)
