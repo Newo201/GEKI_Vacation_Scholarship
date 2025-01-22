@@ -109,7 +109,7 @@ prior_params <- list(alpha.mean = 0, alpha.sd = 5,
 ### Adaptive Tempering
 
 ```{r}
-adaptive = FALSE
+adaptive = TRUE
 ```
 
 ### Output

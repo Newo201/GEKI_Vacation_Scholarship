@@ -3,7 +3,7 @@ calculate_pseudo_densities <- function(true_data, num_particles, likelihood_samp
   likelihood_densities <- rep(0, num_particles)
   
   for (particle in 1:num_particles) {
-    likelihood_densities[particle] <- (true_data - likelihood_samples[particle, ]) %*% noise_matrix_inv %*% (true_data - likelihood_samples[particle, ])
+    likelihood_densities[particle] <- -0.5*(true_data - likelihood_samples[particle, ]) %*% noise_matrix_inv %*% (true_data - likelihood_samples[particle, ])
   }
   
   return (likelihood_densities)
