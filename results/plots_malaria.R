@@ -93,7 +93,7 @@ plot_sigma_particles <- function(sigma_particles, true_params, prior_params, kde
 
 ############################# Posterior Predictive ##################################
 
-plot_eki_posterior_predictive <- function(eki_result, true_data, true_params) {
+plot_eki_posterior_predictive_known_var <- function(eki_result, true_data, true_params) {
   
   final_particles <- eki_result$particles
   
@@ -109,7 +109,9 @@ plot_eki_posterior_predictive <- function(eki_result, true_data, true_params) {
   pred.mean <- colMeans(likelihood_prediction)
   pred.upper <- colQuantiles(likelihood_prediction, probs = 0.975)
   
-  plot(time_seq, pred.mean, type = 'l', ylim = c(min(pred.lower), max(pred.upper)))
+  plot(time_seq, pred.mean, type = 'l', ylim = c(min(pred.lower), max(pred.upper)), 
+       xlab = 'Time', ylab = 'New cases (log scale)', main = '95% Posterior Predictive Distribution',
+       cex.main = 1.5, cex.lab = 1.2)
   polygon(c(time_seq, rev(time_seq)), c(pred.lower, rev(pred.upper)), col = 'lightblue', border = F)
   points(time_seq, true_data)
   lines(time_seq, pred.mean, lwd = 2, col = 'darkblue')
@@ -134,7 +136,9 @@ plot_eki_posterior_predictive_known_d_in <- function(eki_result, true_data, true
   pred.mean <- colMeans(likelihood_prediction)
   pred.upper <- colQuantiles(likelihood_prediction, probs = 0.975)
   
-  plot(time_seq, pred.mean, type = 'l', ylim = c(min(pred.lower), max(pred.upper)))
+  plot(time_seq, pred.mean, type = 'l', ylim = c(min(pred.lower), max(pred.upper)), 
+       xlab = 'Time', ylab = 'New cases (log scale)', main = '95% Posterior Predictive Distribution',
+       cex.main = 1.5, cex.lab = 1.2)
   polygon(c(time_seq, rev(time_seq)), c(pred.lower, rev(pred.upper)), col = 'lightblue', border = F)
   points(time_seq, true_data)
   lines(time_seq, pred.mean, lwd = 2, col = 'darkblue')
@@ -159,7 +163,9 @@ plot_eki_posterior_predictive_d_in_only <- function(eki_result, true_data, true_
   pred.mean <- colMeans(likelihood_prediction)
   pred.upper <- colQuantiles(likelihood_prediction, probs = 0.975)
   
-  plot(time_seq, pred.mean, type = 'l', ylim = c(min(pred.lower), max(pred.upper)))
+  plot(time_seq, pred.mean, type = 'l', ylim = c(min(pred.lower), max(pred.upper)), 
+       xlab = 'Time', ylab = 'New cases (log scale)', main = '95% Posterior Predictive Distribution',
+       cex.main = 1.5, cex.lab = 1.2)
   polygon(c(time_seq, rev(time_seq)), c(pred.lower, rev(pred.upper)), col = 'lightblue', border = F)
   points(time_seq, true_data)
   lines(time_seq, pred.mean, lwd = 2, col = 'darkblue')
