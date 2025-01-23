@@ -7,6 +7,7 @@ output:
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/check_covariances.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_known_var.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_known_d_in.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_d_in_only.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_malaria.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
@@ -217,10 +218,10 @@ plot_movement_against_sigma(true_data, initialise_malaria_func,
                             synthetic_malaria_func, 1)
 plot_movement_against_sigma(true_data, initialise_malaria_func, 
                             synthetic_malaria_func, 2)
-plot_movement_against_sigma(true_data, initialise_malaria_func, 
-                            synthetic_malaria_func, 3)
-plot_movement_against_sigma(true_data, initialise_malaria_func, 
-                            synthetic_malaria_func, 4)
+# plot_movement_against_sigma(true_data, initialise_malaria_func, 
+#                             synthetic_malaria_func, 3)
+# plot_movement_against_sigma(true_data, initialise_malaria_func, 
+#                             synthetic_malaria_func, 4)
 ```
 
 # Implications
