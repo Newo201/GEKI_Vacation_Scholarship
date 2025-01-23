@@ -6,6 +6,8 @@ check_c_yy <- function(num_particles, prior_params, true_params) {
   likelihood_samples <- synthetic_normal(num_particles, particles, true_params)
   covariances <- calculate_covariances(particles, likelihood_samples)
   
+  print(diag(covariances$C_yy))
+  
   return(mean(diag(covariances$C_yy)))
 }
 
@@ -69,7 +71,7 @@ plot_covariance_against_sigma2 <- function(covariance_func, covariance_type) {
   abline(h = 0, col = 'red')
 }
 
-plot_covariance_against_sigma2_dispersion <- function(covariance_func) {
+plot_covariance_against_sigma2_dispersion <- function(covariance_func, covariance_type) {
   sigma2_seq <- seq(0.01, 3, length.out = 50)
   res <- c()
   for (sigma2 in sigma2_seq) {
@@ -77,10 +79,10 @@ plot_covariance_against_sigma2_dispersion <- function(covariance_func) {
     true_params = list(alpha = 2, sigma = 2, x = rep(0, 50))
     res <- c(res, covariance_func(1000, prior_params, true_params))
   }
-  plot(sigma2_seq, res, xlab = 'sigma2_prior_variance', ylab ='')
+  plot(sigma2_seq, res, xlab = 'sigma2_prior_variance', ylab ='', main = glue('Empirical {covariance_type}'))
 }
 
-plot_covariance_against_alpha <- function(covariance_func) {
+plot_covariance_against_alpha <- function(covariance_func, covariance_type) {
   alpha_seq <- seq(-2, 10, length.out = 50)
   res <- c()
   for (alpha in alpha_seq) {
@@ -88,5 +90,5 @@ plot_covariance_against_alpha <- function(covariance_func) {
     true_params <- list(alpha = alpha, sigma = 2, x = rep(0, 50))
     res <- c(res, covariance_func(1000, prior_params, true_params))
   }
-  plot(alpha_seq, res, xlab = 'alpha', ylab = '')
+  plot(alpha_seq, res, xlab = 'alpha', ylab = '', main = glue('Empirical {covariance_type}'))
 }

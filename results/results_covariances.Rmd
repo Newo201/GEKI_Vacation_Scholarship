@@ -12,7 +12,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 
 # Checking Covariances
 
-When testing the EKI algorithm on a multivariate normal model with unknown mean and noise, it was found that the EKI algorithm was not able to identify the true noise parameter, and was anchored to the prior distribution. The purpose of this markdown document is to explain this phenomenon.
+When testing the EKI algorithm on a multivariate normal model with unknown mean and noise, it was found that the EKI algorithm was not able to identify the true noise parameter, and was anchored to the prior distribution. However, when using summary statistics, we were able to identify the noise parameter. The purpose of this document is to explain this phenomenon.
 
 The main functions for this document can be found in `src/utils/check_covariances.R` I am interested in looking at three variables:
 
@@ -29,8 +29,8 @@ The main functions for this document can be found in `src/utils/check_covariance
 In this section, I check the covariance of the generated data. In the known variance case the large sample limit is $HQH^T + R = 25x^Tx + \sigma^2I$. Thus, we anticipate that the diagonals of the covariance matrix will increase as the prior mean of the $p(\sigma^2)$ increases. Additionally, we expect no dependence on the mean parameter $\alpha$.
 
 ```{r}
-plot_covariance_against_sigma2(check_c_yy)
-plot_covariance_against_alpha(check_c_yy)
+plot_covariance_against_sigma2(check_c_yy, "Data Covariance")
+plot_covariance_against_alpha(check_c_yy, "Data Covariance")
 ```
 
 The results are what we expect, where there is a strong positive linear relationship between the mean of the diagonals and $\sigma^2$ but no relationship between the mean of the diagonals and $\alpha$.
@@ -41,8 +41,8 @@ In this section, I check the cross covariance of the generated data and the curr
 
 ```{r}
 plot_covariance_against_sigma2(check_c_yx, "cross covariance")
-plot_covariance_against_sigma2_dispersion(check_c_yx, "cross_covariance")
-plot_covariance_against_alpha(check_c_yx, "cross covariance")
+# plot_covariance_against_sigma2_dispersion(check_c_yx, "cross_covariance")
+# plot_covariance_against_alpha(check_c_yx, "cross covariance")
 ```
 
 In all plots we see a random fluctuation around zero. Interestingly, as the dispersion of the prior for $\sigma^2$ increases, so does the magnitude of these fluctuations. Ideally, we would want to see this same behavior reflected in the step-size, since the less confident we are in the prior, the more our particles should respond to the data.
@@ -56,9 +56,9 @@ $C^{xy}(C^{yy})^{-1}$ which is equivalent to $C^{xy}(C^{yy} +(h_l^{-1}-1)C^{y|x}
 If the cross covariance matrix contains zeros, then we expect the step-size to theoretically be zero as well (empirically very small), and thus the particles won't move much from their prior distribution.
 
 ```{r}
-plot_covariance_against_sigma2(check_stepsize)
-plot_covariance_against_sigma2_dispersion(check_stepsize)
-plot_covariance_against_alpha(check_stepsize)
+plot_covariance_against_sigma2(check_stepsize, "Stepsize")
+# plot_covariance_against_sigma2_dispersion(check_stepsize)
+# plot_covariance_against_alpha(check_stepsize)
 ```
 
 We can see that the step-size appears to fluctuate randomly around zero, and the magnitude of these fluctuations is extremely small. It is worth noting that this is without tempering - if we employ tempering the magnitude of each step will be even smaller.
