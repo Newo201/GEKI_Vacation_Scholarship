@@ -140,7 +140,7 @@ abline(model, col = 'red')
 cor(d_in_particles, eta0_particles)
 ```
 
-Upon closer inspection we see a strong positive correlation between the $d_{in}$ and $\eta_0$ particles. Essentially the higher values offset each other, producing predictions which fit the true data. The reason this has more of an effect on $d_{in}$ is most likely a combination of the prior distributions and because $d_{in}$ is more sensitive to changes in $\eta_0$.
+Upon closer inspection we see a strong positive correlation between the $d_{in}$ and $\eta_0$ particles. Essentially the higher values offset each other, producing predictions which fit the true data, even though the marginal posteriors are poor. The reason this has more of an effect on $d_{in}$ is most likely a combination of the prior distributions and because $d_{in}$ is more sensitive to changes in $\eta_0$.
 
 It is worth noting that this co-identifiability issue is not unique to EKI; similar results were found when running SMC on the same model.
 
@@ -165,6 +165,8 @@ Based on the above findings, it was decided to instead look at $\theta = (\eta_0
 # plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
 # plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
 ```
+
+In this case, we find EKI is able to identify both parameters well.
 
 ### Misspecified Noise
 
@@ -193,12 +195,6 @@ We again consider $\theta = (\eta_0, \phi)$, but under-specify the noise, relati
 # plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
 ```
 
-### $d_{in}$ Only
+In this case, we see EKI and GEKI produce exactly the same results - the parameters become more tightly concentrated around the true value. This suggests some significant limitations associated with GEKI, it does poorly at estimating the noise parameter and doesn't do any better than EKI in situations where we are required to make an educated guess of the noise.
 
-```{r}
-# eki_result <- eki_malaria_d_in_only(num_particles, true_data, 
-#                                     true_unconstrained_params, general = F,
-#                                     prior_params, adaptive = adaptive)
-# plot_eki_malaria_d_in_only(eki_result, true_params)
-# plot_eki_posterior_predictive_d_in_only(eki_result, true_data, true_unconstrained_params)
-```
+Further work is needed to understand the reason for this limitation. We already had a look at using summary statistics in the multivariate normal model, so potentially something along this line may be promising.
