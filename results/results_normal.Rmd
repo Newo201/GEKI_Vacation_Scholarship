@@ -81,7 +81,7 @@ generate_results <- function(num_particles, true_parameters) {
 
 ## The Model
 
-We assume that we have access to a single observation from a multivariate normal distribution $y \sim N(\alpha x, \sigma^2I)$ where $\alpha$ is a scalar and $x$ is a known vector.
+We assume that we have access to a single observation from a multivariate normal distribution $y \sim N(\alpha x, \sigma^2I)$ where $\alpha$ is a scalar and $x$ is a known vector. We further summarize this into two summary statistics $(\bar{y}, s_y)$ which are jointly sufficient for the parameters.
 
 I look at three variations of this model
 
@@ -121,16 +121,6 @@ For each variation of the model, I plot the EKI histograms of the particles agai
 In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively and let $x$ be a vector of 1s corresponding to 10, 50 and 100 dimensions. I keep the number of particles fixed at 400. The purpose of this is to see how the EKI algorithm performs when the number of dimensions increases.
 
 ```{r}
-num_particles <- 400
-true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, 50))
-true_sample <- likelihood_normal(true_parameters)
-true_data <- c(mean(true_sample), sd(true_sample))
-eki_result <- eki_normal(num_particles, true_data, true_parameters, 
-                         prior_params, adaptive = adaptive)
-plot_eki_normal(eki_result, true_parameters, prior_params)
-```
-
-```{r}
 num_dimensions <- c(10, 50, 100)
 num_particles <- 400
 for (dimension in num_dimensions) {
@@ -144,7 +134,7 @@ for (dimension in num_dimensions) {
 }
 ```
 
-Overall, EKI covers both parameters quite well in this scenario. However, it is worth noting that the prior for $\sigma^2$ already covers the true parameter well and that the $\sigma^2$ particles have not shifted significantly from their prior distribution. By contrast MCMC concentrates well for both parameters and we can see a noticeable shift from the prior distribution.
+Overall, EKI is able to estimate both parameters quite well in this scenario. We can see a significant movement away from the prior distribution for both parameters, which is promising. Additionally, in the known variance scenario, the posterior is still exact, which is what we expect with sufficient statistics.
 
 ## Changing $\alpha$
 
@@ -160,7 +150,7 @@ for (alpha in alpha_seq) {
 }
 ```
 
-All EKI models and MCMC do well at estimating the mean parameter. There is no change in how the noise parameter is being estimated across a range of $\alpha$ values, which is not surprising since the covariance matrices used to update the particles should not depend on $\alpha$.
+All EKI models do well at estimating the mean parameter. There is no change in how the noise parameter is being estimated across a range of $\alpha$ values, which is not surprising since the covariance matrices used to update the particles should not depend on $\alpha$.
 
 ## Changing $\sigma^2$
 
@@ -181,7 +171,7 @@ for (sigma in sigma_seq) {
 }
 ```
 
-In the known variance case, the results for the mean parameter are what we expect. That is, the particles are centered around the true value and they become more diffuse as $\sigma^2$ increases. However, the ability of the other EKI models to estimate the true noise parameter is poor. Regardless of the true value of $\sigma^2$, the particles remain anchored to their prior distribution. In the cases where the prior is lower than the true value of $\sigma^2$, the $\alpha$ values become too concentrated. This is problematic if we don't have strong information about the noise parameter to specify a good prior distribution.
+We see that the EKI method is able to estimate $\sigma^2$ quite well, even as it gets larger. The particles for $\alpha$ are more diffuse as $\sigma^2$ increases, which is what we naturally expect.
 
 ## Changing Number of Particles
 
@@ -201,6 +191,4 @@ Indeed we find that this is the case.
 
 ## Conclusion
 
-To summarize, GEKI does well at estimating the mean parameter, but does poorly at estimating the noise parameter, remaining anchored to its prior distribution. By contrast, MCMC does well at estimating both parameters. One explanation for this phenomenon is that the GEKI algorithm relies on a cross covariance between the parameters and the data, but $\sigma^2$ and $y$ are theoretically uncorrelated. See `results_covariances.md` for further detail.
-
-While beyond the scope of this project, one would expect this phenomenon to be observed in similar parameters that affect variance and kurtosis only (e.g. the degrees of freedom in a t-distribution). Improvements to the algorithm which may be able to address this issue are also beyond the scope of this project.
+To summarize, GEKI does well at estimating both parameters when we use summary statistics. This is interesting considering it doesn't do well when using the full data.
