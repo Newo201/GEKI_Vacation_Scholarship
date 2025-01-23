@@ -1,11 +1,17 @@
-calculate_covariances <- function(particles, likelihood_samples) {
+calculate_covariances <- function(particles, likelihood_samples, correlation = F) {
   
   # Calculate the covariance matrices
   C_xx = cov(particles)
   # print(C_xx)
-  C_yy = cov(likelihood_samples)
-  C_xy = cov(particles, likelihood_samples)
-  C_yx = cov(likelihood_samples, particles)
+  if (correlation) {
+    C_yy = cor(likelihood_samples)
+    C_xy = cor(particles, likelihood_samples)
+    C_yx = cor(likelihood_samples, particles)
+  } else {
+    C_yy = cov(likelihood_samples)
+    C_xy = cov(particles, likelihood_samples)
+    C_yx = cov(likelihood_samples, particles)
+  }
   
   C_y_given_x = C_yy - C_yx %*% ginv(C_xx) %*% C_xy
   # Presolving the inverse so we don't have to recalculate it every time
