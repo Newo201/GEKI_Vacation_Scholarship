@@ -5,8 +5,10 @@ output:
 
 ```{r}
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/check_covariances.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_known_var.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_d_in_only.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_malaria.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/eki_helper.R')
 ```
 
@@ -22,6 +24,8 @@ plot_covariance_against_sigma <- function(particle_func, data_func,
                          eta0.mean = 0, eta0.sd = 1,
                          sigma.mean = sigma, sigma.sd = 1)
     particles <- particle_func(50, prior_params)
+    # print(exp(sigma + 0.5)**2)
+    # print(mean(particles[, 4]))
     true_params <- list(sigma = 0.5, phi = 0.25, eta0 = 0.11, d_in = 0.5)
     true_unconstrained_params <- unconstrain_malaria_params(true_params)
     likelihood_samples <- data_func(50, particles, true_unconstrained_params)
@@ -109,28 +113,30 @@ When testing the EKI algorithm on a multivariate normal model with unknown mean 
 
 The main functions for this document can be found in `src/utils/check_covariances.R` I am interested in looking at three variables:
 
--   How a covariance matrix changes with the prior mean of $\sigma^2$: `plot_covariance_against_sigma2`
+-   How a covariance matrix changes with the prior mean of $\sigma$: `plot_covariance_against_sigma`
 
--   How a covariance matrix changes with the prior variance of $\sigma^2$: `plot_covariance_against_sigma2_dispersion`
+-   How the difference between the true data and the samples changes with the prior mean of $\sigma$
 
--   How a covariance matrix changes with the prior mean of $\alpha$: `plot_covariance_against_alpha`
+-   How the final update size changes with the prior mean of $\sigma$
+
+```{r}
+# Can change these functions to fix one of the parameters
+initialise_malaria_func <- initialise_malaria_particles
+synthetic_malaria_func <- synthetic_malaria
+```
 
 # Findings
 
 ## Checking $C^{yy}$
-
-In this section, I check the covariance of the generated data. In the known variance case the large sample limit is $HQH^T + R = 25x^Tx + \sigma^2I$. Thus, we anticipate that the diagonals of the covariance matrix will increase as the prior mean of the $p(\sigma^2)$ increases. Additionally, we expect no dependence on the mean parameter $\alpha$.
 
 ```{r}
 plot_covariance_against_sigma(initialise_malaria_func, synthetic_malaria_func, 
                               check_c_yy, "Data Variance")
 ```
 
-The results are what we expect, where there is a strong positive linear relationship between the mean of the diagonals and $\sigma^2$ but no relationship between the mean of the diagonals and $\alpha$.
+As one would expect, when the prior mean of $\sigma$ increases, so does the variance of the data. All else equal, this will have the effect of reducing the step-size.
 
 ## Checking $C^{yx}$
-
-In this section, I check the cross covariance of the generated data and the current particles. In the known variance case the large sample limit is $HQ = 25x^T$. Of course, this is a $d_y \times 1$ matrix, but the cross covariance in the unknown variance case will be $d_y \times 2$. I conjecture that the second column will be zeros, since there is no correlation between the noise parameter $\sigma^2$ and the generated data. The intuition is that higher levels of $\sigma^2$ increase the dispersion of the generated data but not its location. To test for this I look at the mean of the entries in the second column of the covariance matrices.
 
 ```{r}
 plot_covariance_against_sigma(initialise_malaria_func, synthetic_malaria_func, 
@@ -143,7 +149,11 @@ plot_covariance_against_sigma(initialise_malaria_func, synthetic_malaria_func,
                               check_c_yx, "cross covariance", 4)
 ```
 
-In all plots we see a random fluctuation around zero. Interestingly, as the dispersion of the prior for $\sigma^2$ increases, so does the magnitude of these fluctuations. Ideally, we would want to see this same behavior reflected in the step-size, since the less confident we are in the prior, the more our particles should respond to the data.
+For the phase shift parameter $\phi$ and $\sigma^2$ we see that the mean of the cross covariances fluctuate around 0. In the case of $\phi$ this makes sense considering $\phi$ will be positively correlated with some parts of the data and negatively correlated with others. In the case of $\sigma^2$ we expect no correlation with the data as in the MVN model.
+
+For $d_{in}$ the covariance actually decreases in magnitude as $\sigma^2$ increases. This is somewhat counter-intuitive, but most likely because $d_{in}$ does not change the mean as significantly as $\eta_0$. Thus, when the variance is higher, any value of $d_{in}$ may provide a reasonable fit to the data.
+
+For $\eta_0$ the covariance fluctuates around a constant value.
 
 ```{r}
 plot_covariance_against_sigma(initialise_malaria_func, synthetic_malaria_func, 
@@ -160,13 +170,11 @@ plot_covariance_against_sigma(initialise_malaria_func, synthetic_malaria_func,
                               correlation = T)
 ```
 
+In terms of correlation, all of the correlations go to zero as $\sigma^2$ increases, suggesting the signal between the parameters and the data is getting weaker.
+
 ## Checking Stepsize
 
-I am also interested in looking at how the particle movement for $\sigma^2$ changes as I vary the parameters of the model. Specifically I am interested in the second column of the matrix
-
-$C^{xy}(C^{yy})^{-1}$ which is equivalent to $C^{xy}(C^{yy} +(h_l^{-1}-1)C^{y|x})^{-1}$ when $h_l = 1$ (i.e. no tempering)
-
-If the cross covariance matrix contains zeros, then we expect the step-size to theoretically be zero as well (empirically very small), and thus the particles won't move much from their prior distribution.
+I am interested in looking at the columns of the matrix $C^{xy}(C^{yy})^{-1}$ which is equivalent to $C^{xy}(C^{yy} +(h_l^{-1}-1)C^{y|x})^{-1}$ when $h_l = 1$ (i.e. no tempering)
 
 ```{r}
 plot_covariance_against_sigma(initialise_malaria_func, synthetic_malaria_func, 
@@ -179,16 +187,14 @@ plot_covariance_against_sigma(initialise_malaria_func, synthetic_malaria_func,
                               check_stepsize, "Stepsize", 4)
 ```
 
-We can see that the step-size appears to fluctuate randomly around zero, and the magnitude of these fluctuations is extremely small. It is worth noting that this is without tempering - if we employ tempering the magnitude of each step will be even smaller.
-
-Unlike $C^{yx}$ the magnitude of the step-size does not appear to change as the prior variance increases. I believe this is due to offsetting effects between the components $(C^{yy} + C^{y|x})^{-1}$ and $C^{yx}$. All else equal, as the prior variances increases $E[\sigma^2]$ increases. This leads to an increase in $C^{yx}$ but a decrease in $(C^{yy} + C^{y|x})^{-1}$.
+For all the particles, the stepsize is quite small, although there is not a clear pattern as $\sigma^2$ increases.
 
 ## Checking Data Difference
 
 ```{r}
 true_params <- list(sigma = 0.5, phi = 0.25, eta0 = 0.11, d_in = 0.5)
 true_unconstrained_params = unconstrain_malaria_params(true_params)
-true_data <- likelihood_malaria(true_unconstrained_params, log_obs = F)
+true_data <- likelihood_malaria(true_unconstrained_params)
 plot_data_diff_against_sigma(true_data, initialise_malaria_func, 
                             synthetic_malaria_func, 1)
 plot_data_diff_against_sigma(true_data, initialise_malaria_func, 
@@ -199,12 +205,14 @@ plot_data_diff_against_sigma(true_data, initialise_malaria_func,
                             synthetic_malaria_func, 4)
 ```
 
+For all particles, the mean difference between the true data and likelihood samples is roughly constant as $\sigma^2$ increases, which makes logical sense.
+
 ## Checking Update Size
 
 ```{r}
 true_params <- list(sigma = 0.5, phi = 0.25, eta0 = 0.11, d_in = 0.5)
 true_unconstrained_params = unconstrain_malaria_params(true_params)
-true_data <- likelihood_malaria(true_unconstrained_params, log_obs = F)
+true_data <- likelihood_malaria(true_unconstrained_params)
 plot_movement_against_sigma(true_data, initialise_malaria_func, 
                             synthetic_malaria_func, 1)
 plot_movement_against_sigma(true_data, initialise_malaria_func, 
