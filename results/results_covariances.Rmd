@@ -26,26 +26,22 @@ The main functions for this document can be found in `src/utils/check_covariance
 
 ## Checking $C^{yy}$
 
-In this section, I check the covariance of the generated data. In the known variance case the large sample limit is $HQH^T + R = 25x^Tx + \sigma^2I$. Thus, we anticipate that the diagonals of the covariance matrix will increase as the prior mean of the $p(\sigma^2)$ increases. Additionally, we expect no dependence on the mean parameter $\alpha$.
+Consider what happens to $S = (\bar{y}, s_y)$ as the prior mean for $log(\sigma^2)$. We expect the variance of $\bar{y}$ and $s_y$ to increase. However, when $\alpha$ changes, we expect no change to either of the variances. This is what we find to be the case.
 
 ```{r}
 plot_covariance_against_sigma2(check_c_yy, "Data Covariance")
 plot_covariance_against_alpha(check_c_yy, "Data Covariance")
 ```
 
-The results are what we expect, where there is a strong positive linear relationship between the mean of the diagonals and $\sigma^2$ but no relationship between the mean of the diagonals and $\alpha$.
-
 ## Checking $C^{yx}$
 
-In this section, I check the cross covariance of the generated data and the current particles. In the known variance case the large sample limit is $HQ = 25x^T$. Of course, this is a $d_y \times 1$ matrix, but the cross covariance in the unknown variance case will be $d_y \times 2$. I conjecture that the second column will be zeros, since there is no correlation between the noise parameter $\sigma^2$ and the generated data. The intuition is that higher levels of $\sigma^2$ increase the dispersion of the generated data but not its location. To test for this I look at the mean of the entries in the second column of the covariance matrices.
+Unlike when using the full data, we expect a strong correlation between $s_y$ and $\sigma^2$. We also expect a strong correlation between $\bar{y}$ and $\alpha$ (which is not shown in these plots). As such, the EKI algorithm will now be able to determine in what direction to move $\sigma^2$ to become closer to the data.
 
 ```{r}
 plot_covariance_against_sigma2(check_c_yx, "cross covariance")
-# plot_covariance_against_sigma2_dispersion(check_c_yx, "cross_covariance")
-# plot_covariance_against_alpha(check_c_yx, "cross covariance")
 ```
 
-In all plots we see a random fluctuation around zero. Interestingly, as the dispersion of the prior for $\sigma^2$ increases, so does the magnitude of these fluctuations. Ideally, we would want to see this same behavior reflected in the step-size, since the less confident we are in the prior, the more our particles should respond to the data.
+This is indeed what we see, with the covariance increasing roughly linearly with $\sigma^2$.
 
 ## Checking Stepsize
 
@@ -53,16 +49,10 @@ I am also interested in looking at how the particle movement for $\sigma^2$ chan
 
 $C^{xy}(C^{yy})^{-1}$ which is equivalent to $C^{xy}(C^{yy} +(h_l^{-1}-1)C^{y|x})^{-1}$ when $h_l = 1$ (i.e. no tempering)
 
-If the cross covariance matrix contains zeros, then we expect the step-size to theoretically be zero as well (empirically very small), and thus the particles won't move much from their prior distribution.
+Since the cross covariance matrix no longer contains zeros, we see that the step size for $\sigma^2$ is now positive, albeit decreasing towards zero as $\sigma^2$ increases. However, when $\sigma^2$ is higher, the difference between the samples and the true data will also be more pronounced.
 
 ```{r}
 plot_covariance_against_sigma2(check_stepsize, "Stepsize")
-# plot_covariance_against_sigma2_dispersion(check_stepsize)
-# plot_covariance_against_alpha(check_stepsize)
 ```
-
-We can see that the step-size appears to fluctuate randomly around zero, and the magnitude of these fluctuations is extremely small. It is worth noting that this is without tempering - if we employ tempering the magnitude of each step will be even smaller.
-
-Unlike $C^{yx}$ the magnitude of the step-size does not appear to change as the prior variance increases. I believe this is due to offsetting effects between the components $(C^{yy} + C^{y|x})^{-1}$ and $C^{yx}$. All else equal, as the prior variances increases $E[\sigma^2]$ increases. This leads to an increase in $C^{yx}$ but a decrease in $(C^{yy} + C^{y|x})^{-1}$.
 
 # Implications
