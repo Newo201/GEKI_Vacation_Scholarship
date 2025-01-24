@@ -88,6 +88,33 @@ plot_mcmc_histogram <- function(chain.1, chain.2, true_params, prior_params,
   
 }
 
+########################## Posterior Predictive #############################
+
+plot_eki_posterior_predictive <- function(eki_result, true_data, true_params, synthetic_func) {
+  
+  final_particles <- eki_result$particles
+  
+  num_particles <- dim(final_particles)[1]
+  
+  # Generate samples using the latest particles
+  likelihood_prediction <- synthetic_func(num_particles, final_particles, true_params)
+  
+  time_seq <- 1:length(true_data)
+  
+  # Find the 2.5% and 97.5% quantiles
+  pred.lower <- colQuantiles(likelihood_prediction, probs = 0.025)
+  pred.mean <- colMeans(likelihood_prediction)
+  pred.upper <- colQuantiles(likelihood_prediction, probs = 0.975)
+  
+  plot(time_seq, pred.mean, type = 'l', ylim = c(min(pred.lower), max(pred.upper)))
+  polygon(c(time_seq, rev(time_seq)), c(pred.lower, rev(pred.upper)), col = 'lightblue', border = F)
+  points(time_seq, true_data)
+  lines(time_seq, pred.mean, lwd = 2, col = 'darkblue')
+  # lines(time_seq, pred.lower, col = 'blue')
+  # lines(time_seq, pred.upper, col = 'blue')
+  
+}
+
 
 ############################### EKI #########################################
 
