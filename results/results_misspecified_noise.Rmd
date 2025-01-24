@@ -31,6 +31,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_known_d_in.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_d_in_only.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal_known_var.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_var_only.R')
 ```
 
 ### **Sampling and PDFS**
@@ -59,40 +60,13 @@ adaptive = TRUE
 
 When looking at the multivariate normal model, it was found that GEKI does not do a good job at estimating the noise parameter. Following on from those results, the next step of the project was to investigate whether GEKI outperforms EKI in the cases where the noise parameter is known, but misspecified. Specifically, it is chosen to be too small. In the context of EKI we would expect the concentration of the particles to be too narrow and potentially away from the true parameter when we diverge from the linear Gaussian setting.
 
-## Multivariate Normal Model
-
-In the linear Gaussian setting, we have an analytically tractable posterior. If we misspecify the noise to be less than the actual noise, the particles will remain asymptotically unbiased, but the variance will be too small. This becomes a bigger problem in settings where EKI is biased, because we may not cover the true parameters.
-
-```{r}
-num_particles <- 1000
-prior_params <- list(alpha.mean = 0, alpha.sd = 5, 
-                     sigma2.mean = 2, sigma2.sd = 1)
-
-true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, 50))
-true_data = likelihood_normal(true_parameters)
-misspecified_parameters <- list(alpha = 2, sigma = 0.5, x = rep(1, 50))
-
-eki_result <- eki_normal_known_var(num_particles, true_data, 
-                                   misspecified_parameters, 
-                                   prior_params, general = F, 
-                                   adaptive = adaptive)
-plot_eki_normal_known_var(eki_result, true_data, true_parameters, prior_params)
-
-eki_result <- eki_normal_known_var(num_particles, true_data, 
-                                   misspecified_parameters, 
-                                   prior_params, general = T,
-                                   adaptive = adaptive)
-plot_eki_normal_known_var(eki_result, true_data, true_parameters, prior_params)
-```
-
-Notably, this happens in both EKI and GEKI because GEKI was designed to remain asymptotically unbiased in the linear Gaussian case. The question remains as to whether this also occurs in other settings.
-
 ## Malaria Transmission Model
 
-```{r}
-# data_path = "C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/data/Malariah_data.rds"
-# true_data = log(readRDS(data_path))
+The observational model is $y(t) \sim LogNormal(log(W(t)-W(t-1)), \sigma^2)$ where $W(t)$ is the cumulative number of malaria cases by time $t$.
 
+Unlike when we work in log space, $\sigma$ will effect the mean of the observations, and thus we anticipate that EKI will be able to identify $\sigma$.
+
+```{r}
 num_particles <- 400
 
 prior_params <- list(din.sd = 2,
@@ -104,9 +78,23 @@ true_unconstrained_params = unconstrain_malaria_params(true_params)
 true_data <- likelihood_malaria(true_unconstrained_params, log_obs = F)
 ```
 
+### Four Unknown Parameters
+
+Initially, we tried looking at $\theta = (d_{in}, \phi, \eta_0, \sigma)$
+
+```{r}
+eki_result <- eki_malaria(num_particles, true_data, true_unconstrained_params, 
+                          prior_params, adaptive = adaptive)
+plot_eki_malaria(eki_result, true_params, prior_params)
+```
+
+However, when the prior mean for $\sigma$ was too large, the algorithm was unable to identify any of the parameters. Essentially, the $\sigma$ parameter becomes the dominant parameter for the mean, and the EKI algorithm is not able to respond sufficiently to reduce the $\sigma$ parameter enough. **Further investigation is needed to explain this phenomenon.**
+
+When we choose a prior mean for $\sigma$ that was small, we found similar results to the three unknown parameter case (see below). That is, there was still an issue identifying $d_{in}$ and $\eta_0$. We also saw this when looking at log space.
+
 ### Three Unknown Parameters
 
-Initially, we tried looking at $\theta = (d_{in}, \phi, \eta_0)$ as our unknown parameters.
+Next, we tried looking at $\theta = (d_{in}, \phi, \eta_0)$ as our unknown parameters.
 
 ```{r}
 # EKI
@@ -173,15 +161,6 @@ true_unconstrained_params = unconstrain_malaria_params(true_params)
 ```
 
 ```{r}
-# EKI
-eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
-                                    true_unconstrained_params, prior_params, 
-                                    general = T, adaptive = adaptive)
-plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
-plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
-```
-
-```{r}
 # GEKI
 eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
                                     true_unconstrained_params, prior_params, 
@@ -193,95 +172,20 @@ plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrain
 ### $d_{in}$ Only
 
 ```{r}
-# eki_result <- eki_malaria_d_in_only(num_particles, true_data, 
-#                                     true_unconstrained_params, general = F,
-#                                     prior_params, adaptive = adaptive)
-# plot_eki_malaria_d_in_only(eki_result, true_params)
-```
-
-```{r}
-# plot_eki_malaria_d_in_only(eki_result, true_params)
-```
-
-```{r}
-# plot_eki_posterior_predictive_d_in_only(eki_result, true_data, true_unconstrained_params)
-```
-
-```{r}
-# mean(exp(eki_result$particles) + 0.16)
-```
-
-### Using Observations on Normal Scale
-
-Previously we have used the model $log(y(t)) \sim N(log(W(t)-W(t-1)), \sigma^2)$, where our synthetic data was generated on the log scale. Instead we wish to look at $y(t) \sim logNormal(log(W(t)-W(t-1)), \sigma^2)$.
-
-```{r}
-num_particles <- 400
-
-prior_params <- list(din.sd = 2,
-                     phi.mean = 0, phi.sd = 1,
-                     eta0.mean = 0, eta0.sd = 1,
-                     sigma.mean = -0.5, sigma.sd = 0.25)
-
-true_params <- list(sigma = 0.5, phi = 0.25, eta0 = 0.11, d_in = 0.5)
-true_unconstrained_params = unconstrain_malaria_params(true_params)
-true_data <- likelihood_malaria(true_unconstrained_params, log_obs = F)
-```
-
-```{r}
-eki_result <- eki_malaria(num_particles, true_data, true_unconstrained_params, prior_params, 
-                          adaptive = F)
-```
-
-```{r}
-exp(-1729.123)
-```
-
-```{r}
-plot_eki_malaria(eki_result, true_params, prior_params)
-```
-
-```{r}
-plot(seq(0, 1, by = 0.1), dlogitnorm(seq(0, 1, by = 0.1)))
-```
-
-```{r}
-particles <- initialise_malaria_particles(num_particles, prior_params)
-hist(particles[, 3], freq = F)
-hist(plogis(particles[, 3]), freq = F)
-```
-
-```{r}
-eki_result <- eki_malaria_d_in_only(num_particles, true_data,
-                                    true_unconstrained_params, general = T,
+eki_result <- eki_malaria_d_in_only(num_particles, true_data, true_unconstrained_params, general = F, 
                                     prior_params, adaptive = adaptive)
-
+plot_eki_malaria_d_in_only(eki_result, true_params)
 ```
 
-```{r}
-plot_eki_malaria_d_in_only(eki_result, true_params, prior_params)
-```
+### $\sigma$ Only
+
+As we noted above, the algorithm has a difficult time identifying four parameters. We now try $\theta = \sigma$.
 
 ```{r}
-eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
+eki_result <- eki_malaria_var_only(num_particles, true_data, 
                                     true_unconstrained_params, prior_params, 
                                     adaptive = F)
-plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
-# plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
+plot_eki_malaria_var_only(eki_result, true_params, prior_params)
 ```
 
-```{r}
-eki_result <- eki_malaria_known_var(num_particles, true_data, 
-                                    true_unconstrained_params, prior_params, 
-                                    adaptive = F)
-plot_eki_malaria_known_var(eki_result, true_params, prior_params)
-```
-
-```{r}
-eki_result <- eki_malaria(num_particles, true_data, true_unconstrained_params, prior_params, 
-                          adaptive = F)
-```
-
-```{r}
-plot_eki_malaria(eki_result, true_params, prior_params)
-```
+In this instance, we find that if the prior mean for $\sigma$ is set low enough that the algorithm is able to concentrate around the true value. However, when we set the prior mean too high, the variance blows up and we get back the prior distribution. In practice, this is concerning for the usefulness of the algorithm, because we shouldn't be required to massage the priors to get good results.

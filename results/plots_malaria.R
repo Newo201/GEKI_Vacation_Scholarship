@@ -238,3 +238,10 @@ plot_eki_malaria_d_in_only <- function(eki_result, true_params, prior_params, kd
   plot_d_in_particles(d_in_particles, true_params, prior_params, kde = kde)
   
 }
+
+plot_eki_malaria_var_only <- function(eki_result, true_params, prior_params, kde = T) {
+  
+  sigma_particles <- exp(eki_result$particles[, 1])
+  plot_sigma_particles(sigma_particles, true_params, prior_params, kde = kde)
+  
+}
