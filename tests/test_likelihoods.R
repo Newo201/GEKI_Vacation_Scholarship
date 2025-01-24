@@ -1,5 +1,6 @@
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples_normal.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/pdfs_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_lognormal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/pdfs/pdfs_normal.R')
 
 true_params_1d = list(alpha = 2, sigma = 2, x = 1)
 true_params_2d = list(alpha = 2, sigma = 2, x = c(1, 2))
@@ -33,3 +34,21 @@ test_that('Dimensions of likelihood density are correct',
           })
 
 
+current_params <- list(alpha = 2, x = rep(1, 100), sigma = 2)
+samples <- likelihood_lognormal(current_params)
+sample_seq <- seq(min(samples), max(samples), length.out = 50)
+emp_density <- density(samples)
+plot(emp_density)
+lines(sample_seq, dlnorm(sample_seq, mean = 5, sd = 2), col = 'blue')
+# lines(dlnorm(samples, meanlog = 2, sdlog = 2))
+# mean(samples)
+# var(samples)
+
+exp(4)
+exp(12) - exp(8)
+
+samples <- rlnorm(100, meanlog = 2, sdlog = 2)
+mean(samples)
+var(samples)
+
+samples <- rlnorm(100, mean)
