@@ -238,8 +238,10 @@ for (sigma in sigma_seq) {
 
 ## Summary Statistics
 
+In this section, we further summarize the data into two summary statistics $(\bar{y}, s_y)$ which are jointly sufficient for the parameters. This is because we expect a correlation between $\sigma^2$ and $s_y$ which should allow us to estimate the parameters. Because they are sufficient, the posterior is still exact in the linear Gaussian case.
+
+We can see that GEKI does well at estimating both parameters in this model when we use summary statistics. This is interesting considering it doesn't do well when using the full data.
+
 ## Conclusion
 
 To summarize, GEKI does well at estimating the mean parameter, but does poorly at estimating the noise parameter, remaining anchored to its prior distribution. By contrast, MCMC does well at estimating both parameters. One explanation for this phenomenon is that the GEKI algorithm relies on a cross covariance between the parameters and the data, but $\sigma^2$ and $y$ are theoretically uncorrelated. See `results_covariances.md` for further detail.
-
-While beyond the scope of this project, one would expect this phenomenon to be observed in similar parameters that affect variance and kurtosis only (e.g. the degrees of freedom in a t-distribution). Improvements to the algorithm which may be able to address this issue are also beyond the scope of this project.
