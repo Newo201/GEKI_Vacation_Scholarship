@@ -26,8 +26,5 @@ likelihood_normal <- function(parameters) {
   x = parameters$x
   sigma2 = parameters$sigma**2
   dim = length(x)
-  # print(dim)
-  # print(sigma2)
-  # print(sigma2*diag(dim))
   return(rmvnorm(1, mean = alpha*x, sigma = sigma2*diag(dim)))
 }

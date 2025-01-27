@@ -45,16 +45,9 @@ likelihood_g_and_k_summary <- function(parameters) {
   g <- pnorm(parameters$g)*10
   k <- pnorm(parameters$k)*10
   
-  # print(c(a, b, g, k))
   observations <- rgk(1000, a, b, g, k)
 
-  # Disregard the msot extreme observations
+  # Disregard the most extreme observations
   order_stats_sequence <- seq(10, 990, length.out = 100)
   return(orderstats(observations, order_stats_sequence))
 }
-
-params <- list(a = 0, b = 0, g = 0, k = 0)
-likelihood_g_and_k_summary(params)
-
-x <- runif(10)
-orderstats(x, 2)

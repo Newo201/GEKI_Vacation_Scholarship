@@ -2,7 +2,8 @@ get_weights <- function(next_temp, current_temp, ll_densities) {
   
   change_in_temp <- next_temp - current_temp
   weights <- exp(change_in_temp*ll_densities)
-  # print(weights)
+  
+  # To prevent an error in the root finding algorithm when the densities are small
   if (sum(weights) == 0) {
     return(1)
   }

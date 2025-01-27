@@ -1,7 +1,3 @@
-pacman::p_load(pacman, extraDistr)
-
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/utils/equations_malaria.R')
-
 #################### Parameter Transformations #############################
 
 constrain_malaria_params <- function(parameters) {
@@ -99,25 +95,15 @@ likelihood_malaria_mean <- function(variable_parameters) {
                       phi = variable_parameters$phi,
                       eta0 = variable_parameters$eta0)
   
-  # print(parameters)
-  
-  dt= 1/12 #step size one monthe per a year
-  # ToDo: double check that this time sequence is correct
+  dt= 1/12 #step size one month per a year
   true_time <- seq(0, 10.75, by = dt)                  #time step
   
   #The initial conditions for solving the ODE 
   ICs <- solve_steady_state(parameters)
-  # print(ICs)
   
   #Solve the ODE using the Default Solver LSoda
   out <- (ode(y = ICs, times = true_time, func = mtdrift, parms = parameters))
-  #Save first simulation;
-  # simulation.data<-c(NA)
   simulation.data <- out[,"W"]
-  # print(length(simulation.data))
-  # for(k in 2:130){
-  #   simulation.data[k]<-out[,"W"][k]-out[,"W"][k-1]
-  # }
   return(simulation.data)
 }
 
@@ -129,8 +115,7 @@ likelihood_malaria <- function(variable_parameters, log_obs = T) {
   sigma <- variable_parameters$sigma
   # Convert mean to log difference
   likelihood_mean <- log(diff(likelihood_malaria_mean(variable_parameters)))
-  # print(likelihood_mean)
-  # Data is stored in log space
+  # Determine if data is stored in log space
   if (log_obs) {
     return(rnorm(n = length(likelihood_mean), mean = likelihood_mean, sd = sigma))
   } else {

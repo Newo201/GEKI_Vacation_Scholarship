@@ -26,6 +26,4 @@ check_stepsize <- function(covariances, column) {
   return(mean(stepsize[, column]))
 }
 
-############################# Plots ###################################
-
 
