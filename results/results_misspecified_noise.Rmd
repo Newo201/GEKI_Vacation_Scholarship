@@ -13,7 +13,7 @@ output: github_document
 
 ```{r}
 pacman::p_load(pacman, testthat, deSolve, rootSolve, MASS, mvtnorm, extraDistr, 
-               purrr, glue)
+               purrr, glue, logitnorm)
 ```
 
 ### Algorithms
@@ -26,9 +26,11 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 ### Models
 
 ```{r}
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_known_var.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_d_in_only.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal_known_var.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/malaria_normal/eki_malaria.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/malaria_normal/eki_malaria_known_var.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/malaria_normal/eki_malaria_known_d_in.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/malaria_normal/eki_malaria_d_in_only.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/mvn_normal/eki_normal_known_var.R')
 ```
 
 ### **Sampling and PDFS**
@@ -50,7 +52,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 ```
 
 ```{r}
-adaptive = FALSE
+adaptive = TRUE
 ```
 
 ## Introduction
@@ -87,6 +89,8 @@ Notably, this happens in both EKI and GEKI because GEKI was designed to remain a
 
 ## Malaria Transmission Model
 
+The Malaria Transmission Model is an extension of a standard Suspectible-Infected-Recovered (SIR) model. In the model we have four states: Suspectible (S), Infected without Immunity (I1), Infected with prior immunity (I2) and Recovered (R). The system of differential equations is described in more detail in the Malaria Transmission Model specification document. Note that $W(t)$ represents the cumulative number of cases by time $t$.
+
 ```{r}
 # data_path = "C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/data/Malariah_data.rds"
 # true_data = log(readRDS(data_path))
@@ -102,39 +106,17 @@ true_unconstrained_params = unconstrain_malaria_params(true_params)
 true_data <- likelihood_malaria(true_unconstrained_params)
 ```
 
-```{r}
-# EKI
-eki_result <- eki_malaria_known_var(num_particles, true_data, 
-                                    true_unconstrained_params, prior_params, 
-                                    general = F, adaptive = adaptive)
-plot_eki_malaria_known_var(eki_result, true_params)
-plot_eki_posterior_predictive(eki_result, true_data, true_unconstrained_params)
-```
+### Three Unknown Parameters
+
+Initially, we tried looking at $\theta = (d_{in}, \phi, \eta_0)$ as our unknown parameters.
 
 ```{r}
-cor.test(d_in_particles, eta0_particles)
-```
+# # EKI
+# eki_result <- eki_malaria_known_var(num_particles, true_data, 
+#                                     true_unconstrained_params, prior_params, 
+#                                     general = F, adaptive = adaptive)
+# plot_eki_malaria_known_var(eki_result, true_params, prior_params)
 
-```{r}
-d_in_particles <- exp(eki_result$particles[, 1]) + 0.16
-eta0_particles <- plogis(eki_result$particles[, 3])
-plot(eta0_particles, d_in_particles)
-model <- lm(d_in_particles ~ eta0_particles)
-abline(model, col = 'red')
-cor(d_in_particles, eta0_particles)
-```
-
-```{r}
-summary(model)
-```
-
-```{r}
-particles <- initialise_malaria_particles_d_in_only(num_particles, prior_params)
-plot_eki_prior_predictive_d_in_only(particles, true_data, true_params)
-```
-
-```{r}
-mean(exp(eki_result$particles[, 1]))
 ```
 
 ```{r}
@@ -142,27 +124,77 @@ mean(exp(eki_result$particles[, 1]))
 eki_result <- eki_malaria_known_var(num_particles, true_data, 
                                     true_unconstrained_params, 
                                     prior_params, adaptive = adaptive)
-plot_eki_malaria_known_var(eki_result)
-plot_eki_posterior_predictive(eki_result, true_data, true_unconstrained_params)
+plot_eki_malaria_known_var(eki_result, true_params, prior_params)
+plot_eki_posterior_predictive_known_var(eki_result, true_data, true_unconstrained_params)
 ```
 
-### $d_{in}$ Only
-
-```{r}
-eki_result <- eki_malaria_d_in_only(num_particles, true_data, 
-                                    true_unconstrained_params, general = F,
-                                    prior_params, adaptive = adaptive)
-plot_eki_malaria_d_in_only(eki_result, true_params)
-```
+While the posterior predictive fits the true data well, the EKI and GEKI algorithms have a difficult time identifying the true $d_{in}$ and $\eta_0$. In that sense, we get values for $d_{in}$ which don't make sense in the context of the model.
 
 ```{r}
-plot_eki_malaria_d_in_only(eki_result, true_params)
+d_in_particles <- exp(eki_result$particles[, 1]) + 0.16
+eta0_particles <- plogis(eki_result$particles[, 3])
+plot(eta0_particles, d_in_particles, xlab = expression(eta[0]), ylab = expression(d[inf]),
+     main = 'Relationship between parameters', cex.main = 1.5, cex.lab = 1.2)
+model <- lm(d_in_particles ~ eta0_particles)
+abline(model, col = 'red')
+cor(d_in_particles, eta0_particles)
+```
+
+Upon closer inspection we see a strong positive correlation between the $d_{in}$ and $\eta_0$ particles. Essentially the higher values offset each other, producing predictions which fit the true data, even though the marginal posteriors are poor. The reason this has more of an effect on $d_{in}$ is most likely a combination of the prior distributions and because $d_{in}$ is more sensitive to changes in $\eta_0$.
+
+It is worth noting that this co-identifiability issue is not unique to EKI; similar results were found when running SMC on the same model.
+
+### Two Unknown Parameters
+
+Based on the above findings, it was decided to instead look at $\theta = (\eta_0, \phi)$.
+
+```{r}
+# # EKI
+# eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
+#                                     true_unconstrained_params, prior_params, 
+#                                     general = F, adaptive = adaptive)
+# plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
+# plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
 ```
 
 ```{r}
-plot_eki_posterior_predictive_d_in_only(eki_result, true_data, true_unconstrained_params)
+# # GEKI
+# eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
+#                                     true_unconstrained_params, prior_params, 
+#                                     adaptive = adaptive)
+# plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
+# plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
+```
+
+In this case, we find EKI is able to identify both parameters well.
+
+### Misspecified Noise
+
+We again consider $\theta = (\eta_0, \phi)$, but under-specify the noise, relative to the true data. Since the noise of the true data is $\sigma = 0.5$ we choose instead $\sigma = 0.33$.
+
+```{r}
+# true_params <- list(sigma = 1, phi = 0.25, eta0 = 0.11, d_in = 0.5)
+# true_unconstrained_params = unconstrain_malaria_params(true_params)
 ```
 
 ```{r}
-mean(exp(eki_result$particles) + 0.16)
+# # EKI
+# eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
+#                                     true_unconstrained_params, prior_params, 
+#                                     general = T, adaptive = adaptive)
+# plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
+# plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
 ```
+
+```{r}
+# # GEKI
+# eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
+#                                     true_unconstrained_params, prior_params, 
+#                                     adaptive = adaptive)
+# plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
+# plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
+```
+
+In this case, we see EKI and GEKI produce exactly the same results - the parameters become more tightly concentrated around the true value. This suggests some significant limitations associated with GEKI, it does poorly at estimating the noise parameter and doesn't do any better than EKI in situations where we are required to make an educated guess of the noise.
+
+Further work is needed to understand the reason for this limitation. We already had a look at using summary statistics in the multivariate normal model, so potentially something along this line may be promising.

@@ -1,9 +1,8 @@
-loglike_pdf <- function(y, parameters) {
+loglike_lognormal <- function(y, parameters) {
   alpha = parameters$alpha
-  sigma2 = parameters$sigma**2
+  sigma = parameters$sigma
   x = parameters$x
-  d_y = length(x)
-  return(dmvnorm(y, mean = alpha*x, sigma = sigma2*diag(d_y), log = T))
+  return(sum(dlnorm(y, mean = alpha*x, sd = sigma, log = T)))
 }
 
 alpha_logprior_pdf <- function(alpha, prior_params) {

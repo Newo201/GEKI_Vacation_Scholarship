@@ -8,27 +8,14 @@ mtdrift_theta <- function(t, ICss, parameters) {
     
     a1 = eta0*p1*(1/d_treat) + (1-eta0*p1)*(1/d_in)
     a2 = eta0*p2*(1/d_treat) + (1-eta0*p2)*(1/d_in)
-    
-    # a1 = eta0*p1*(1/d_treat)
-    # a2 = eta0*p2*(1/d_treat)
 
     # N is used instead of P to represent population size
     lambda_val = R_m*((1/L)+a1)*(I1 + I2)/N  # for Steady state calculation
-    # print("Hello")
-    # print(lambda_val)
     
     dS =  N/L - (lambda_val + (1/L))*S + (1/dimm)*R
-    # print(S)
-    # print(dS)
-    
     dI1 = lambda_val*S - (a1 + (1/L))*I1
-    # print(dI1)
-    
     dI2 = lambda_val*R - (a2 + (1/L))*I2
-    # print(dI2)
-    
     dR = a1*I1 + a2*I2 - (lambda_val +(1/dimm) + (1/L))*R
-    # print(dR)
     
     der <-c(dS, dI1, dI2,dR)
     # return the rate of change
@@ -64,9 +51,6 @@ mtdrift <-function(t, ICs, parameters) {
     
     a1 = eta0*p1*(1/d_treat) + (1-eta0*p1)*(1/d_in)
     a2 = eta0*p2*(1/d_treat) + (1-eta0*p2)*(1/d_in)
-    
-    # a1 = eta0*p1*(1/d_treat)
-    # a2 = eta0*p2*(1/d_treat)
     
     lambda_val = (amp*cos(2*pi*(t-phi))+R_m)*(a1 + (1/L))*(I1+I2)/N # for actual simulation
     

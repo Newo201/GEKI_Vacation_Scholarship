@@ -10,9 +10,9 @@
 
 Ensemble Kalman techniques are a class of Monte Carlo algorithms that can be used in high dimensional settings with the restriction of additive Gaussian likelihoods where the noise parameter is required to be known.
 
-For example, Ensemble Kalman Filters (EnKF), as the name suggests uses an ensemble of Kalman filters where the Kalman gain is calculated based on empirical covariance matrices. Ensemble Kalman Inversion adds a tempering step to this process. **Probably needs more explanation, some references and some equations.**
+For example, Ensemble Kalman Filters (EnKF), as the name suggests uses an ensemble of Kalman filters where the Kalman gain is calculated based on empirical covariance matrices. Ensemble Kalman Inversion adds a tempering step to this process.
 
-On the other hand, Approximate Bayesian Computation is a collection of algorithms which can be used on general likelihoods that cannot be evaluated pointwise. However, due to the likelihoods being intractable, they have only been effective in low dimensional settings.
+On the other hand, Approximate Bayesian Computation (ABC) is a collection of algorithms which can be used on general likelihoods that cannot be evaluated pointwise. However, due to the likelihoods being intractable, they have only been effective in low dimensional settings.
 
 Duffield and Singh (2022) proposed a Generalised Ensemble Kalman Inversion algorithm which makes the best of both worlds. It is able to operate in high dimensional settings, but it can also operate on general likelihoods.
 

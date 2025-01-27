@@ -11,7 +11,7 @@ Owen Jackson
 
 ``` r
 pacman::p_load(pacman, testthat, deSolve, rootSolve, MASS, mvtnorm, extraDistr, 
-               purrr, glue)
+               purrr, glue, logitnorm)
 ```
 
 ### Algorithms
@@ -24,7 +24,9 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 ### Models
 
 ``` r
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_known_var.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_known_d_in.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_malaria_d_in_only.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal_known_var.R')
 ```
@@ -47,10 +49,8 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/results/plots_malaria.R')
 ```
 
-    ## Next temp is 2
-
 ``` r
-adaptive = FALSE
+adaptive = TRUE
 ```
 
 ## Introduction
@@ -87,16 +87,20 @@ eki_result <- eki_normal_known_var(num_particles, true_data,
                                    adaptive = adaptive)
 ```
 
-    ## [1] 0.5
-    ## Next temp is 0.1
-    ## Next temp is 0.2
-    ## Next temp is 0.3
-    ## Next temp is 0.4
-    ## Next temp is 0.5
-    ## Next temp is 0.6
-    ## Next temp is 0.7
-    ## Next temp is 0.8
-    ## Next temp is 0.9
+    ## [1] 1.648721
+    ## Next temp is 0.00109456010842656
+    ## Next temp is 0.00275061740173493
+    ## Next temp is 0.00547563243937203
+    ## Next temp is 0.0101398737540006
+    ## Next temp is 0.0174403569722026
+    ## Next temp is 0.0297208579554834
+    ## Next temp is 0.0482678460924481
+    ## Next temp is 0.0769566797757383
+    ## Next temp is 0.122512037409439
+    ## Next temp is 0.18702463937345
+    ## Next temp is 0.285985192658083
+    ## Next temp is 0.458186968653754
+    ## Next temp is 0.726803507316946
     ## Next temp is 1
 
 ``` r
@@ -112,15 +116,10 @@ eki_result <- eki_normal_known_var(num_particles, true_data,
                                    adaptive = adaptive)
 ```
 
-    ## Next temp is 0.1
-    ## Next temp is 0.2
-    ## Next temp is 0.3
-    ## Next temp is 0.4
-    ## Next temp is 0.5
-    ## Next temp is 0.6
-    ## Next temp is 0.7
-    ## Next temp is 0.8
-    ## Next temp is 0.9
+    ## Next temp is 0.00107126389891474
+    ## Next temp is 0.00889950057894549
+    ## Next temp is 0.0726237534186124
+    ## Next temp is 0.597831532573773
     ## Next temp is 1
 
 ``` r
@@ -135,9 +134,17 @@ remains as to whether this also occurs in other settings.
 
 ## Malaria Transmission Model
 
+The Malaria Transmission Model is an extension of a standard
+Suspectible-Infected-Recovered (SIR) model. In the model we have four
+states: Suspectible (S), Infected without Immunity (I1), Infected with
+prior immunity (I2) and Recovered (R). The system of differential
+equations is described in more detail in the Malaria Transmission Model
+specification document. Note that $W(t)$ represents the cumulative
+number of cases by time $t$.
+
 ``` r
-data_path = "C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/data/Malariah_data.rds"
-true_data = log(readRDS(data_path))
+# data_path = "C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/data/Malariah_data.rds"
+# true_data = log(readRDS(data_path))
 
 num_particles <- 400
 
@@ -145,40 +152,23 @@ prior_params <- list(din.sd = 2,
                      phi.mean = 0, phi.sd = 1,
                      eta0.mean = 0, eta0.sd = 1)
 
-true_params <- list(sigma = 0.5, phi = 0.5, eta0 = 0.04, d_in = 0.5)
+true_params <- list(sigma = 0.5, phi = 0.25, eta0 = 0.11, d_in = 0.5)
 true_unconstrained_params = unconstrain_malaria_params(true_params)
+true_data <- likelihood_malaria(true_unconstrained_params)
 ```
+
+### Three Unknown Parameters
+
+Initially, we tried looking at $\theta = (d_{in}, \phi, \eta_0)$ as our
+unknown parameters.
 
 ``` r
-# EKI
-eki_result <- eki_malaria_known_var(num_particles, true_data, 
-                                    true_unconstrained_params, prior_params, 
-                                    general = F, adaptive = adaptive)
+# # EKI
+# eki_result <- eki_malaria_known_var(num_particles, true_data, 
+#                                     true_unconstrained_params, prior_params, 
+#                                     general = F, adaptive = adaptive)
+# plot_eki_malaria_known_var(eki_result, true_params, prior_params)
 ```
-
-    ## [1] -0.6931472
-    ## Next temp is 0.1
-    ## Next temp is 0.2
-    ## Next temp is 0.3
-    ## Next temp is 0.4
-    ## Next temp is 0.5
-    ## Next temp is 0.6
-    ## Next temp is 0.7
-    ## Next temp is 0.8
-    ## Next temp is 0.9
-    ## Next temp is 1
-
-``` r
-plot_eki_malaria_known_var(eki_result)
-```
-
-![](results_misspecified_noise_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->![](results_misspecified_noise_files/figure-gfm/unnamed-chunk-9-2.png)<!-- -->![](results_misspecified_noise_files/figure-gfm/unnamed-chunk-9-3.png)<!-- -->
-
-``` r
-plot_eki_posterior_predictive(eki_result, true_data, true_unconstrained_params)
-```
-
-![](results_misspecified_noise_files/figure-gfm/unnamed-chunk-9-4.png)<!-- -->
 
 ``` r
 # GEKI
@@ -187,62 +177,128 @@ eki_result <- eki_malaria_known_var(num_particles, true_data,
                                     prior_params, adaptive = adaptive)
 ```
 
-    ## Next temp is 0.1
-    ## Next temp is 0.2
-    ## Next temp is 0.3
-    ## Next temp is 0.4
-    ## Next temp is 0.5
-    ## Next temp is 0.6
-    ## Next temp is 0.7
-    ## Next temp is 0.8
-    ## Next temp is 0.9
+    ## [1] 0 1
+    ## Next temp is 0.00575183921124582
+    ## Next temp is 0.0123315111311542
+    ## Next temp is 0.0197541755133013
+    ## Next temp is 0.0279967795160268
+    ## Next temp is 0.0374350442278896
+    ## Next temp is 0.0481393697685039
+    ## Next temp is 0.0614709110631394
+    ## Next temp is 0.0772011581418288
+    ## Next temp is 0.0970329352628461
+    ## Next temp is 0.122260290005133
+    ## Next temp is 0.150949257166007
+    ## Next temp is 0.188285409351479
+    ## Next temp is 0.239805967201817
+    ## Next temp is 0.305306409891022
+    ## Next temp is 0.389500080334431
+    ## Next temp is 0.506606052690755
+    ## Next temp is 0.699612176292003
     ## Next temp is 1
 
 ``` r
-plot_eki_malaria_known_var(eki_result)
+plot_eki_malaria_known_var(eki_result, true_params, prior_params)
 ```
 
 ![](results_misspecified_noise_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->![](results_misspecified_noise_files/figure-gfm/unnamed-chunk-10-2.png)<!-- -->![](results_misspecified_noise_files/figure-gfm/unnamed-chunk-10-3.png)<!-- -->
 
 ``` r
-plot_eki_posterior_predictive(eki_result, true_data, true_unconstrained_params)
+plot_eki_posterior_predictive_known_var(eki_result, true_data, true_unconstrained_params)
 ```
 
 ![](results_misspecified_noise_files/figure-gfm/unnamed-chunk-10-4.png)<!-- -->
 
-### $d_{in}$ Only
+While the posterior predictive fits the true data well, the EKI and GEKI
+algorithms have a difficult time identifying the true $d_{in}$ and
+$\eta_0$. In that sense, we get values for $d_{in}$ which don’t make
+sense in the context of the model.
 
 ``` r
-eki_result <- eki_malaria_d_in_only(num_particles, true_data, 
-                                    true_unconstrained_params, 
-                                    prior_params, adaptive = adaptive)
-```
-
-    ## Next temp is 0.1
-    ## Next temp is 0.2
-    ## Next temp is 0.3
-    ## Next temp is 0.4
-    ## Next temp is 0.5
-    ## Next temp is 0.6
-    ## Next temp is 0.7
-    ## Next temp is 0.8
-    ## Next temp is 0.9
-    ## Next temp is 1
-
-``` r
-plot_eki_malaria_d_in_only(eki_result)
+d_in_particles <- exp(eki_result$particles[, 1]) + 0.16
+eta0_particles <- plogis(eki_result$particles[, 3])
+plot(eta0_particles, d_in_particles, xlab = expression(eta[0]), ylab = expression(d[inf]),
+     main = 'Relationship between parameters', cex.main = 1.5, cex.lab = 1.2)
+model <- lm(d_in_particles ~ eta0_particles)
+abline(model, col = 'red')
 ```
 
 ![](results_misspecified_noise_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
-plot_eki_posterior_predictive_d_in_only(eki_result, true_data, true_unconstrained_params)
+cor(d_in_particles, eta0_particles)
 ```
 
-![](results_misspecified_noise_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+    ## [1] 0.8914845
+
+Upon closer inspection we see a strong positive correlation between the
+$d_{in}$ and $\eta_0$ particles. Essentially the higher values offset
+each other, producing predictions which fit the true data. The reason
+this has more of an effect on $d_{in}$ is most likely a combination of
+the prior distributions and because $d_{in}$ is more sensitive to
+changes in $\eta_0$.
+
+It is worth noting that this co-identifiability issue is not unique to
+EKI; similar results were found when running SMC on the same model.
+
+### Two Unknown Parameters
+
+Based on the above findings, it was decided to instead look at
+$\theta = (\eta_0, \phi)$.
 
 ``` r
-mean(exp(eki_result$particles) + 0.16)
+# # EKI
+# eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
+#                                     true_unconstrained_params, prior_params, 
+#                                     general = F, adaptive = adaptive)
+# plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
+# plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
 ```
 
-    ## [1] 3.275867
+``` r
+# # GEKI
+# eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
+#                                     true_unconstrained_params, prior_params, 
+#                                     adaptive = adaptive)
+# plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
+# plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
+```
+
+### Misspecified Noise
+
+We again consider $\theta = (\eta_0, \phi)$, but under-specify the
+noise, relative to the true data. Since the noise of the true data is
+$\sigma = 0.5$ we choose instead $\sigma = 0.33$.
+
+``` r
+# true_params <- list(sigma = 1, phi = 0.25, eta0 = 0.11, d_in = 0.5)
+# true_unconstrained_params = unconstrain_malaria_params(true_params)
+```
+
+``` r
+# # EKI
+# eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
+#                                     true_unconstrained_params, prior_params, 
+#                                     general = T, adaptive = adaptive)
+# plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
+# plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
+```
+
+``` r
+# # GEKI
+# eki_result <- eki_malaria_known_d_in(num_particles, true_data, 
+#                                     true_unconstrained_params, prior_params, 
+#                                     adaptive = adaptive)
+# plot_eki_malaria_known_d_in(eki_result, true_params, prior_params)
+# plot_eki_posterior_predictive_known_d_in(eki_result, true_data, true_unconstrained_params)
+```
+
+### $d_{in}$ Only
+
+``` r
+# eki_result <- eki_malaria_d_in_only(num_particles, true_data, 
+#                                     true_unconstrained_params, general = F,
+#                                     prior_params, adaptive = adaptive)
+# plot_eki_malaria_d_in_only(eki_result, true_params)
+# plot_eki_posterior_predictive_d_in_only(eki_result, true_data, true_unconstrained_params)
+```

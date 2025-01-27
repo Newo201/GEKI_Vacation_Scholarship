@@ -25,16 +25,22 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 ### Models
 
 ```{r}
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal_known_var.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/eki_normal_known_mean.R')
+# MVN Normal
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/mvn_normal/eki_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/mvn_normal/eki_normal_known_var.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/mvn_normal/eki_normal_known_mean.R')
+# MVN Lognormal
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/mvn_normal/eki_lognormal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/mvn_normal/eki_lognormal_var_only.R')
 ```
 
 ### Sampling and PDFs
 
 ```{r}
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/pdfs/pdfs_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/pdfs/pdfs_lognormal.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/samples/samples_lognormal.R')
 ```
 
 ### Utils
@@ -73,6 +79,42 @@ generate_results <- function(num_particles, true_parameters) {
   chain.2 <- run.2$batch
   plot_mcmc_trace_plots(chain.1, chain.2, burnin = 500)
   plot_mcmc_histogram(chain.1, chain.2, true_parameters, prior_params, 
+                      burnin = 500)
+  
+}
+```
+
+```{r}
+generate_lognormal_results <- function(num_particles, true_parameters) {
+
+  # Model 2
+  eki_result_known_mean <- eki_lognormal_var_only(num_particles, true_data, 
+                                                 true_parameters,
+                                                 prior_params, adaptive = adaptive)
+  plot_eki_normal_known_mean(eki_result_known_mean, true_parameters, prior_params)
+  plot_eki_posterior_predictive(eki_result_known_mean, true_data, true_parameters,
+                                synthetic_lognormal_var_only)
+  
+  # Model 3
+  eki_result <- eki_lognormal(num_particles, true_data, true_parameters, 
+                           prior_params, adaptive = adaptive)
+  plot_eki_normal(eki_result, true_parameters, prior_params)
+  plot_eki_posterior_predictive(eki_result, true_data, true_parameters, 
+                                synthetic_lognormal)
+  
+  # Correlation between particles
+  alpha_particles <- eki_result$particles[, 1]
+  sigma2_particles <- exp(eki_result$particles[, 2])
+  
+  plot(alpha_particles, sigma2_particles)
+  
+  # MCMC Comparison for Model 3
+  run.1 <- lognormal_mcmc(true_data, true_parameters, prior_params)
+  chain.1 <- run.1$batch
+  run.2 <- lognormal_mcmc(true_data, true_parameters, prior_params)
+  chain.2 <- run.2$batch
+  plot_mcmc_trace_plots(chain.1, chain.2, burnin = 500)
+  plot_mcmc_histogram(chain.1, chain.2, true_parameters, prior_params,
                       burnin = 500)
   
 }
@@ -179,8 +221,27 @@ for (num_particles in particle_seq) {
 
 Indeed we find that this is the case.
 
+## Lognormal Model
+
+Considering that the normal model does poorly when looking at the noise parameter, we try an alternative model specification. Specifically, we look at the lognormal distribution. Unlike the normal distribution, the noise parameter effects the mean of the observations, so we should expect a signal with the data. I only look at changing the noise parameter in this case.
+
+```{r}
+sigma_seq <- seq(0.5, 2.5, length.out = 5)
+num_dimensions <- 50
+num_particles <- 400
+for (sigma in sigma_seq) {
+
+  true_parameters <- list(alpha = 2, sigma = sigma, x = rep(1, num_dimensions))
+  generate_lognormal_results(num_particles, true_parameters)
+}
+```
+
+## Summary Statistics
+
+In this section, we further summarize the data into two summary statistics $(\bar{y}, s_y)$ which are jointly sufficient for the parameters. This is because we expect a correlation between $\sigma^2$ and $s_y$ which should allow us to estimate the parameters. Because they are sufficient, the posterior is still exact in the linear Gaussian case.
+
+We can see that GEKI does well at estimating both parameters in this model when we use summary statistics. This is interesting considering it doesn't do well when using the full data.
+
 ## Conclusion
 
 To summarize, GEKI does well at estimating the mean parameter, but does poorly at estimating the noise parameter, remaining anchored to its prior distribution. By contrast, MCMC does well at estimating both parameters. One explanation for this phenomenon is that the GEKI algorithm relies on a cross covariance between the parameters and the data, but $\sigma^2$ and $y$ are theoretically uncorrelated. See `results_covariances.md` for further detail.
-
-While beyond the scope of this project, one would expect this phenomenon to be observed in similar parameters that affect variance and kurtosis only (e.g. the degrees of freedom in a t-distribution). Improvements to the algorithm which may be able to address this issue are also beyond the scope of this project.
