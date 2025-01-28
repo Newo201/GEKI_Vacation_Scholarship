@@ -73,31 +73,55 @@ Given $\lambda_{l-1}$ we want to choose $\lambda_l$ such that the $ESS = \rho N$
 ## Folder Structure
 
 src
+ 
  ┣ models
+ 
  ┃ ┣ g_and_k
+ 
  ┃ ┣ malaria_normal
+ 
  ┃ ┣ mvn_lognormal
+ 
  ┃ ┣ mvn_normal
+ 
  ┃ ┣ summary_normal
+ 
  ┃ ┗ eki_normal_summary.R
+ 
  ┣ pdfs
+ 
  ┣ samples
+ 
  ┣ utils
+ 
  ┣ eki.R
+ 
  ┣ eki_known_noise.R
+ 
  ┣ mcmc_lognormal.R
+ 
  ┗ mcmc_normal.R
 
  results
+ 
  ┣ archive
+ 
  ┣ plots_malaria.R
+ 
  ┣ plots_normal.R
+ 
  ┣ results_covariances.md
+ 
  ┣ results_covariances_malaria.Rmd
+ 
  ┣ results_covariances_normal.Rmd
+ 
  ┣ results_misspecified_noise.md
+ 
  ┣ results_misspecified_noise.Rmd
+ 
  ┣ results_normal.md
+ 
  ┗ results_normal.Rmd
 
 ## Active Branches
