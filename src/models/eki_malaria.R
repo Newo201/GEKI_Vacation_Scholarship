@@ -35,7 +35,7 @@ synthetic_malaria <- function(num_particles, particles, parameters) {
                         sigma = particles[particle, 4])
     
     # print(current_params)
-    sample <- likelihood_malaria(current_params, log_obs = F)
+    sample <- likelihood_malaria(current_params)
     # print(sample)
     likelihood_samples[particle, ] <- c(sample, sd(sample))
     

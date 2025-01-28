@@ -225,9 +225,11 @@ plot_eki_malaria_known_d_in <- function(eki_result, true_params, prior_params, k
   
   phi_particles <- plogis(eki_result$particles[, 1])
   eta0_particles <- plogis(eki_result$particles[, 2])
+  sigma_particles <- exp(eki_result$particles[, 3])
   
   plot_phi_particles(phi_particles, true_params, prior_params, kde = kde)
   plot_eta0_particles(eta0_particles, true_params, prior_params, kde = kde)
+  plot_sigma_particles(sigma_particles, true_params, prior_params, kde = kde)
   
 }
 
