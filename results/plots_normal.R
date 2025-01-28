@@ -13,8 +13,11 @@ plot_alpha_overlay <- function(alpha_eki_particles, alpha_mcmc_particles, true_p
   alpha_eki_density <- density(alpha_eki_particles) 
   alpha_mcmc_density <- density(alpha_mcmc_particles) 
   
+  max_density <- max(c(alpha_eki_density$y, alpha_mcmc_density$y))
+  
   plot(alpha_eki_density, main = 'EKI and MCMC', xlab = expression(alpha), ylab = 'Density',
-       cex.main = 2, cex.lab = 1.5, xlim = c(min(alpha_sequence), max(alpha_sequence)))
+       cex.main = 2, cex.lab = 1.5, xlim = c(min(alpha_sequence), max(alpha_sequence)), 
+       ylim = c(0, max_density))
   lines(alpha_mcmc_density, col = 'purple')
   lines(alpha_sequence, alpha_prior_density, col = 'blue')
   abline(v = true_alpha, col = 'red')
@@ -39,9 +42,9 @@ plot_sigma2_overlay <- function(sigma2_eki_particles, sigma2_mcmc_particles, tru
   sigma2_eki_density <- density(sigma2_eki_particles) 
   sigma2_mcmc_density <- density(sigma2_mcmc_particles) 
   
-  max_density <- max(c(sigma2_eki_density$x, sigma2_mcmc_density$x))
+  max_density <- max(c(sigma2_eki_density$y, sigma2_mcmc_density$y))
   
-  plot(sigma2_eki_density, main = 'EKI and MCMC', xlab = expression(sigma^2), ylab = 'Density',
+  plot(sigma2_eki_density, main = 'EKI and MCMC', xlab = expression(log(sigma^2)), ylab = 'Density',
        cex.main = 2, cex.lab = 1.5, xlim = c(min(sigma2_sequence), max(sigma2_sequence)),
        ylim = c(0, max_density))
   lines(sigma2_mcmc_density, col = 'purple')

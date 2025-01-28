@@ -163,37 +163,6 @@ For each variation of the model, I plot the EKI histograms of the particles agai
 In this experiment I keep $\alpha$ and $\sigma^2$ fixed at 2 and 4 respectively and let $x$ be a vector of 1s corresponding to 10, 50 and 100 dimensions. I keep the number of particles fixed at 400. The purpose of this is to see how the EKI algorithm performs when the number of dimensions increases.
 
 ```{r}
-true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, 50))
-
-true_data <- likelihood_normal(true_parameters)
-# Model 3
-eki_result <- eki_normal(num_particles, true_data, true_parameters, 
-                         prior_params, adaptive = adaptive)
-alpha_eki_particles <- eki_result$particles[, 1]
-
-# MCMC Comparison for Model 3
-run.1 <- normal_mcmc(true_data, true_parameters, prior_params)
-chain.1 <- run.1$batch
-run.2 <- normal_mcmc(true_data, true_parameters, prior_params)
-chain.2 <- run.2$batch
-# 
-# iterations <- 10000
-# burnin <- 500
-# 
-# chain.1.burnin <- chain.1[(burnin + 1): iterations, ]
-# chain.2.burnin <- chain.2[(burnin + 1): iterations, ]
-# combined_chains <- rbind(chain.1.burnin, chain.2.burnin)
-# 
-# alpha_mcmc_particles <- combined_chains[, 1]
-```
-
-```{r}
-plot_overlay(eki_result, chain.1, chain.2, true_parameters, prior_params)
-# plot_alpha_overlay(alpha_eki_particles, alpha_mcmc_particles, true_parameters, 
-#                    prior_params)
-```
-
-```{r}
 num_dimensions <- c(10, 50, 100)
 num_particles <- 400
 for (dimension in num_dimensions) {
@@ -225,7 +194,7 @@ All EKI models and MCMC do well at estimating the mean parameter. There is no ch
 In this experiment I change the true value of $\sigma$ from $2$ to $10$ in increments of $2$. The purpose of this is to determine whether the EKI algorithm can detect values of $\sigma$ which are further away from the prior. Additionally, we would expect the $\alpha$ particles to become more diffuse as the true value of $\sigma$ increases.
 
 ```{r}
-sigma_seq <- seq(8, 10, length.out = 5)
+sigma_seq <- seq(2, 10, length.out = 2)
 num_dimensions <- 50
 num_particles <- 400
 for (sigma in sigma_seq) {
@@ -256,6 +225,11 @@ Indeed we find that this is the case.
 ## Lognormal Model
 
 Considering that the normal model does poorly when looking at the noise parameter, we try an alternative model specification. Specifically, we look at the lognormal distribution. Unlike the normal distribution, the noise parameter effects the mean of the observations, so we should expect a signal with the data. I only look at changing the noise parameter in this case.
+
+```{r}
+prior_params <- list(alpha.mean = 0, alpha.sd = 1, 
+                     sigma2.mean = -0.5, sigma2.sd = 1)
+```
 
 ```{r}
 sigma_seq <- seq(0.5, 2.5, length.out = 5)
