@@ -25,4 +25,5 @@ lognormal_mcmc <- function(true_data, true_params, prior_params, iterations = 1e
   # 3. Call on MCMC function
   chain <- metrop(lupost_lognormal_mcmc, theta.init, iterations)
   return(chain)
-  
+
+}
