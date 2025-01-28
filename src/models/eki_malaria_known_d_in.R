@@ -1,30 +1,30 @@
-densities_malaria_known_d_in <- function(true_data, num_particles, particles, parameters) {
-  
-  likelihood_densities <- rep(0, num_particles)
-  
-  # For each particle, draw one observation from the likelihood
-  # ToDo: vectorise this operation
-  for (particle in 1:num_particles) {
-    # These parameters are in unconstrained form
-    current_params <- list(d_in = parameters$d_in,
-                           phi = particles[particle, 1],
-                           eta0 = particles[particle, 2],
-                           sigma = parameters$sigma)
-    current_params <- constrain_malaria_params(current_params)
-    # TODO: currently I am solving the diff equation twice: here and in sampling function
-    # Need to figure out how to optimise the workflow to avoid this
-    current_mean <- log(diff(likelihood_malaria_mean(current_params)))
-    likelihood_densities[particle] <- loglike_malaria(true_data, current_mean, current_params)
-    # print(likelihood_densities[particle])
-  }
-  
-  return(likelihood_densities)
-  
-}
+# densities_malaria_known_d_in <- function(true_data, num_particles, particles, parameters) {
+#   
+#   likelihood_densities <- rep(0, num_particles)
+#   
+#   # For each particle, draw one observation from the likelihood
+#   # ToDo: vectorise this operation
+#   for (particle in 1:num_particles) {
+#     # These parameters are in unconstrained form
+#     current_params <- list(d_in = parameters$d_in,
+#                            phi = particles[particle, 1],
+#                            eta0 = particles[particle, 2],
+#                            sigma = parameters$sigma)
+#     current_params <- constrain_malaria_params(current_params)
+#     # TODO: currently I am solving the diff equation twice: here and in sampling function
+#     # Need to figure out how to optimise the workflow to avoid this
+#     current_mean <- log(diff(likelihood_malaria_mean(current_params)))
+#     likelihood_densities[particle] <- loglike_malaria(true_data, current_mean, current_params)
+#     # print(likelihood_densities[particle])
+#   }
+#   
+#   return(likelihood_densities)
+#   
+# }
 
 synthetic_malaria_known_d_in <- function(num_particles, particles, parameters, mean = F) {
   
-  likelihood_samples <- matrix(nrow = num_particles, ncol = 129)
+  likelihood_samples <- matrix(nrow = num_particles, ncol = 130)
   
   # For each particle, draw one observation from the likelihood
   # ToDo: vectorise this operation
@@ -46,7 +46,7 @@ synthetic_malaria_known_d_in <- function(num_particles, particles, parameters, m
     }
     
     # print(sample)
-    likelihood_samples[particle, ] <- sample
+    likelihood_samples[particle, ] <- c(sample, sd(sample))
     
   }
   
@@ -73,11 +73,11 @@ eki_malaria_known_d_in <- function(num_particles, true_data, true_params, prior_
   
   # True parameters are specified noise
   if (adaptive && general) {
-    return(eki_adaptive(num_particles, initial_particles, true_data, true_params, synthetic_malaria_known_d_in, densities_malaria_known_d_in))
+    return(eki_adaptive(num_particles, initial_particles, true_data, true_params, synthetic_malaria_known_d_in))
   }
   else if (adaptive) {
     return(eki_adaptive_known_noise(num_particles, initial_particles, true_data, true_params, 
-                                    synthetic_malaria_known_d_in, densities_malaria_known_d_in))
+                                    synthetic_malaria_known_d_in))
   } 
   else if (general) {
     return(eki(num_particles, initial_particles, true_data, true_params, synthetic_malaria_known_d_in))
