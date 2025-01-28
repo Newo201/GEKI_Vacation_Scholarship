@@ -28,9 +28,9 @@ The purpose of this research is to implement the GEKI algorithm (Duffield and Si
 
 **Inputs:** a sequence of inverse temperatures $\{\lambda_L\}^L_{l=0}$, the prior distributions for each of the parameters, and a single draw from the likelihood using the true parameters
 
--   The observation may be mutlidimensional (i.e. a vector, or a realization of a time series) but we cannot have more than one observation. Mathematically the dimensions of $y$ are $d_y \times 1$ (a column vector)
+The observation may be mutlidimensional (i.e. a vector, or a realization of a time series) but we cannot have more than one observation. Mathematically the dimensions of $y$ are $d_y \times 1$ (a column vector)
 
--   In simulated settings we know the true parameters, but in real world settings the true parameters are unknown and we are only given the observation
+In simulated settings we know the true parameters, but in real world settings the true parameters are unknown and we are only given the observation
 
 1.  Sample a pre-determined number of particles $N$ from the prior distribution.
 
@@ -73,63 +73,71 @@ Given $\lambda_{l-1}$ we want to choose $\lambda_l$ such that the $ESS = \rho N$
 ## Folder Structure
 
 src
- 
- ┣ models
- 
- ┃ ┣ g_and_k
- 
- ┃ ┣ malaria_normal
- 
- ┃ ┣ mvn_lognormal
- 
- ┃ ┣ mvn_normal
- 
- ┃ ┣ summary_normal
- 
- ┃ ┗ eki_normal_summary.R
- 
- ┣ pdfs
- 
- ┣ samples
- 
- ┣ utils
- 
- ┣ eki.R
- 
- ┣ eki_known_noise.R
- 
- ┣ mcmc_lognormal.R
- 
- ┗ mcmc_normal.R
 
- results
- 
- ┣ archive
- 
- ┣ plots_malaria.R
- 
- ┣ plots_normal.R
- 
- ┣ results_covariances.md
- 
- ┣ results_covariances_malaria.Rmd
- 
- ┣ results_covariances_normal.Rmd
- 
- ┣ results_misspecified_noise.md
- 
- ┣ results_misspecified_noise.Rmd
- 
- ┣ results_normal.md
- 
- ┗ results_normal.Rmd
+┣ models
+
+┃ ┣ g_and_k
+
+┃ ┣ malaria_normal
+
+┃ ┣ mvn_lognormal
+
+┃ ┣ mvn_normal
+
+┃ ┣ summary_normal
+
+┃ ┗ eki_normal_summary.R
+
+┣ pdfs
+
+┣ samples
+
+┣ utils
+
+┣ eki.R
+
+┣ eki_known_noise.R
+
+┣ mcmc_lognormal.R
+
+┗ mcmc_normal.R
+
+results
+
+┣ archive
+
+┣ plots_malaria.R
+
+┣ plots_normal.R
+
+┣ results_covariances.md
+
+┣ results_covariances_malaria.Rmd
+
+┣ results_covariances_normal.Rmd
+
+┣ results_misspecified_noise.md
+
+┣ results_misspecified_noise.Rmd
+
+┣ results_normal.md
+
+┗ results_normal.Rmd
 
 ## Active Branches
+
+Currently there are two active branches:
+
+-   **Summary Stats:** for the multivariate normal model, the data has been replaced with sufficient summary statistics $(\bar{y}, s_y)$.
+
+-   **Augmented Stats:** for both the multivariate normal model and the malaria transmission model, the data has been augmented with its sample standard deviation
+
+The reason that these have not been merged is because they require us to use pseudo-densities rather than densities. Specifically, in these cases we need to use $w_l \propto exp(-\frac{1}{2}(y-y_l^{(i)})^T(C_{l-1}^{y|x})^{-1}(y-y_l^{(i)}))$ because we do not have an analytical expression for the density.
 
 ## References
 
 Samuel Duffield, Sumeetpal S. Singh, Ensemble Kalman inversion for general likelihoods, Statistics & Probability Letters, Volume 187, 2022, 109523, ISSN 0167-7152, <https://doi.org/10.1016/j.spl.2022.109523>.
 
-Alahmadi Amani A., Flegg Jennifer A., Cochrane Davis G., Drovandi Christopher C. and Keith Jonathan M. 2020A comparison of approximate versus exact techniques for Bayesian parameter inference in nonlinear ordinary differential equation modelsR. Soc. Open Sci.**7**191315. <https://doi.org/10.1098/rsos.191315>
+Alahmadi Amani A., Flegg Jennifer A., Cochrane Davis G., Drovandi Christopher C. and Keith Jonathan M. 2020A comparison of approximate versus exact techniques for Bayesian parameter inference in nonlinear ordinary differential equation modelsR. Soc. Open Sci.7191315. <https://doi.org/10.1098/rsos.191315>
 
 Lisa J White, Richard J Maude, Wirichada Pongtavornpinyo, Sompob Saralamba, Ricardo Aguas, Thierry Van Effelterre, Nicholas Pj Day, and Nicholas J White. The role of simple mathematical models in malaria elimination strategy design. Malaria Journal, 8(1):212, December 2009. ISSN 1475-2875. <https://doi.org/10.1186/1475-2875-8-212>.
