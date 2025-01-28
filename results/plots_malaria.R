@@ -10,7 +10,8 @@ plot_d_in_particles <- function(d_in_particles, true_params, prior_params, kde =
   
   if (kde) {
     d_in_post_density <- density(d_in_particles)
-    plot(d_in_post_density)
+    plot(d_in_post_density, xlab = expression(d[inf]), ylab = 'Density', main = 'EKI Malaria',
+         cex.main = 2, cex.lab = 1.5)
   } else {
     hist(d_in_particles, breaks = d_in_seq, freq = F, xlab = expression(d[inf]))
   }
@@ -21,7 +22,7 @@ plot_d_in_particles <- function(d_in_particles, true_params, prior_params, kde =
   legend("topleft", 
          legend = c("Estimated Posterior", "Prior", "True Value"),
          col = c("black", "blue", "red"),
-         pch = 16)
+         lty = 1)
   
 }
 
@@ -32,7 +33,8 @@ plot_phi_particles <- function(phi_particles, true_params, prior_params, kde = T
   
   if (kde) {
     phi_post_density <- density(phi_particles)
-    plot(phi_post_density)
+    plot(phi_post_density, xlab = expression(phi), ylab = 'Density', main = 'EKI Malaria',
+         cex.main = 2, cex.lab = 1.5)
   } else {
     hist(phi_particles, breaks = phi_seq, freq = F, xlab = expression(phi))
   }
@@ -43,7 +45,7 @@ plot_phi_particles <- function(phi_particles, true_params, prior_params, kde = T
   legend("topleft", 
          legend = c("Estimated Posterior", "Prior", "True Value"),
          col = c("black", "blue", "red"),
-         pch = 16)
+         lty = 1)
 }
 
 plot_eta0_particles <- function(eta0_particles, true_params, prior_params, kde = T) {
@@ -54,7 +56,8 @@ plot_eta0_particles <- function(eta0_particles, true_params, prior_params, kde =
   
   if (kde) {
     eta0_post_density <- density(eta0_particles)
-    plot(eta0_post_density)
+    plot(eta0_post_density, xlab = expression(eta[0]), ylab = 'Density', main = 'EKI Malaria',
+         cex.main = 2, cex.lab = 1.5)
   } else {
     hist(eta0_particles, breaks = eta0_seq, freq = F, xlab = expression(eta[0]))
   }
@@ -65,7 +68,7 @@ plot_eta0_particles <- function(eta0_particles, true_params, prior_params, kde =
   legend("topleft", 
          legend = c("Estimated Posterior", "Prior", "True Value"),
          col = c("black", "blue", "red"),
-         pch = 16)
+         lty = 1)
 }
 
 plot_sigma_particles <- function(sigma_particles, true_params, prior_params, kde = kde) {
@@ -76,7 +79,8 @@ plot_sigma_particles <- function(sigma_particles, true_params, prior_params, kde
   
   if (kde) {
     sigma_post_density <- density(sigma_particles)
-    plot(sigma_post_density)
+    plot(sigma_post_density, xlab = expression(sigma), ylab = 'Density', main = 'EKI Malaria',
+         cex.main = 2, cex.lab = 1.5)
   } else {
     hist(sigma_particles, freq = F, xlab = expression(sigma))
   }
@@ -87,7 +91,7 @@ plot_sigma_particles <- function(sigma_particles, true_params, prior_params, kde
   legend("topleft", 
          legend = c("Estimated Posterior", "Prior", "True Value"),
          col = c("black", "blue", "red"),
-         pch = 16)
+         lty = 1)
   
 }
 
@@ -100,7 +104,7 @@ plot_eki_posterior_predictive <- function(eki_result, true_data, true_params) {
   num_particles <- dim(final_particles)[1]
   
   # Generate samples using the latest particles
-  likelihood_prediction <- synthetic_malaria_known_var(num_particles, final_particles, true_params)
+  likelihood_prediction <- synthetic_malaria(num_particles, final_particles, true_params)
   
   time_seq <- seq(1/12, 10.75, by = 1/12)
   

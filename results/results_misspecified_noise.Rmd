@@ -57,37 +57,9 @@ adaptive = TRUE
 
 ## Introduction
 
-When looking at the multivariate normal model, it was found that GEKI does not do a good job at estimating the noise parameter. Following on from those results, the next step of the project was to investigate whether GEKI outperforms EKI in the cases where the noise parameter is known, but misspecified. Specifically, it is chosen to be too small. In the context of EKI we would expect the concentration of the particles to be too narrow and potentially away from the true parameter when we diverge from the linear Gaussian setting.
+### Four Unknown Parameters
 
-## Multivariate Normal Model
-
-In the linear Gaussian setting, we have an analytically tractable posterior. If we misspecify the noise to be less than the actual noise, the particles will remain asymptotically unbiased, but the variance will be too small. This becomes a bigger problem in settings where EKI is biased, because we may not cover the true parameters.
-
-```{r}
-num_particles <- 1000
-prior_params <- list(alpha.mean = 0, alpha.sd = 5, 
-                     sigma2.mean = 2, sigma2.sd = 1)
-
-true_parameters <- list(alpha = 2, sigma = 2, x = rep(1, 50))
-true_data = likelihood_normal(true_parameters)
-misspecified_parameters <- list(alpha = 2, sigma = 0.5, x = rep(1, 50))
-
-eki_result <- eki_normal_known_var(num_particles, true_data, 
-                                   misspecified_parameters, 
-                                   prior_params, general = F, 
-                                   adaptive = adaptive)
-plot_eki_normal_known_var(eki_result, true_data, true_parameters, prior_params)
-
-eki_result <- eki_normal_known_var(num_particles, true_data, 
-                                   misspecified_parameters, 
-                                   prior_params, general = T,
-                                   adaptive = adaptive)
-plot_eki_normal_known_var(eki_result, true_data, true_parameters, prior_params)
-```
-
-Notably, this happens in both EKI and GEKI because GEKI was designed to remain asymptotically unbiased in the linear Gaussian case. The question remains as to whether this also occurs in other settings.
-
-## Malaria Transmission Model
+Initially, we tried looking at $\theta = (d_{in}, \phi, \eta_0, \sigma^2)$ as our unknown parameters.
 
 ```{r}
 # data_path = "C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/data/Malariah_data.rds"
@@ -111,11 +83,8 @@ eki_result <- eki_malaria(num_particles, true_data,
                           true_unconstrained_params, prior_params, 
                           adaptive = adaptive)
 plot_eki_malaria(eki_result, true_params, prior_params)
+plot_eki_posterior_predictive(eki_result, true_data, true_unconstrained_params)
 ```
-
-### Three Unknown Parameters
-
-Initially, we tried looking at $\theta = (d_{in}, \phi, \eta_0)$ as our unknown parameters.
 
 ```{r}
 # EKI

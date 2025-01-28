@@ -81,7 +81,7 @@ generate_results <- function(num_particles, true_parameters) {
 
 ## The Model
 
-We assume that we have access to a single observation from a multivariate normal distribution $y \sim N(\alpha x, \sigma^2I)$ where $\alpha$ is a scalar and $x$ is a known vector. We further summarize this into two summary statistics $(\bar{y}, s_y)$ which are jointly sufficient for the parameters.
+We assume that we have access to a single observation from a multivariate normal distribution $y \sim N(\alpha x, \sigma^2I)$ where $\alpha$ is a scalar and $x$ is a known vector. We further augment this data with the sample standard deviation $s_y$.
 
 I look at three variations of this model
 
