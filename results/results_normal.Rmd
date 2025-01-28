@@ -20,6 +20,7 @@ pacman::p_load(pacman, purrr, mvtnorm, mcmc, MASS, glue)
 ```{r}
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/eki.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/mcmc_normal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/mcmc_lognormal.R')
 ```
 
 ### Models
@@ -30,8 +31,8 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/mvn_normal/eki_normal_known_var.R')
 source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/mvn_normal/eki_normal_known_mean.R')
 # MVN Lognormal
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/mvn_normal/eki_lognormal.R')
-source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/mvn_normal/eki_lognormal_var_only.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/mvn_lognormal/eki_lognormal.R')
+source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/src/models/mvn_lognormal/eki_lognormal_var_only.R')
 ```
 
 ### Sampling and PDFs
@@ -81,26 +82,26 @@ generate_results <- function(num_particles, true_parameters) {
   plot_mcmc_histogram(chain.1, chain.2, true_parameters, prior_params, 
                       burnin = 500)
   
+  plot_overlay(eki_result, chain.1, chain.2, true_parameters, prior_params)
+  
 }
 ```
 
 ```{r}
-generate_lognormal_results <- function(num_particles, true_parameters) {
+generate_lognormal_results <- function(num_particles, true_parameters, prior_params) {
+  
+  true_data <- likelihood_lognormal(true_parameters)
 
   # Model 2
   eki_result_known_mean <- eki_lognormal_var_only(num_particles, true_data, 
                                                  true_parameters,
                                                  prior_params, adaptive = adaptive)
   plot_eki_normal_known_mean(eki_result_known_mean, true_parameters, prior_params)
-  plot_eki_posterior_predictive(eki_result_known_mean, true_data, true_parameters,
-                                synthetic_lognormal_var_only)
   
   # Model 3
   eki_result <- eki_lognormal(num_particles, true_data, true_parameters, 
                            prior_params, adaptive = adaptive)
   plot_eki_normal(eki_result, true_parameters, prior_params)
-  plot_eki_posterior_predictive(eki_result, true_data, true_parameters, 
-                                synthetic_lognormal)
   
   # Correlation between particles
   alpha_particles <- eki_result$particles[, 1]
@@ -150,7 +151,7 @@ prior_params <- list(alpha.mean = 0, alpha.sd = 5,
 ### Adaptive Tempering
 
 ```{r}
-adaptive = FALSE
+adaptive = TRUE
 ```
 
 ### Output
@@ -193,7 +194,7 @@ All EKI models and MCMC do well at estimating the mean parameter. There is no ch
 In this experiment I change the true value of $\sigma$ from $2$ to $10$ in increments of $2$. The purpose of this is to determine whether the EKI algorithm can detect values of $\sigma$ which are further away from the prior. Additionally, we would expect the $\alpha$ particles to become more diffuse as the true value of $\sigma$ increases.
 
 ```{r}
-sigma_seq <- seq(8, 10, length.out = 5)
+sigma_seq <- seq(2, 10, length.out = 2)
 num_dimensions <- 50
 num_particles <- 400
 for (sigma in sigma_seq) {
@@ -226,13 +227,18 @@ Indeed we find that this is the case.
 Considering that the normal model does poorly when looking at the noise parameter, we try an alternative model specification. Specifically, we look at the lognormal distribution. Unlike the normal distribution, the noise parameter effects the mean of the observations, so we should expect a signal with the data. I only look at changing the noise parameter in this case.
 
 ```{r}
+prior_params <- list(alpha.mean = 0, alpha.sd = 1, 
+                     sigma2.mean = -0.5, sigma2.sd = 1)
+```
+
+```{r}
 sigma_seq <- seq(0.5, 2.5, length.out = 5)
 num_dimensions <- 50
 num_particles <- 400
 for (sigma in sigma_seq) {
 
   true_parameters <- list(alpha = 2, sigma = sigma, x = rep(1, num_dimensions))
-  generate_lognormal_results(num_particles, true_parameters)
+  generate_lognormal_results(num_particles, true_parameters, prior_params)
 }
 ```
 
