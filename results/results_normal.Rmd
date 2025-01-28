@@ -49,7 +49,7 @@ source('C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarsh
 generate_results <- function(num_particles, true_parameters) {
   
   true_sample <- likelihood_normal(true_parameters)
-  true_data <- c(mean(true_sample), sd(true_sample))
+  true_data <- c(true_sample, sd(true_sample))
   
   # Model 1
   eki_result_known_var <- eki_normal_known_var(num_particles, true_data, true_parameters, 
@@ -163,11 +163,7 @@ num_particles <- 400
 for (sigma in sigma_seq) {
 
   true_parameters <- list(alpha = 2, sigma = sigma, x = rep(1, num_dimensions))
-  true_sample <- likelihood_normal(true_parameters)
-  true_data <- c(mean(true_sample), sd(true_sample))
-  eki_result <- eki_normal(num_particles, true_data, true_parameters, 
-                         prior_params, adaptive = adaptive)
-  plot_eki_normal(eki_result, true_parameters, prior_params)
+  generate_results(num_particles, true_parameters)
 }
 ```
 

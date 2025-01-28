@@ -21,7 +21,7 @@ synthetic_normal_known_mean <- function(num_particles, particles, parameters) {
   
   x.true <- parameters$x
   alpha.true <- parameters$alpha
-  d_y <- 2
+  d_y <- length(x.true) + 1
   
   likelihood_samples <- matrix(nrow = num_particles, ncol = d_y)
   
@@ -32,7 +32,7 @@ synthetic_normal_known_mean <- function(num_particles, particles, parameters) {
     # likelihood_samples[particle, ] <- likelihood_normal(current_params)
     sample <- likelihood_normal(current_params)
     # Summarise into sufficient statistics
-    likelihood_samples[particle, ] <- c(mean(sample), sd(sample))
+    likelihood_samples[particle, ] <- c(sample, sd(sample))
   }
   
   return(likelihood_samples)
