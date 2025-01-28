@@ -70,4 +70,42 @@ The idea is to use pseudo weights $w_l^{(i)} \propto exp(-\frac{1}{2}(\lambda_l-
 
 Given $\lambda_{l-1}$ we want to choose $\lambda_l$ such that the $ESS = \rho N$ where $\rho$ is a hyper-parameter (set to $\frac{1}{2}$). We can find this using any standard root finding algorithm; I use the `uniroot` function in R. In cases where the $\lambda_l > 1$ we set $\lambda_l = 1$ and make this our final iteration.
 
+## Folder Structure
+
+src
+ ┣ models
+ ┃ ┣ g_and_k
+ ┃ ┣ malaria_normal
+ ┃ ┣ mvn_lognormal
+ ┃ ┣ mvn_normal
+ ┃ ┣ summary_normal
+ ┃ ┗ eki_normal_summary.R
+ ┣ pdfs
+ ┣ samples
+ ┣ utils
+ ┣ eki.R
+ ┣ eki_known_noise.R
+ ┣ mcmc_lognormal.R
+ ┗ mcmc_normal.R
+
+ results
+ ┣ archive
+ ┣ plots_malaria.R
+ ┣ plots_normal.R
+ ┣ results_covariances.md
+ ┣ results_covariances_malaria.Rmd
+ ┣ results_covariances_normal.Rmd
+ ┣ results_misspecified_noise.md
+ ┣ results_misspecified_noise.Rmd
+ ┣ results_normal.md
+ ┗ results_normal.Rmd
+
+## Active Branches
+
 ## References
+
+Samuel Duffield, Sumeetpal S. Singh, Ensemble Kalman inversion for general likelihoods, Statistics & Probability Letters, Volume 187, 2022, 109523, ISSN 0167-7152, <https://doi.org/10.1016/j.spl.2022.109523>.
+
+Alahmadi Amani A., Flegg Jennifer A., Cochrane Davis G., Drovandi Christopher C. and Keith Jonathan M. 2020A comparison of approximate versus exact techniques for Bayesian parameter inference in nonlinear ordinary differential equation modelsR. Soc. Open Sci.**7**191315. <https://doi.org/10.1098/rsos.191315>
+
+Lisa J White, Richard J Maude, Wirichada Pongtavornpinyo, Sompob Saralamba, Ricardo Aguas, Thierry Van Effelterre, Nicholas Pj Day, and Nicholas J White. The role of simple mathematical models in malaria elimination strategy design. Malaria Journal, 8(1):212, December 2009. ISSN 1475-2875. <https://doi.org/10.1186/1475-2875-8-212>.
