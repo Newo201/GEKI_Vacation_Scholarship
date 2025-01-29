@@ -5,7 +5,7 @@ date: "2025-01-15"
 output: github_document
 ---
 
-# Results for Misspecified Noise
+# Results for Malaria Model
 
 ## Imports
 
@@ -59,7 +59,8 @@ adaptive = TRUE
 
 ```{r}
 # data_path = "C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/data/Malariah_data.rds"
-# true_data = log(readRDS(data_path))
+# true_sample = log(readRDS(data_path))
+# true_data = c(true_sample, sd(true_sample))
 
 num_particles <- 400
 
