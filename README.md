@@ -134,6 +134,14 @@ Currently there are two active branches:
 
 The reason that these have not been merged is because they require us to use pseudo-densities rather than densities. Specifically, in these cases we need to use $w_l \propto exp(-\frac{1}{2}(y-y_l^{(i)})^T(C_{l-1}^{y|x})^{-1}(y-y_l^{(i)}))$ because we do not have an analytical expression for the density.
 
+## Suggestions For Further Work
+
+One idea is to integrate an EKI step within an ABC sampler. The basic ABC involves sampling parameters from their prior distribution, simulating synthetic data and only retaining samples close enough to the true data. ABC tends to suffer from high rejection rates (particularly in higher dimensions), which makes the algorithm computationally inefficient. If we can use an EKI step to move the particles before applying the rejection step this may lead to less likelihood evaluations for a given number of accepted samples.
+
+Since data augmentation proved to be effective at estimating the noise parameter, one could investigate this further by looking at more complicated noise models. For example, one could look at a Gaussian process.
+
+Finally, a consideration of how we could modify the EKI and GEKI algorithms for parameter estimation in multivariate time series.
+
 ## References
 
 Samuel Duffield, Sumeetpal S. Singh, Ensemble Kalman inversion for general likelihoods, Statistics & Probability Letters, Volume 187, 2022, 109523, ISSN 0167-7152, <https://doi.org/10.1016/j.spl.2022.109523>.
