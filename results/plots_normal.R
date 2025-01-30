@@ -17,15 +17,15 @@ plot_alpha_overlay <- function(alpha_eki_particles, alpha_mcmc_particles, true_p
   
   plot(alpha_eki_density, main = 'EKI and MCMC', xlab = expression(alpha), ylab = 'Density',
        cex.main = 2, cex.lab = 1.5, xlim = c(min(alpha_sequence), max(alpha_sequence)), 
-       ylim = c(0, max_density))
-  lines(alpha_mcmc_density, col = 'purple')
-  lines(alpha_sequence, alpha_prior_density, col = 'blue')
-  abline(v = true_alpha, col = 'red')
+       ylim = c(0, max_density), lwd = 4)
+  lines(alpha_mcmc_density, col = 'purple', lwd = 4)
+  lines(alpha_sequence, alpha_prior_density, col = 'blue', lwd = 3)
+  abline(v = true_alpha, col = 'red', lwd = 3)
   
   legend("topleft", 
          legend = c("EKI Posterior", "MCMC Posterior", "Prior", "True Value"),
          col = c("black", "purple", "blue", "red"),
-         lty = 1, cex = 0.8)
+         lty = 1, lwd = 3, cex = 1.25)
   
 }
 
@@ -46,15 +46,15 @@ plot_sigma2_overlay <- function(sigma2_eki_particles, sigma2_mcmc_particles, tru
   
   plot(sigma2_eki_density, main = 'EKI and MCMC', xlab = expression(log(sigma^2)), ylab = 'Density',
        cex.main = 2, cex.lab = 1.5, xlim = c(min(sigma2_sequence), max(sigma2_sequence)),
-       ylim = c(0, max_density))
-  lines(sigma2_mcmc_density, col = 'purple')
-  lines(sigma2_sequence, sigma2_prior_density, col = 'blue')
-  abline(v = true_sigma2, col = 'red')
+       ylim = c(0, max_density), lwd = 4)
+  lines(sigma2_mcmc_density, col = 'purple', lwd = 4)
+  lines(sigma2_sequence, sigma2_prior_density, col = 'blue', lwd = 3)
+  abline(v = true_sigma2, col = 'red', lwd = 3)
   
   legend("topleft", 
          legend = c("EKI Posterior", "MCMC Posterior", "Prior", "True Value"),
          col = c("black", "purple", "blue", "red"),
-         lty = 1, cex = 0.8)
+         lty = 1, lwd = 3, cex = 1.25)
   
 }
 
@@ -99,19 +99,20 @@ plot_sigma2_particles <- function(sigma2_particles, true_params, prior_params, a
   if (kde) {
     sigma2_post_density <- density(sigma2_particles)
     plot(sigma2_post_density, main = algorithm, xlab = expression(log(sigma^2)), ylab = 'Density',
-         cex.main = 2, cex.lab = 1.5, xlim = c(min(sigma2_sequence), max(sigma2_sequence)))
+         cex.main = 2, cex.lab = 1.5, xlim = c(min(sigma2_sequence), max(sigma2_sequence)), 
+         lwd = 4)
   } else {
     hist(sigma2_particles, freq = F, main = algorithm, 
          xlab = expression(log(sigma^2)), ylab = 'Density',
          cex.main = 2, cex.lab = 1.5)
   }
 
-  lines(sigma2_sequence, sigma2_prior_density, col = 'blue')
-  abline(v = true_sigma2, col = 'red')
+  lines(sigma2_sequence, sigma2_prior_density, col = 'blue', lwd = 3)
+  abline(v = true_sigma2, col = 'red', lwd = 3)
   legend("topleft", 
          legend = c("Estimated Posterior", "Prior", "True Value"),
          col = c("black", "blue", "red"),
-         lty = 1, cex = 0.8)
+         lty = 1, lwd = 3)
   
 }
 
