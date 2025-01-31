@@ -80,18 +80,18 @@ plot_sigma_particles <- function(sigma_particles, true_params, prior_params, kde
   if (kde) {
     sigma_post_density <- density(sigma_particles)
     plot(sigma_post_density, xlab = expression(sigma), ylab = 'Density', main = 'EKI Malaria',
-         cex.main = 2, cex.lab = 1.5)
+         cex.main = 2, cex.lab = 1.5, lwd = 4)
   } else {
     hist(sigma_particles, freq = F, xlab = expression(sigma))
   }
   
-  lines(sigma_seq, sigma_prior, col = 'blue')
-  abline(v = true_params$sigma, col = 'red')
+  lines(sigma_seq, sigma_prior, col = 'blue', lwd = 4)
+  abline(v = true_params$sigma, col = 'red', lwd = 3)
   
   legend("topleft", 
          legend = c("Estimated Posterior", "Prior", "True Value"),
          col = c("black", "blue", "red"),
-         lty = 1)
+         lty = 1, lwd = 3)
   
 }
 

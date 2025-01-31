@@ -1,5 +1,5 @@
 ---
-title: "Generalised Ensemble Kalman Inversion - Misspecified Noise"
+title: "Generalised Ensemble Kalman Inversion - Malaria Model"
 author: "Owen Jackson"
 date: "2025-01-15"
 output: github_document

@@ -13,19 +13,19 @@ plot_alpha_particles <- function(alpha_particles, true_params, prior_params, alg
   if (kde) {
     alpha_post_density <- density(alpha_particles)
     plot(alpha_post_density, main = algorithm, xlab = expression(alpha), ylab = 'Density',
-         cex.main = 2, cex.lab = 1.5, xlim = c(min(alpha_sequence), max(alpha_sequence)))
+         cex.main = 2, cex.lab = 1.5, xlim = c(min(alpha_sequence), max(alpha_sequence)), lwd = 4)
   } else {
     hist(alpha_particles, freq = F, main = algorithm, xlab = expression(alpha), ylab = 'Density',
          cex.main = 2, cex.lab = 1.5)
   }
   
-  lines(alpha_sequence, alpha_prior_density, col = 'blue')
-  abline(v = true_params$alpha, col = 'red')
+  lines(alpha_sequence, alpha_prior_density, col = 'blue', lwd = 4)
+  abline(v = true_params$alpha, col = 'red', lwd = 3)
   
   legend("topleft", 
          legend = c("Estimated Posterior", "Prior", "True Value"),
          col = c("black", "blue", "red"),
-         lty = 1, cex = 0.8)
+         lty = 1, lwd = 3)
   
 }
 
@@ -41,19 +41,19 @@ plot_sigma2_particles <- function(sigma2_particles, true_params, prior_params, a
   if (kde) {
     sigma2_post_density <- density(sigma2_particles)
     plot(sigma2_post_density, main = algorithm, xlab = expression(log(sigma^2)), ylab = 'Density',
-         cex.main = 2, cex.lab = 1.5, xlim = c(min(sigma2_sequence), max(sigma2_sequence)))
+         cex.main = 2, cex.lab = 1.5, xlim = c(min(sigma2_sequence), max(sigma2_sequence)), lwd = 4)
   } else {
     hist(sigma2_particles, freq = F, main = algorithm, 
          xlab = expression(log(sigma^2)), ylab = 'Density',
          cex.main = 2, cex.lab = 1.5)
   }
 
-  lines(sigma2_sequence, sigma2_prior_density, col = 'blue')
-  abline(v = true_sigma2, col = 'red')
+  lines(sigma2_sequence, sigma2_prior_density, col = 'blue', lwd = 4)
+  abline(v = true_sigma2, col = 'red', lwd = 3)
   legend("topleft", 
          legend = c("Estimated Posterior", "Prior", "True Value"),
          col = c("black", "blue", "red"),
-         lty = 1, cex = 0.8)
+         lty = 1, lwd = 3)
   
 }
 

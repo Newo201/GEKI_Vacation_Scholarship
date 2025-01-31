@@ -1,9 +1,9 @@
-Generalised Ensemble Kalman Inversion - Misspecified Noise
+Generalised Ensemble Kalman Inversion - Malaria Model
 ================
 Owen Jackson
 2025-01-15
 
-# Results for Misspecified Noise
+# Results for Malaria Model
 
 ## Imports
 
@@ -57,7 +57,8 @@ adaptive = TRUE
 
 ``` r
 # data_path = "C:/Users/owenj/OneDrive/Uni/Vacation Scholarship/GEKI_Vacation_Scholarship/data/Malariah_data.rds"
-# true_data = log(readRDS(data_path))
+# true_sample = log(readRDS(data_path))
+# true_data = c(true_sample, sd(true_sample))
 
 num_particles <- 400
 
@@ -84,34 +85,32 @@ eki_result <- eki_malaria(num_particles, true_data,
 ```
 
     ## [1] 0 1
-    ## Next temp is 0.0214859986404706
-    ## Next temp is 0.0420764335742336
-    ## Next temp is 0.0633517817634242
-    ## Next temp is 0.087789847890104
-    ## Next temp is 0.113997399517419
-    ## Next temp is 0.141776687404436
-    ## Next temp is 0.170006252241763
-    ## Next temp is 0.199367063451955
-    ## Next temp is 0.229315897762044
-    ## Next temp is 0.259139534263199
-    ## Next temp is 0.289037044622316
-    ## Next temp is 0.32325199194317
-    ## Next temp is 0.356737009882669
-    ## Next temp is 0.388718203753299
-    ## Next temp is 0.42309759415275
-    ## Next temp is 0.45637949232576
-    ## Next temp is 0.489643517884812
-    ## Next temp is 0.524581430026341
-    ## Next temp is 0.558643046727803
-    ## Next temp is 0.599065064371017
-    ## Next temp is 0.643356923787015
-    ## Next temp is 0.684688631156648
-    ## Next temp is 0.729621996377755
-    ## Next temp is 0.775285743500145
-    ## Next temp is 0.822669147271911
-    ## Next temp is 0.877948201710364
-    ## Next temp is 0.92993758052159
-    ## Next temp is 0.97716813483542
+    ## Next temp is 0.0227769734808992
+    ## Next temp is 0.0469817490436022
+    ## Next temp is 0.0714500011995892
+    ## Next temp is 0.0960345281422178
+    ## Next temp is 0.121821576359666
+    ## Next temp is 0.148706296081928
+    ## Next temp is 0.173684395592977
+    ## Next temp is 0.207081821427544
+    ## Next temp is 0.238118223681486
+    ## Next temp is 0.267603810131578
+    ## Next temp is 0.298747421301004
+    ## Next temp is 0.33736489635504
+    ## Next temp is 0.376157884014457
+    ## Next temp is 0.412414357232035
+    ## Next temp is 0.448300314406464
+    ## Next temp is 0.487958219914354
+    ## Next temp is 0.530517472940706
+    ## Next temp is 0.572797205434585
+    ## Next temp is 0.619297875650929
+    ## Next temp is 0.662654362424036
+    ## Next temp is 0.706584513262077
+    ## Next temp is 0.756201878979255
+    ## Next temp is 0.808263871437686
+    ## Next temp is 0.861105210291619
+    ## Next temp is 0.912733072226165
+    ## Next temp is 0.96558129927607
     ## Next temp is 1
 
 ``` r
@@ -143,7 +142,7 @@ abline(model, col = 'red')
 cor(d_in_particles, eta0_particles)
 ```
 
-    ## [1] 0.9175251
+    ## [1] 0.901504
 
 Upon closer inspection we see a strong positive correlation between the
 $d_{in}$ and $\eta_0$ particles. Essentially the higher values offset
@@ -168,34 +167,37 @@ eki_result <- eki_malaria_known_d_in(num_particles, true_data,
 ```
 
     ## [1] 0 1
-    ## Next temp is 0.0173709699466866
-    ## Next temp is 0.03658256624922
-    ## Next temp is 0.055894389039739
-    ## Next temp is 0.0756701685106349
-    ## Next temp is 0.0966076335321717
-    ## Next temp is 0.11861034064947
-    ## Next temp is 0.144898998318669
-    ## Next temp is 0.171630747598486
-    ## Next temp is 0.197416665458268
-    ## Next temp is 0.226439755115891
-    ## Next temp is 0.254361306935328
-    ## Next temp is 0.282202336885334
-    ## Next temp is 0.311804260488528
-    ## Next temp is 0.343370581783615
-    ## Next temp is 0.377518379271185
-    ## Next temp is 0.410255652767072
-    ## Next temp is 0.443806436616116
-    ## Next temp is 0.477731180658274
-    ## Next temp is 0.518054804499631
-    ## Next temp is 0.555591063958246
-    ## Next temp is 0.600928308043683
-    ## Next temp is 0.644973605076776
-    ## Next temp is 0.691433481195814
-    ## Next temp is 0.741057391906672
-    ## Next temp is 0.791549492730784
-    ## Next temp is 0.840888945344116
-    ## Next temp is 0.896419826976013
-    ## Next temp is 0.955810267627807
+    ## Next temp is 0.018900918802087
+    ## Next temp is 0.0383963453691238
+    ## Next temp is 0.0592949704122718
+    ## Next temp is 0.07826229992115
+    ## Next temp is 0.0979986829046095
+    ## Next temp is 0.12129091597951
+    ## Next temp is 0.147547669666952
+    ## Next temp is 0.17324516452705
+    ## Next temp is 0.199794125865963
+    ## Next temp is 0.226188157961137
+    ## Next temp is 0.252328405524448
+    ## Next temp is 0.279898888349767
+    ## Next temp is 0.30791123301627
+    ## Next temp is 0.33650327734922
+    ## Next temp is 0.36848347927652
+    ## Next temp is 0.399466912576994
+    ## Next temp is 0.429977106932244
+    ## Next temp is 0.460942967056609
+    ## Next temp is 0.493345429950534
+    ## Next temp is 0.527966010632175
+    ## Next temp is 0.562688677192781
+    ## Next temp is 0.601310221557333
+    ## Next temp is 0.637656807923612
+    ## Next temp is 0.676770989533844
+    ## Next temp is 0.716763675816832
+    ## Next temp is 0.760268926670577
+    ## Next temp is 0.804629720182921
+    ## Next temp is 0.850211279527717
+    ## Next temp is 0.893775816110633
+    ## Next temp is 0.939538587180195
+    ## Next temp is 0.99093675439079
     ## Next temp is 1
 
 ``` r
